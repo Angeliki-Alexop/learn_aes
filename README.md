@@ -1,16 +1,16 @@
 # React + Vite
+
 # learn_aes
 
 An educational site for aes crypto algorithm
-
-
 
 npm create vite@latest .
 npm run install
 npm run dev
 npm install --save-dev gh-pages
 
-
+to deploy:
+npm run deploy
 
 Steps:
 Install React Router for navigation.
