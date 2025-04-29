@@ -9,7 +9,7 @@ import StepByStep from './pages/StepByStep';
 import './styles/styles.css';
 function App() {
   return (
-    <Router>
+    <Router basename="/learn_aes">
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
