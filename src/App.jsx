@@ -1,9 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Decode from './pages/Decode';
-import Encode from './pages/Encode';
+import Converter from './pages/Converter';
+import LearnMore from './pages/LearnMore';
+import About from './pages/About';
 import StepByStep from './pages/StepByStep';
 // import Incremental from './pages/Incremental';
 import './styles/styles.css';
@@ -12,10 +12,10 @@ function App() {
     <Router basename="/learn_aes">
       <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/decode" element={<Decode />} />
-        <Route path="/encode" element={<Encode />} />
+        <Route path="/" element={<Converter />} />
         <Route path="/step-by-step" element={<StepByStep />} />
+        <Route path="/LearnMore" element={<LearnMore />} />
+        <Route path="/About" element={<About />} />
         {/* <Route path="/incremental" element={<Incremental />} /> */}
       </Routes>
     </Router>

@@ -29,17 +29,18 @@ function Navbar() {
           </Typography>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <Button component={Link} to="/" color="inherit">
-              Home
-            </Button>
-            <Button component={Link} to="/decode" color="inherit">
-              Decode
-            </Button>
-            <Button component={Link} to="/encode" color="inherit">
-              Encode
+              Converter
             </Button>
             <Button component={Link} to="/step-by-step" color="inherit">
               StepByStep
             </Button>
+            <Button component={Link} to="/LearnMore" color="inherit">
+              Learn More
+            </Button>
+            <Button component={Link} to="/About" color="inherit">
+              About
+            </Button>
+            
             {/* <Button component={Link} to="/incremental" color="inherit">Incremental</Button> */}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>

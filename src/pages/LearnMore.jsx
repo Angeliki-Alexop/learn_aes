@@ -1,14 +1,14 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
 
-function Home() {
+function LearnMore() {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Home Page
+        Information about the AES Algorithm
       </Typography>
     </Container>
   )
 }
 
-export default Home;
+export default LearnMore;

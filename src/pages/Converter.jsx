@@ -1,14 +1,14 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
 
-function Decode() {
+function Converter() {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Decode Page
+        Encryption & Decryption Tool
       </Typography>
     </Container>
   )
 }
 
-export default Decode;
+export default Converter;

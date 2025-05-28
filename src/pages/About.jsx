@@ -1,14 +1,14 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
 
-function Encode() {
+function About() {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Encode Page
+        Information about the Thesis
       </Typography>
     </Container>
   )
 }
 
-export default Encode;
+export default About;
