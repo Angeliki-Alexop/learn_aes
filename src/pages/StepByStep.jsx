@@ -22,9 +22,9 @@ const finalRoundSteps = ["SubBytes", "ShiftRows", "AddRoundKey"];
 
 const formatAsMatrix = (hexString) => {
   const bytes = hexString.split(" ");
-  const matrix = [];
-  for (let i = 0; i < 4; i++) {
-    matrix.push(bytes.slice(i * 4, i * 4 + 4));
+  const matrix = [[], [], [], []];
+  for (let i = 0; i < 16; i++) {
+    matrix[i % 4][Math.floor(i / 4)] = bytes[i];
   }
   return matrix;
 };
@@ -114,35 +114,39 @@ function StepByStep() {
         <table className="matrix-table">
           <tbody>
             {matrix.map((row, rowIndex) => (
-              <tr
-                key={rowIndex}
-                style={
-                  highlightRows
-                    ? {
-                        backgroundColor: `${highlightColor}${
-                          1 - rowIndex * 0.2
-                        })`,
-                      }
-                    : {}
-                }
-              >
+              <tr key={rowIndex}>
                 {row.map((byte, colIndex) => {
                   const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
                   const isHighlighted =
                     highlightedCell &&
                     highlightedCell.endsWith(`-${rowIndex}-${colIndex}`);
                   const isClickedCell = highlightedCell === cellId;
-                  const highlightStyle = isClickedCell
-                    ? { backgroundColor: "rgba(255, 0, 0, 1)" }
-                    : isHighlighted
-                    ? { backgroundColor: "rgba(255, 0, 0, 0.2)" }
-                    : highlightColumns
-                    ? {
-                        backgroundColor: `${highlightColor}${
-                          1 - ((colIndex + rowIndex) % 4) * 0.2
-                        })`,
-                      }
-                    : {};
+
+                  // ShiftRows coloring logic
+                  const shift = [0, 1, 2, 3];
+                  let highlightStyle = {};
+                  if (isClickedCell) {
+                    highlightStyle = { backgroundColor: "rgba(255, 0, 0, 1)" };
+                  } else if (isHighlighted) {
+                    highlightStyle = {
+                      backgroundColor: "rgba(255, 0, 0, 0.2)",
+                    };
+                  } else if (highlightRows && matrixId === "previous") {
+                    // Previous state: color by column
+                    highlightStyle = {
+                      backgroundColor: `${highlightColor}${
+                        1 - colIndex * 0.2
+                      })`,
+                    };
+                  } else if (highlightColumns && matrixId === "current") {
+                    // Current state: simulate ShiftRows
+                    const originalCol = (colIndex - shift[rowIndex] + 4) % 4;
+                    highlightStyle = {
+                      backgroundColor: `${highlightColor}${
+                        1 - originalCol * 0.2
+                      })`,
+                    };
+                  }
 
                   return (
                     <td
