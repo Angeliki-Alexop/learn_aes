@@ -317,9 +317,10 @@ function StepByStep() {
 
     const renderExplanation = () => {
       if (currentStep === "AddRoundKey" && highlightedCell) {
-        const [matrixId, rowIndex, colIndex] = highlightedCell
-          .split("-")
-          .map(Number);
+        // cleaner way to extract row and column indices and dont use matrixId
+        const parts = highlightedCell.split("-");
+        const rowIndex = Number(parts[1]);
+        const colIndex = Number(parts[2]);
         const previousStateArray = previousStepState.split(" ");
         const roundKeyArray = toHex(roundKeys[currentRound]).split(" ");
 
@@ -327,8 +328,8 @@ function StepByStep() {
         console.log("roundKeyArray:", roundKeyArray);
 
         const previousValueHex =
-          previousStateArray[rowIndex * 4 + colIndex] || "00";
-        const roundKeyValueHex = roundKeyArray[rowIndex * 4 + colIndex] || "00";
+          previousStateArray[colIndex * 4 + rowIndex] || "00";
+        const roundKeyValueHex = roundKeyArray[colIndex * 4 + rowIndex] || "00";
         const resultValueHex = (
           parseInt(previousValueHex, 16) ^ parseInt(roundKeyValueHex, 16)
         )
