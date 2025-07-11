@@ -140,7 +140,7 @@ function StepByStep() {
                     };
                   } else if (highlightColumns && matrixId === "current") {
                     // Current state: simulate ShiftRows
-                    const originalCol = (colIndex - shift[rowIndex] + 4) % 4;
+                    const originalCol = (colIndex + shift[rowIndex]) % 4;
                     highlightStyle = {
                       backgroundColor: `${highlightColor}${
                         1 - originalCol * 0.2
