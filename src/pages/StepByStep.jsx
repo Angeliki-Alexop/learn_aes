@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Button, TextField } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import Sidebar from "../components/Sidebar";
 import {
   handleSubmitButtonClick,
@@ -15,6 +15,8 @@ import {
 import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
 import { formatAsMatrix, toHex, hexToText, hexToBase64 } from "../utils/stepByStepUtils";
 import { RenderMatrix, RenderFixedMatrix, RenderSBox } from "./MatrixDisplay";
+import { RenderExplanation } from "./StepExplanations";
+import { StepNavigation } from "./StepNavigation";
 import "./../styles/StepByStep.css";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
@@ -146,85 +148,6 @@ function StepByStep() {
 
 
 
-    const renderExplanation = () => {
-      if (currentStep === "AddRoundKey" && highlightedCell) {
-        // cleaner way to extract row and column indices and dont use matrixId
-        const parts = highlightedCell.split("-");
-        const rowIndex = Number(parts[1]);
-        const colIndex = Number(parts[2]);
-        const previousStateArray = previousStepState.split(" ");
-        const roundKeyArray = toHex(roundKeys[currentRound]).split(" ");
-
-        console.log("previousStateArray:", previousStateArray);
-        console.log("roundKeyArray:", roundKeyArray);
-
-        const previousValueHex =
-          previousStateArray[colIndex * 4 + rowIndex] || "00";
-        const roundKeyValueHex = roundKeyArray[colIndex * 4 + rowIndex] || "00";
-        const resultValueHex = (
-          parseInt(previousValueHex, 16) ^ parseInt(roundKeyValueHex, 16)
-        )
-          .toString(16)
-          .padStart(2, "0");
-
-        const previousValueBits = parseInt(previousValueHex, 16)
-          .toString(2)
-          .padStart(8, "0");
-        const roundKeyValueBits = parseInt(roundKeyValueHex, 16)
-          .toString(2)
-          .padStart(8, "0");
-        const resultValueBits = (
-          parseInt(previousValueHex, 16) ^ parseInt(roundKeyValueHex, 16)
-        )
-          .toString(2)
-          .padStart(8, "0");
-
-        return (
-          <Box textAlign="center">
-            <Typography variant="body1" component="p">
-              {`Previous State [${rowIndex}, ${colIndex}] (Hex): ${previousValueHex}`}
-            </Typography>
-            <Typography variant="body1" component="p">
-              {`Round Key [${rowIndex}, ${colIndex}] (Hex): ${roundKeyValueHex}`}
-            </Typography>
-            <Typography variant="body1" component="p">
-              {`Result (Hex): ${previousValueHex} XOR ${roundKeyValueHex} = ${resultValueHex}`}
-            </Typography>
-            <br />
-            <table style={{ margin: "0 auto", borderCollapse: "collapse" }}>
-              <tbody>
-                <tr>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    Previous State [{rowIndex}, {colIndex}]
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    {previousValueBits}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    Round Key [{rowIndex}, {colIndex}]
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    {roundKeyValueBits}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    XOR
-                  </td>
-                  <td style={{ border: "1px solid black", padding: "5px" }}>
-                    {previousValueBits} XOR {roundKeyValueBits} ={" "}
-                    {resultValueBits}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </Box>
-        );
-      }
-      return null;
-    };
 
     if (currentRound === -2 && currentStep === "Input") {
       return (
@@ -332,7 +255,16 @@ function StepByStep() {
             {currentStep === "SubBytes" && (
               <RenderSBox sBox={sBox} highlightedCellValue={highlightedCellValue} />
             )}
-            {currentStep === "AddRoundKey" && renderExplanation()}
+            {currentStep === "AddRoundKey" && (
+              <RenderExplanation
+                currentStep={currentStep}
+                highlightedCell={highlightedCell}
+                previousStepState={previousStepState}
+                roundKeys={roundKeys}
+                currentRound={currentRound}
+                toHex={toHex}
+              />
+            )}
           </Box>
         </Box>
       );
@@ -394,171 +326,34 @@ function StepByStep() {
       )}
       <div className="content">
         {renderContent()}
-        <Box
-          mt={2}
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          className="buttons-container"
-        >
-          {currentRound === -2 && (
-            <Box
-              id="input_text_key"
-              className="input-box"
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              width="50%"
-            >
-              <TextField
-                label="Input Text"
-                value={tempInputText}
-                onChange={(e) => setTempInputText(e.target.value)}
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                inputProps={{ maxLength: 16 }}
-              />
-              <TextField
-                label="Key"
-                value={tempKey}
-                onChange={(e) => setTempKey(e.target.value)}
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                error={!!keyError}
-                helperText={keyError}
-                inputProps={{ maxLength: 16 }}
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() =>
-                  handleSubmitButtonClick(
-                    tempKey,
-                    tempInputText,
-                    keySize,
-                    setKeyError,
-                    setInputText,
-                    setKey,
-                    setSidebarVisible,
-                    setRoundKeys,
-                    setStateMap
-                  )
-                }
-                style={{ marginTop: "16px" }}
-              >
-                Submit
-              </Button>
-            </Box>
-          )}
-          {sidebarVisible && (
-            <>
-              <Button
-                variant="contained"
-                style={{
-                  backgroundColor: "#4b0082",
-                  color: "white",
-                  margin: "8px",
-                }}
-                onClick={() => handleInput(setCurrentRound, setCurrentStep)}
-                disabled={currentRound === -2 && currentStep === "Input"}
-              >
-                Input
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ margin: "8px" }}
-                onClick={() =>
-                  handlePreviousRound(
-                    currentRound,
-                    setCurrentRound,
-                    setCurrentStep
-                  )
-                }
-                disabled={currentRound <= 0}
-              >
-                Previous Round
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ margin: "8px" }}
-                onClick={() =>
-                  handlePreviousStep(
-                    currentRound,
-                    currentStep,
-                    setCurrentStep,
-                    () =>
-                      handlePreviousRound(
-                        currentRound,
-                        setCurrentRound,
-                        setCurrentStep
-                      ),
-                    totalRounds
-                  )
-                }
-                disabled={currentRound === -2 && currentStep === "Input"}
-              >
-                Previous Step
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ margin: "8px" }}
-                onClick={() =>
-                  handleNextStep(
-                    currentRound,
-                    currentStep,
-                    setCurrentStep,
-                    () =>
-                      handleNextRound(
-                        currentRound,
-                        setCurrentRound,
-                        setCurrentStep,
-                        totalRounds
-                      ),
-                    totalRounds
-                  )
-                }
-                disabled={
-                  currentRound >= totalRounds &&
-                  (currentStep === "AddRoundKey" || currentStep === "Result")
-                }
-              >
-                Next Step
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ margin: "8px" }}
-                onClick={() =>
-                  handleNextRound(
-                    currentRound,
-                    setCurrentRound,
-                    setCurrentStep,
-                    totalRounds
-                  )
-                }
-                disabled={currentRound >= totalRounds}
-              >
-                Next Round
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                style={{ margin: "8px" }}
-                onClick={() =>
-                  handleFinalRound(setCurrentRound, setCurrentStep, totalRounds)
-                }
-                disabled={currentRound >= totalRounds}
-              >
-                Final Round
-              </Button>
-            </>
-          )}
-        </Box>
+        <StepNavigation
+          currentRound={currentRound}
+          currentStep={currentStep}
+          keyError={keyError}
+          tempInputText={tempInputText}
+          setTempInputText={setTempInputText}
+          tempKey={tempKey}
+          setTempKey={setTempKey}
+          handleSubmitButtonClick={handleSubmitButtonClick}
+          keySize={keySize}
+          setKeyError={setKeyError}
+          setInputText={setInputText}
+          setKey={setKey}
+          setSidebarVisible={setSidebarVisible}
+          setRoundKeys={setRoundKeys}
+          setStateMap={setStateMap}
+          sidebarVisible={sidebarVisible}
+          handleInput={handleInput}
+          setCurrentRound={setCurrentRound}
+          setCurrentStep={setCurrentStep}
+          handleStepClick={handleStepClick}
+          handlePreviousRound={handlePreviousRound}
+          handlePreviousStep={handlePreviousStep}
+          totalRounds={totalRounds}
+          handleNextStep={handleNextStep}
+          handleNextRound={handleNextRound}
+          handleFinalRound={handleFinalRound}
+        />
       </div>
     </div>
   );
