@@ -14,6 +14,7 @@ import {
 } from "../utils/stepByStepHandlers";
 import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
 import { formatAsMatrix, toHex, hexToText, hexToBase64 } from "../utils/stepByStepUtils";
+import { RenderMatrix, RenderFixedMatrix, RenderSBox } from "./MatrixDisplay";
 import "./../styles/StepByStep.css";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
@@ -35,6 +36,7 @@ function StepByStep() {
   const [keyError, setKeyError] = useState("");
   const [tempInputText, setTempInputText] = useState(inputText);
   const [tempKey, setTempKey] = useState(key);
+
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
@@ -95,81 +97,6 @@ function StepByStep() {
     //return `Round ${currentRound}, Step ${currentStep}: No Cell Selected`;
   };
 
-  const renderMatrix = (
-    hexString,
-    matrixId,
-    title,
-    highlightRows = false,
-    highlightColumns = false
-  ) => {
-    const matrix = formatAsMatrix(hexString);
-    return (
-      <Box className="matrix">
-        <table className="matrix-table">
-          <tbody>
-            {matrix.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {row.map((byte, colIndex) => {
-                  const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
-                  const isHighlighted =
-                    highlightedCell &&
-                    highlightedCell.endsWith(`-${rowIndex}-${colIndex}`);
-                  const isClickedCell = highlightedCell === cellId;
-
-                  // ShiftRows coloring logic
-                  const shift = [0, 1, 2, 3];
-                  let highlightStyle = {};
-                  if (isClickedCell) {
-                    highlightStyle = { backgroundColor: "rgba(255, 0, 0, 1)" };
-                  } else if (isHighlighted) {
-                    highlightStyle = {
-                      backgroundColor: "rgba(255, 0, 0, 0.2)",
-                    };
-                  } else if (highlightRows && matrixId === "previous") {
-                    // Previous state: color by column
-                    highlightStyle = {
-                      backgroundColor: `${highlightColor}${
-                        1 - colIndex * 0.2
-                      })`,
-                    };
-                  } else if (highlightColumns && matrixId === "current") {
-                    // Current state: simulate ShiftRows
-                    const originalCol = (colIndex + shift[rowIndex]) % 4;
-                    highlightStyle = {
-                      backgroundColor: `${highlightColor}${
-                        1 - originalCol * 0.2
-                      })`,
-                    };
-                  }
-
-                  return (
-                    <td
-                      key={colIndex}
-                      id={cellId}
-                      onClick={() => handleCellClick(cellId, byte, matrixId)}
-                      style={highlightStyle}
-                    >
-                      {byte}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <Typography
-          variant="body1"
-          component="p"
-          align="left"
-          className="matrix-title"
-          id={`${matrixId}-title`}
-        >
-          {title}
-        </Typography>
-      </Box>
-    );
-  };
-
   const renderContent = () => {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
@@ -217,97 +144,7 @@ function StepByStep() {
       ["03", "01", "01", "02"],
     ];
 
-    const renderFixedMatrix = () => {
-      return (
-        <Box className="matrix">
-          <table className="matrix-table">
-            <tbody>
-              {fixedMatrix.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((byte, colIndex) => (
-                    <td key={colIndex}>{byte}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Typography
-            variant="body1"
-            component="p"
-            align="left"
-            className="matrix-title"
-          >
-            Fixed Matrix
-          </Typography>
-        </Box>
-      );
-    };
 
-    const renderSBox = () => {
-      const sBoxMatrix = [];
-      for (let i = 0; i < 16; i++) {
-        sBoxMatrix.push(sBox.slice(i * 16, i * 16 + 16));
-      }
-
-      const highlightRow = highlightedCellValue
-        ? parseInt(highlightedCellValue[0], 16)
-        : -1;
-      const highlightCol = highlightedCellValue
-        ? parseInt(highlightedCellValue[1], 16)
-        : -1;
-
-      return (
-        <Box className="matrix">
-          <table className="matrix-table small">
-            <thead>
-              <tr>
-                <th></th>
-                {Array.from({ length: 16 }, (_, i) => (
-                  <th key={i}>{i.toString(16).toUpperCase()}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sBoxMatrix.map((row, rowIndex) => (
-                <tr
-                  key={rowIndex}
-                  style={
-                    highlightRow === rowIndex
-                      ? { backgroundColor: "rgba(255, 0, 0, 0.2)" }
-                      : {}
-                  }
-                >
-                  <th>{rowIndex.toString(16).toUpperCase()}</th>
-                  {row.map((byte, colIndex) => (
-                    <td
-                      key={colIndex}
-                      style={
-                        highlightRow === rowIndex && highlightCol === colIndex
-                          ? { backgroundColor: "red" }
-                          : highlightRow === rowIndex ||
-                            highlightCol === colIndex
-                          ? { backgroundColor: "rgba(255, 0, 0, 0.2)" }
-                          : {}
-                      }
-                    >
-                      {byte.toString(16).padStart(2, "0")}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <Typography
-            variant="body1"
-            component="p"
-            align="left"
-            className="matrix-title"
-          >
-            sBox
-          </Typography>
-        </Box>
-      );
-    };
 
     const renderExplanation = () => {
       if (currentStep === "AddRoundKey" && highlightedCell) {
@@ -449,26 +286,39 @@ function StepByStep() {
             Round {currentRound} - Step: {currentStep}
           </Typography>
           <div className="matrix-container">
-            {renderMatrix(
-              previousStepState,
-              "previous",
-              "Previous State",
-              currentStep === "ShiftRows"
+            <RenderMatrix
+              hexString={previousStepState}
+              matrixId="previous"
+              title="Previous State"
+              highlightRows={currentStep === "ShiftRows"}
+              highlightColumns={false}
+              highlightedCell={highlightedCell}
+              handleCellClick={handleCellClick}
+              highlightedCellValue={highlightedCellValue}
+            />
+            {currentStep === "MixColumns" && <RenderFixedMatrix />}
+            <RenderMatrix
+              hexString={stepState}
+              matrixId="current"
+              title="Current State"
+              highlightRows={false}
+              highlightColumns={currentStep === "ShiftRows"}
+              highlightedCell={highlightedCell}
+              handleCellClick={handleCellClick}
+              highlightedCellValue={highlightedCellValue}
+            />
+            {currentStep === "AddRoundKey" && (
+              <RenderMatrix
+                hexString={toHex(roundKeys[currentRound])}
+                matrixId="roundKey"
+                title="Round Key"
+                highlightRows={false}
+                highlightColumns={false}
+                highlightedCell={highlightedCell}
+                handleCellClick={handleCellClick}
+                highlightedCellValue={highlightedCellValue}
+              />
             )}
-            {currentStep === "MixColumns" && renderFixedMatrix()}
-            {renderMatrix(
-              stepState,
-              "current",
-              "Current State",
-              false,
-              currentStep === "ShiftRows"
-            )}
-            {currentStep === "AddRoundKey" &&
-              renderMatrix(
-                toHex(roundKeys[currentRound]),
-                "roundKey",
-                "Round Key"
-              )}
           </div>
           <Box className="info-container" mt={2}>
             <Typography variant="body1" component="p" align="center">
@@ -479,7 +329,9 @@ function StepByStep() {
                 highlightedCellValue
               )}
             </Typography>
-            {currentStep === "SubBytes" && renderSBox()}
+            {currentStep === "SubBytes" && (
+              <RenderSBox sBox={sBox} highlightedCellValue={highlightedCellValue} />
+            )}
             {currentStep === "AddRoundKey" && renderExplanation()}
           </Box>
         </Box>
