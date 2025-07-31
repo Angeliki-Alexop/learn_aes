@@ -12,7 +12,8 @@ import {
   handleInput,
   generateStateMap,
 } from "../utils/stepByStepHandlers";
-import { padPKCS7, sBox } from "../utils/aes_manual_v2.js"; // Import the padPKCS7 function
+import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
+import { formatAsMatrix, toHex, hexToText, hexToBase64 } from "../utils/stepByStepUtils";
 import "./../styles/StepByStep.css";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
@@ -20,14 +21,7 @@ export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
 const steps = ["SubBytes", "ShiftRows", "MixColumns", "AddRoundKey"];
 const finalRoundSteps = ["SubBytes", "ShiftRows", "AddRoundKey"];
 
-const formatAsMatrix = (hexString) => {
-  const bytes = hexString.split(" ");
-  const matrix = [[], [], [], []];
-  for (let i = 0; i < 16; i++) {
-    matrix[i % 4][Math.floor(i / 4)] = bytes[i];
-  }
-  return matrix;
-};
+
 
 function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
