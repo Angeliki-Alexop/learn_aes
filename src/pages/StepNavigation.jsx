@@ -27,7 +27,8 @@ export function StepNavigation({
   totalRounds,
   handleNextStep,
   handleNextRound,
-  handleFinalRound
+  handleFinalRound,
+  setHasSubmitted
 }) {
   return (
     <Box
@@ -79,7 +80,8 @@ export function StepNavigation({
                 setKey,
                 setSidebarVisible,
                 setRoundKeys,
-                setStateMap
+                setStateMap,
+                setHasSubmitted
               )
             }
             style={{ marginTop: "16px" }}

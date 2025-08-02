@@ -37,7 +37,8 @@ function StepByStep() {
   const [key, setKey] = useState("DefaultKey123456");
   const [currentState, setCurrent] = useState([]);
   const [newState, setNewState] = useState([]);
-  const [sidebarVisible, setSidebarVisible] = useState(true); // Sidebar visible by default
+  const [sidebarVisible, setSidebarVisible] = useState(false); // Sidebar hidden by default
+  const [hasSubmitted, setHasSubmitted] = useState(false); // Track if user has submitted input. Usefull to hide sidebar toggle button
   const [keyError, setKeyError] = useState("");
   const [tempInputText, setTempInputText] = useState(inputText);
   const [tempKey, setTempKey] = useState(key);
@@ -311,62 +312,66 @@ function StepByStep() {
 
   return (
     <div className="stepbystep-container" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
-      {/* Sidebar and toggle button */}
-      {sidebarVisible && (
-        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
-          <Sidebar
-            currentRound={currentRound}
-            currentStep={currentStep}
-            inputText={inputText}
-            aeskey={key}
-            algorithm={algorithm}
-            keySize={keySize}
-            mode={mode}
-            setCurrentRound={setCurrentRound}
-            setCurrentStep={setCurrentStep}
-            handleStepClick={(round, step) =>
-              handleStepClick(round, step, setCurrentRound, setCurrentStep)
-            }
-          />
-          {/* Hide button at right edge of sidebar */}
-          <IconButton
-            aria-label="hide sidebar"
-            onClick={() => setSidebarVisible(false)}
-            style={{
-              position: 'absolute',
-              left:232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
-              top: 16,
-              zIndex: 100,
-              color: '#643fdc',
-              background: 'rgba(213,0,125,0.08)',
-              borderRadius: 8,
-              boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
-            }}
-            size="small"
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-      )}
-      {/* Show button when sidebar is hidden */}
-      {!sidebarVisible && (
-        <IconButton
-          aria-label="show sidebar"
-          onClick={() => setSidebarVisible(true)}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 16,
-            zIndex: 100,
-            color: '#643fdc',
-            background: 'rgba(213,0,125,0.08)',
-            borderRadius: 8,
-            boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
-          }}
-          size="small"
-        >
-          <ChevronRightIcon />
-        </IconButton>
+      {/* Sidebar and toggle button only after submit */}
+      {hasSubmitted && (
+        <>
+          {sidebarVisible && (
+            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
+              <Sidebar
+                currentRound={currentRound}
+                currentStep={currentStep}
+                inputText={inputText}
+                aeskey={key}
+                algorithm={algorithm}
+                keySize={keySize}
+                mode={mode}
+                setCurrentRound={setCurrentRound}
+                setCurrentStep={setCurrentStep}
+                handleStepClick={(round, step) =>
+                  handleStepClick(round, step, setCurrentRound, setCurrentStep)
+                }
+              />
+              {/* Hide button at right edge of sidebar */}
+              <IconButton
+                aria-label="hide sidebar"
+                onClick={() => setSidebarVisible(false)}
+                style={{
+                  position: 'absolute',
+                  left:232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
+                  top: 16,
+                  zIndex: 100,
+                  color: '#643fdc',
+                  background: 'rgba(213,0,125,0.08)',
+                  borderRadius: 8,
+                  boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+                }}
+                size="small"
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+            </div>
+          )}
+          {/* Show button when sidebar is hidden */}
+          {!sidebarVisible && (
+            <IconButton
+              aria-label="show sidebar"
+              onClick={() => setSidebarVisible(true)}
+              style={{
+                position: 'absolute',
+                left: 0,
+                top: 16,
+                zIndex: 100,
+                color: '#643fdc',
+                background: 'rgba(213,0,125,0.08)',
+                borderRadius: 8,
+                boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+              }}
+              size="small"
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          )}
+        </>
       )}
       {/* Main content */}
       <div className="content" style={{ flex: 1, marginLeft: sidebarVisible ? 0 : 0 }}>
@@ -398,6 +403,7 @@ function StepByStep() {
           handleNextStep={handleNextStep}
           handleNextRound={handleNextRound}
           handleFinalRound={handleFinalRound}
+          setHasSubmitted={setHasSubmitted}
         />
       </div>
     </div>

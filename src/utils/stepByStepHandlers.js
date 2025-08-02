@@ -47,7 +47,7 @@ export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => 
   return newStateMap;
 };
 
-export const handleSubmitButtonClick = (tempKey, tempInputText, keySize, setKeyError, setInputText, setKey, setSidebarVisible, setRoundKeys, setStateMap) => {
+export const handleSubmitButtonClick = (tempKey, tempInputText, keySize, setKeyError, setInputText, setKey, setSidebarVisible, setRoundKeys, setStateMap, setHasSubmitted) => {
   if (tempKey.length !== 16) {
     setKeyError('Key must be exactly 16 characters long');
     return;
@@ -58,6 +58,7 @@ export const handleSubmitButtonClick = (tempKey, tempInputText, keySize, setKeyE
   const initialState = tempInputText.split('').map(char => char.charCodeAt(0));
   const paddedState = padPKCS7(initialState, 16);
   setSidebarVisible(true);
+  if (setHasSubmitted) setHasSubmitted(true);
   // Generate round keys
   const expandedKey = keyExpansion(tempKey.split('').map(char => char.charCodeAt(0)), keySize);
   const roundKeys = [];
