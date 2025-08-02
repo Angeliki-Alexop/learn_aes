@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, IconButton } from "@mui/material";
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Sidebar from "../components/Sidebar";
 import {
   handleSubmitButtonClick,
@@ -26,6 +28,7 @@ const finalRoundSteps = ["SubBytes", "ShiftRows", "AddRoundKey"];
 
 
 
+
 function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
   const [currentStep, setCurrentStep] = useState("Input");
@@ -34,7 +37,7 @@ function StepByStep() {
   const [key, setKey] = useState("DefaultKey123456");
   const [currentState, setCurrent] = useState([]);
   const [newState, setNewState] = useState([]);
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true); // Sidebar visible by default
   const [keyError, setKeyError] = useState("");
   const [tempInputText, setTempInputText] = useState(inputText);
   const [tempKey, setTempKey] = useState(key);
@@ -307,24 +310,66 @@ function StepByStep() {
   }, [currentRound, currentStep]);
 
   return (
-    <div className="stepbystep-container">
+    <div className="stepbystep-container" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+      {/* Sidebar and toggle button */}
       {sidebarVisible && (
-        <Sidebar
-          currentRound={currentRound}
-          currentStep={currentStep}
-          inputText={inputText}
-          aeskey={key}
-          algorithm={algorithm}
-          keySize={keySize}
-          mode={mode}
-          setCurrentRound={setCurrentRound}
-          setCurrentStep={setCurrentStep}
-          handleStepClick={(round, step) =>
-            handleStepClick(round, step, setCurrentRound, setCurrentStep)
-          }
-        />
+        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
+          <Sidebar
+            currentRound={currentRound}
+            currentStep={currentStep}
+            inputText={inputText}
+            aeskey={key}
+            algorithm={algorithm}
+            keySize={keySize}
+            mode={mode}
+            setCurrentRound={setCurrentRound}
+            setCurrentStep={setCurrentStep}
+            handleStepClick={(round, step) =>
+              handleStepClick(round, step, setCurrentRound, setCurrentStep)
+            }
+          />
+          {/* Hide button at right edge of sidebar */}
+          <IconButton
+            aria-label="hide sidebar"
+            onClick={() => setSidebarVisible(false)}
+            style={{
+              position: 'absolute',
+              left:232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
+              top: 16,
+              zIndex: 100,
+              color: '#643fdc',
+              background: 'rgba(213,0,125,0.08)',
+              borderRadius: 8,
+              boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+            }}
+            size="small"
+          >
+            <ChevronLeftIcon />
+          </IconButton>
+        </div>
       )}
-      <div className="content">
+      {/* Show button when sidebar is hidden */}
+      {!sidebarVisible && (
+        <IconButton
+          aria-label="show sidebar"
+          onClick={() => setSidebarVisible(true)}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 16,
+            zIndex: 100,
+            color: '#643fdc',
+            background: 'rgba(213,0,125,0.08)',
+            borderRadius: 8,
+            boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+          }}
+          size="small"
+        >
+          <ChevronRightIcon />
+        </IconButton>
+      )}
+      {/* Main content */}
+      <div className="content" style={{ flex: 1, marginLeft: sidebarVisible ? 0 : 0 }}>
         {renderContent()}
         <StepNavigation
           currentRound={currentRound}
