@@ -1,3 +1,64 @@
+/* Responsive content container for StepByStep */
+
+.responsive-content {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.matrix-container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.info-container {
+  flex: 1 1 300px;
+  min-width: 250px;
+  max-width: 100%;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .responsive-content {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+  .matrix-container {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .info-container {
+    width: 100%;
+    margin-top: 8px;
+  }
+  .buttons-container {
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+  }
+}
 .stepbystep-container {
   display: flex;
   height: 100vh;

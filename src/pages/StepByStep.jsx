@@ -374,7 +374,7 @@ function StepByStep() {
         </>
       )}
       {/* Main content */}
-      <div className="content" style={{ flex: 1, marginLeft: sidebarVisible ? 0 : 0 }}>
+      <div className="content responsive-content">
         {renderContent()}
         <StepNavigation
           currentRound={currentRound}
