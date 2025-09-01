@@ -8,7 +8,7 @@ export function RenderExplanation({
   previousStepState,
   roundKeys,
   currentRound,
-  toHex
+  toHex,
 }) {
   if (currentStep === "AddRoundKey" && highlightedCell) {
     const parts = highlightedCell.split("-");
@@ -17,7 +17,8 @@ export function RenderExplanation({
     const previousStateArray = previousStepState.split(" ");
     const roundKeyArray = toHex(roundKeys[currentRound]).split(" ");
 
-    const previousValueHex = previousStateArray[colIndex * 4 + rowIndex] || "00";
+    const previousValueHex =
+      previousStateArray[colIndex * 4 + rowIndex] || "00";
     const roundKeyValueHex = roundKeyArray[colIndex * 4 + rowIndex] || "00";
     const resultValueHex = (
       parseInt(previousValueHex, 16) ^ parseInt(roundKeyValueHex, 16)
@@ -53,7 +54,7 @@ export function RenderExplanation({
           <tbody>
             <tr>
               <td style={{ border: "1px solid black", padding: "5px" }}>
-                Previous State [{rowIndex}, {colIndex}]
+                Current State [{rowIndex}, {colIndex}]
               </td>
               <td style={{ border: "1px solid black", padding: "5px" }}>
                 {previousValueBits}
@@ -69,7 +70,7 @@ export function RenderExplanation({
             </tr>
             <tr>
               <td style={{ border: "1px solid black", padding: "5px" }}>
-                XOR
+                Next State [{rowIndex}, {colIndex}]
               </td>
               <td style={{ border: "1px solid black", padding: "5px" }}>
                 {previousValueBits} XOR {roundKeyValueBits} = {resultValueBits}

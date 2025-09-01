@@ -1,14 +1,14 @@
 import React from "react";
 import { Container, Typography } from "@mui/material";
 
-function Converter() {
+function Train() {
   return (
     <Container>
       <Typography variant="h4" component="h1" gutterBottom>
-        Encryption & Decryption Tool
+        AES Practice Tool
       </Typography>
     </Container>
-  )
+  );
 }
 
-export default Converter;
+export default Train;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Box, IconButton } from "@mui/material";
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Sidebar from "../components/Sidebar";
 import {
   handleSubmitButtonClick,
@@ -15,7 +15,12 @@ import {
   generateStateMap,
 } from "../utils/stepByStepHandlers";
 import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
-import { formatAsMatrix, toHex, hexToText, hexToBase64 } from "../utils/stepByStepUtils";
+import {
+  formatAsMatrix,
+  toHex,
+  hexToText,
+  hexToBase64,
+} from "../utils/stepByStepUtils";
 import { RenderMatrix, RenderFixedMatrix, RenderSBox } from "./MatrixDisplay";
 import { RenderExplanation } from "./StepExplanations";
 import { StepNavigation } from "./StepNavigation";
@@ -25,9 +30,6 @@ export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
 
 const steps = ["SubBytes", "ShiftRows", "MixColumns", "AddRoundKey"];
 const finalRoundSteps = ["SubBytes", "ShiftRows", "AddRoundKey"];
-
-
-
 
 function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
@@ -150,9 +152,6 @@ function StepByStep() {
       ["03", "01", "01", "02"],
     ];
 
-
-
-
     if (currentRound === -2 && currentStep === "Input") {
       return (
         <Box>
@@ -216,7 +215,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={previousStepState}
               matrixId="previous"
-              title="Previous State"
+              title="Current State"
               highlightRows={currentStep === "ShiftRows"}
               highlightColumns={false}
               highlightedCell={highlightedCell}
@@ -227,7 +226,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
-              title="Current State"
+              title="Next State"
               highlightRows={false}
               highlightColumns={currentStep === "ShiftRows"}
               highlightedCell={highlightedCell}
@@ -257,7 +256,10 @@ function StepByStep() {
               )}
             </Typography>
             {currentStep === "SubBytes" && (
-              <RenderSBox sBox={sBox} highlightedCellValue={highlightedCellValue} />
+              <RenderSBox
+                sBox={sBox}
+                highlightedCellValue={highlightedCellValue}
+              />
             )}
             {currentStep === "AddRoundKey" && (
               <RenderExplanation
@@ -311,12 +313,21 @@ function StepByStep() {
   }, [currentRound, currentStep]);
 
   return (
-    <div className="stepbystep-container" style={{ display: 'flex', flexDirection: 'row', position: 'relative' }}>
+    <div
+      className="stepbystep-container"
+      style={{ display: "flex", flexDirection: "row", position: "relative" }}
+    >
       {/* Sidebar and toggle button only after submit */}
       {hasSubmitted && (
         <>
           {sidebarVisible && (
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'stretch' }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "stretch",
+              }}
+            >
               <Sidebar
                 currentRound={currentRound}
                 currentStep={currentStep}
@@ -336,14 +347,14 @@ function StepByStep() {
                 aria-label="hide sidebar"
                 onClick={() => setSidebarVisible(false)}
                 style={{
-                  position: 'absolute',
-                  left:232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
+                  position: "absolute",
+                  left: 232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
                   top: 16,
                   zIndex: 100,
-                  color: '#643fdc',
-                  background: 'rgba(213,0,125,0.08)',
+                  color: "#643fdc",
+                  background: "rgba(213,0,125,0.08)",
                   borderRadius: 8,
-                  boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+                  boxShadow: "0 2px 8px rgba(213,0,125,0.08)",
                 }}
                 size="small"
               >
@@ -357,14 +368,14 @@ function StepByStep() {
               aria-label="show sidebar"
               onClick={() => setSidebarVisible(true)}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 left: 0,
                 top: 16,
                 zIndex: 100,
-                color: '#643fdc',
-                background: 'rgba(213,0,125,0.08)',
+                color: "#643fdc",
+                background: "rgba(213,0,125,0.08)",
                 borderRadius: 8,
-                boxShadow: '0 2px 8px rgba(213,0,125,0.08)',
+                boxShadow: "0 2px 8px rgba(213,0,125,0.08)",
               }}
               size="small"
             >

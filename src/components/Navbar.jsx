@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 function Navbar() {
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,24 +24,73 @@ function Navbar() {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#643fdc" }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            My App
-          </Typography>
+        <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <img
+              src="/logo.png" // <-- Replace with your logo path
+              alt="Logo"
+              style={{ height: 20 }} // <-- Adjust the height as needed
+            />
+          </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Button component={Link} to="/" color="inherit">
-              Converter
-            </Button>
-            <Button component={Link} to="/step-by-step" color="inherit">
+            <Button
+              component={Link}
+              to="/step-by-step"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#7c5fe6",
+                },
+                backgroundColor:
+                  location.pathname === "/step-by-step" ? "#7c5fe6" : "inherit",
+              }}
+            >
               StepByStep
             </Button>
-            <Button component={Link} to="/LearnMore" color="inherit">
+            <Button
+              component={Link}
+              to="/"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#7c5fe6",
+                },
+                backgroundColor:
+                  location.pathname === "/" ? "#7c5fe6" : "inherit",
+              }}
+            >
+              Train
+            </Button>
+
+            <Button
+              component={Link}
+              to="/LearnMore"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#7c5fe6",
+                },
+                backgroundColor:
+                  location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
+              }}
+            >
               Learn More
             </Button>
-            <Button component={Link} to="/About" color="inherit">
+            <Button
+              component={Link}
+              to="/About"
+              color="inherit"
+              sx={{
+                "&:hover": {
+                  backgroundColor: "#7c5fe6",
+                },
+                backgroundColor:
+                  location.pathname === "/About" ? "#7c5fe6" : "inherit",
+              }}
+            >
               About
             </Button>
-            
+
             {/* <Button component={Link} to="/incremental" color="inherit">Incremental</Button> */}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
