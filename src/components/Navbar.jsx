@@ -26,11 +26,7 @@ function Navbar() {
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img
-              src="/logo.png" // <-- Replace with your logo path
-              alt="Logo"
-              style={{ height: 20 }} // <-- Adjust the height as needed
-            />
+            <img src={import.meta.env.BASE_URL + "logo.png"} alt="Logo" style={{ height: 20 }} />
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <Button
