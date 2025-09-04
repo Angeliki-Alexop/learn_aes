@@ -11,6 +11,7 @@ export function StepNavigation({
   setTempKey,
   handleSubmitButtonClick,
   keySize,
+  setKeySize,
   setKeyError,
   setInputText,
   setKey,
@@ -47,6 +48,20 @@ export function StepNavigation({
           alignItems="center"
           width="50%"
         >
+          {/* Key Size Selector */}
+          <Box display="flex" flexDirection="row" alignItems="center" mb={2}>
+            <label htmlFor="key-size-select" style={{ marginRight: 8 }}>Key Size:</label>
+            <select
+              id="key-size-select"
+              value={keySize}
+              onChange={e => setKeySize(Number(e.target.value))}
+              style={{ padding: "4px 8px", fontSize: "1rem" }}
+            >
+              <option value={128}>128 bits</option>
+              <option value={192}>192 bits</option>
+              <option value={256}>256 bits</option>
+            </select>
+          </Box>
           <TextField
             label="Input Text"
             value={tempInputText}
@@ -54,7 +69,7 @@ export function StepNavigation({
             variant="outlined"
             fullWidth
             margin="normal"
-            inputProps={{ maxLength: 16 }}
+            inputProps={{ maxLength: 32 }}
           />
           <TextField
             label="Key"
@@ -65,7 +80,7 @@ export function StepNavigation({
             margin="normal"
             error={!!keyError}
             helperText={keyError}
-            inputProps={{ maxLength: 16 }}
+            inputProps={{ maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32 }}
           />
           <Button
             variant="contained"

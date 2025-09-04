@@ -45,14 +45,24 @@ function StepByStep() {
   const [tempInputText, setTempInputText] = useState(inputText);
   const [tempKey, setTempKey] = useState(key);
 
+  const [keySize, setKeySize] = useState(128); // Now keySize is state
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
   const algorithm = "ECB";
-  const keySize = 128; // Change this value to 192 or 256 to test different key sizes
   const mode = "Encode";
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
+
+  // Set default key when keySize changes
+  useEffect(() => {
+    let defaultKey = "";
+    if (keySize === 128) defaultKey = "DefaultKey123456"; // 16 chars
+    else if (keySize === 192) defaultKey = "DefaultKeyForAES192Key!!"; // 24 chars
+    else if (keySize === 256) defaultKey = "DefaultKeyForAES256Key0123456789"; // 32 chars
+    setKey(defaultKey);
+    setTempKey(defaultKey);
+  }, [keySize]);
 
   const toHex = (arr) => {
     return arr.map((byte) => byte.toString(16).padStart(2, "0")).join(" ");
@@ -397,6 +407,7 @@ function StepByStep() {
           setTempKey={setTempKey}
           handleSubmitButtonClick={handleSubmitButtonClick}
           keySize={keySize}
+          setKeySize={setKeySize}
           setKeyError={setKeyError}
           setInputText={setInputText}
           setKey={setKey}
