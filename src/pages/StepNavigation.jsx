@@ -29,7 +29,8 @@ export function StepNavigation({
   handleNextStep,
   handleNextRound,
   handleFinalRound,
-  setHasSubmitted
+  setHasSubmitted,
+  hasSubmitted
 }) {
   return (
     <Box
@@ -39,10 +40,9 @@ export function StepNavigation({
       alignItems="center"
       className="buttons-container"
     >
-      {currentRound === -2 && (
+      {currentRound === -2 && !hasSubmitted && (
         <Box
           id="input_text_key"
-          className="input-box"
           display="flex"
           flexDirection="column"
           alignItems="center"

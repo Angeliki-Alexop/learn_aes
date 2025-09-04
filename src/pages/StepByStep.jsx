@@ -397,7 +397,7 @@ function StepByStep() {
       {/* Main content */}
       <div className="content responsive-content">
         {renderContent()}
-        <StepNavigation
+  <StepNavigation
           currentRound={currentRound}
           currentStep={currentStep}
           keyError={keyError}
@@ -426,6 +426,7 @@ function StepByStep() {
           handleNextRound={handleNextRound}
           handleFinalRound={handleFinalRound}
           setHasSubmitted={setHasSubmitted}
+          hasSubmitted={hasSubmitted}
         />
       </div>
     </div>
