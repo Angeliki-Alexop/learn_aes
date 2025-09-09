@@ -48,8 +48,9 @@ export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => 
 };
 
 export const handleSubmitButtonClick = (tempKey, tempInputText, keySize, setKeyError, setInputText, setKey, setSidebarVisible, setRoundKeys, setStateMap, setHasSubmitted) => {
-  if (tempKey.length !== 16) {
-    setKeyError('Key must be exactly 16 characters long');
+  let requiredLength = keySize === 128 ? 16 : keySize === 192 ? 24 : 32;
+  if (tempKey.length !== requiredLength) {
+    setKeyError(`Key must be exactly ${requiredLength} characters long`);
     return;
   }
   setKeyError('');

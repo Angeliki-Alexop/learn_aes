@@ -106,7 +106,7 @@ export const keyExpansion = (key, keySize) => {
     expandedKey[i] = key[i];
   }
 
-  // Key expansion loop
+  // Key expansion loop #check correctness for AES-192 and AES-256
   for (let i = Nk; i < 4 * (Nr + 1); i++) {
     temp = expandedKey.slice((i - 1) * 4, i * 4);
 
