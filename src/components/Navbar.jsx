@@ -26,7 +26,14 @@ function Navbar() {
       <Container maxWidth="xl">
         <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
           <Box sx={{ display: "flex", alignItems: "center" }}>
-            <img src={import.meta.env.BASE_URL + "logo.png"} alt="Logo" style={{ height: 20 }} />
+            <img
+              src={import.meta.env.BASE_URL + "Logo.svg"}
+              alt="AES Learning & Training"
+              style={{
+                height: "55px",
+                width: "auto",
+              }}
+            />
           </Box>
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <Button

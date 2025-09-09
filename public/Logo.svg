@@ -1,0 +1,12 @@
+<!-- aes-logo-64-stacked-spaced.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 250" width="1000" height="250" role="img" aria-label="AES — Learning &amp; Training">
+  <title>AES — Learning &amp; Training</title>
+  <g fill="#FFFFFF" font-family="Merriweather, Georgia, 'Times New Roman', serif" text-rendering="geometricPrecision">
+    <!-- Top line (AES) -->
+    <text x="50%" y="35%" text-anchor="middle" dominant-baseline="middle" font-size="130" font-weight="700" letter-spacing="2">AES</text>
+    <!-- Bottom line (Learning & Training) -->
+    <text x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="80" font-weight="600" letter-spacing="1">
+      Learning &amp; Training
+    </text>
+  </g>
+</svg>
