@@ -4,6 +4,7 @@ import { RenderMatrix } from "./MatrixDisplay";
 import en from '../locales/en';
 import el from '../locales/el';
 import { getColumnsForExplanations, getHighlightedColumnsByMatrix } from "./KeyExpansionHelper";
+import { CirclePlus } from 'lucide-react';
 
 function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
@@ -172,7 +173,9 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
                   <TableRow key={`row-${rowIdx}`}>
                     {explanationColumns.map((col, colIdx) =>
                       <TableCell key={`cell-${colIdx}-${rowIdx}`} align="center">
-                        {col.data[rowIdx]}
+                        {(col.column === "XOR" && col.data[rowIdx] === "XOR")
+                          ? <CirclePlus size={20} color="#7b1fa2" />
+                          : col.data[rowIdx]}
                       </TableCell>
                     )}
                   </TableRow>
