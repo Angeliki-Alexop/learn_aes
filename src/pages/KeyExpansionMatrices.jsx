@@ -53,6 +53,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       xorEntry,
       sortedColumns[2]
     ];
+    console.log("Sorted Columns with XOR for Explanation:", sortedColumnsWithXor);
     setExplanationColumns(sortedColumnsWithXor);
   };
 
@@ -153,21 +154,24 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               <TableBody>
                 {/* Header row: labels for each column */}
                 <TableRow>
-                  {explanationColumns.map(col =>
+                  {explanationColumns.map((col, colIdx) =>
                     <TableCell
-                      key={`header-${col.matrix}-${col.colidx}`}
+                      key={`header-${col.column}-${colIdx}`}
                       align="center"
-                      style={{ fontWeight: "bold", color: "#7b1fa2" }}
+                      sx={{ fontWeight: "bold", color: "#7b1fa2", padding: "4px", minWidth: "32px" }}
                     >
-                      {col.column}
+                      {col.column === "previous word" ? "Prev" :
+                      col.column === "offset word before" ? "Offset" :
+                      col.column === "current word" ? "Curr" :
+                      col.column}
                     </TableCell>
                   )}
                 </TableRow>
                 {/* Data rows: bytes for each column */}
                 {[0, 1, 2, 3].map(rowIdx => (
                   <TableRow key={`row-${rowIdx}`}>
-                    {explanationColumns.map(col =>
-                      <TableCell key={`cell-${col.matrix}-${col.colidx}-${rowIdx}`} align="center">
+                    {explanationColumns.map((col, colIdx) =>
+                      <TableCell key={`cell-${colIdx}-${rowIdx}`} align="center">
                         {col.data[rowIdx]}
                       </TableCell>
                     )}
