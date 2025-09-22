@@ -7,87 +7,70 @@ import el from '../locales/el';
 function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState({});
-  const [highlightedColumns, setHighlightedColumns] = useState([]);
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState({});
   const selectedColumns = highlightedColumnsByMatrix[highlightedMatrix] || [];
 
   // Handler for cell click: highlight cell and column
-const handleCellClick = (matrixIdx, colIdx) => {
-  const n = 4;
-  const offset = keySize / 32;
-  console.log("Clicked matrixIdx:", matrixIdx);
-  console.log("Clicked colIdx:", colIdx);
-  console.log("Offset (keySize/32):", offset);
-  // Matrix 0: do nothing
-  if (matrixIdx === 0) return;
+  const handleCellClick = (matrixIdx, colIdx) => {
+    const n = 4;
+    const offset = keySize / 32;
+    console.log("Clicked matrixIdx:", matrixIdx);
+    console.log("Clicked colIdx:", colIdx);
+    console.log("Offset (keySize/32):", offset);
+    // Matrix 0: do nothing
+    if (matrixIdx === 0) return;
 
-  // Matrix 1: conditional logic
-  if (matrixIdx === 1) {
-    if (offset === 8) return; // AES-256
-    if (offset === 6 && colIdx < 2) return; // AES-192, columns 0 or 1
-    // else proceed
-  }
-
-  const cellKey = `${matrixIdx}-${colIdx}`;
-  setHighlightedCells({ [cellKey]: true });
-  setHighlightedMatrix(matrixIdx);
-
-  let updated = {};
-
-  // 1. Highlight the clicked column
-  updated[matrixIdx] = [colIdx];
-
-  // 2. Highlight the previous column (with overflow logic)
-  const prevCol = (colIdx - 1 + n) % n;
-  if (colIdx === 0 && matrixIdx > 0) {
-    updated[matrixIdx - 1] = [n - 1];
-  } else {
-    updated[matrixIdx].push(prevCol);
-  }
-
-// 3. Highlight the third column based on keySize/offset
-if (offset === 4 && matrixIdx > 0) {
-  // AES-128: highlight same column in previous matrix
-  updated[matrixIdx - 1] = updated[matrixIdx - 1]
-    ? [...updated[matrixIdx - 1], colIdx]
-    : [colIdx];
-} else if (offset === 8 && matrixIdx > 1) {
-  // AES-256: highlight same column in matrixIdx-2
-  updated[matrixIdx - 2] = updated[matrixIdx - 2]
-    ? [...updated[matrixIdx - 2], colIdx]
-    : [colIdx];
-} else if (offset === 6 && matrixIdx > 0 && colIdx < 2) {
-  // AES-192: for colIdx 0 or 1, highlight (2 + colIdx) in matrixIdx-2
-  const targetCol = 2 + colIdx;
-  updated[matrixIdx - 2] = updated[matrixIdx - 2]
-    ? [...updated[matrixIdx - 2], targetCol]
-    : [targetCol];
-} else if (offset === 6 && matrixIdx > 0 && colIdx >= 2) {
-  // AES-192: for colIdx 2 or 3, highlight (colIdx - 2) in matrixIdx-1
-  const targetCol = colIdx - 2;
-  console.log("Highlighting column", targetCol, "in matrix", matrixIdx - 1);
-  updated[matrixIdx - 1] = updated[matrixIdx - 1]
-    ? [...updated[matrixIdx - 1], targetCol]
-    : [targetCol];
-}
-
-  setHighlightedColumnsByMatrix(updated);
-  setHighlightedColumns(updated[matrixIdx]);
-};
-
-  // Helper to get the selected columns as arrays
-  const getSelectedColumns = () => {
-    if (
-      highlightedMatrix !== null &&
-      selectedColumns.length > 0 &&
-      roundKeys[highlightedMatrix]
-    ) {
-      const matrix = formatAsMatrix(toHex(roundKeys[highlightedMatrix]));
-      return selectedColumns.map(col =>
-        matrix.map(row => row[col])
-      );
+    // Matrix 1: conditional logic
+    if (matrixIdx === 1) {
+      if (offset === 8) return; // AES-256
+      if (offset === 6 && colIdx < 2) return; // AES-192, columns 0 or 1
+      // else proceed
     }
-    return [];
+
+    const cellKey = `${matrixIdx}-${colIdx}`;
+    setHighlightedCells({ [cellKey]: true });
+    setHighlightedMatrix(matrixIdx);
+
+    let updated = {};
+
+    // 1. Highlight the clicked column
+    updated[matrixIdx] = [colIdx];
+
+    // 2. Highlight the previous column (with overflow logic)
+    const prevCol = (colIdx - 1 + n) % n;
+    if (colIdx === 0 && matrixIdx > 0) {
+      updated[matrixIdx - 1] = [n - 1];
+    } else {
+      updated[matrixIdx].push(prevCol);
+    }
+
+    // 3. Highlight the third column based on keySize/offset
+    if (offset === 4 && matrixIdx > 0) {
+      // AES-128: highlight same column in previous matrix
+      updated[matrixIdx - 1] = updated[matrixIdx - 1]
+        ? [...updated[matrixIdx - 1], colIdx]
+        : [colIdx];
+    } else if (offset === 8 && matrixIdx > 1) {
+      // AES-256: highlight same column in matrixIdx-2
+      updated[matrixIdx - 2] = updated[matrixIdx - 2]
+        ? [...updated[matrixIdx - 2], colIdx]
+        : [colIdx];
+    } else if (offset === 6 && matrixIdx > 0 && colIdx < 2) {
+      // AES-192: for colIdx 0 or 1, highlight (2 + colIdx) in matrixIdx-2
+      const targetCol = 2 + colIdx;
+      updated[matrixIdx - 2] = updated[matrixIdx - 2]
+        ? [...updated[matrixIdx - 2], targetCol]
+        : [targetCol];
+    } else if (offset === 6 && matrixIdx > 0 && colIdx >= 2) {
+      // AES-192: for colIdx 2 or 3, highlight (colIdx - 2) in matrixIdx-1
+      const targetCol = colIdx - 2;
+      console.log("Highlighting column", targetCol, "in matrix", matrixIdx - 1);
+      updated[matrixIdx - 1] = updated[matrixIdx - 1]
+        ? [...updated[matrixIdx - 1], targetCol]
+        : [targetCol];
+    }
+
+    setHighlightedColumnsByMatrix(updated);
   };
 
   // You may need to import or define formatAsMatrix here if not already available
