@@ -174,39 +174,47 @@ if (offset === 4 && matrixIdx > 0) {
               flex: "1 1 180px"
             }}
           >
-            {Object.entries(highlightedColumnsByMatrix).map(([matrixIdx, cols]) =>
-              cols.map((col, colIdx) => {
-                const matrix = formatAsMatrix(toHex(roundKeys[matrixIdx]));
-                const colBytes = matrix.map(row => row[col]);
-                return (
-                  <Table
-                    key={`${matrixIdx}-${col}`}
-                    id={`matrix-${matrixIdx}-col-${colIdx}`}
-                    className={`matrix-col-table matrix-${matrixIdx}-col-${colIdx}`}
-                    size="small"
-                    style={{
-                      margin: "0 auto",
-                      width: "80px", // <-- set a width so tables can wrap
-                      minWidth: 60,
-                      flex: "0 0 auto" // <-- prevent tables from stretching
-                    }}
-                  >
-                    <TableBody>
-                      <TableRow>
-                        <TableCell align="center" colSpan={1} style={{ fontWeight: "bold", color: "#7b1fa2" }}>
-                          Matrix {matrixIdx}, Column {col}
+            {/* Combine all highlighted columns into one table */}
+            <Table
+              className="combined-matrix-col-table"
+              size="small"
+              style={{
+                margin: "0 auto",
+                minWidth: 60,
+                width: "auto",
+                flex: "0 0 auto"
+              }}
+            >
+              <TableBody>
+                {/* Header row: labels for each column */}
+                <TableRow>
+                  {Object.entries(highlightedColumnsByMatrix).flatMap(([matrixIdx, cols]) =>
+                    cols.map((col, colIdx) => (
+                      <TableCell
+                        key={`header-${matrixIdx}-${col}`}
+                        align="center"
+                        style={{ fontWeight: "bold", color: "#7b1fa2" }}
+                      >
+                        Matrix {matrixIdx}, Col {col}
+                      </TableCell>
+                    ))
+                  )}
+                </TableRow>
+                {/* Data rows: bytes for each column */}
+                {[0, 1, 2, 3].map(rowIdx => (
+                  <TableRow key={`row-${rowIdx}`}>
+                    {Object.entries(highlightedColumnsByMatrix).flatMap(([matrixIdx, cols]) => {
+                      const matrix = formatAsMatrix(toHex(roundKeys[matrixIdx]));
+                      return cols.map(col => (
+                        <TableCell key={`cell-${matrixIdx}-${col}-${rowIdx}`} align="center">
+                          {matrix[rowIdx][col]}
                         </TableCell>
-                      </TableRow>
-                      {colBytes.map((byte, rowIdx) => (
-                        <TableRow key={rowIdx}>
-                          <TableCell align="center">{byte}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                );
-              })
-            )}
+                      ));
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
           {/* Right: Key expansion explanation */}
           <div
