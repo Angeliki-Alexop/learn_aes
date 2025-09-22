@@ -11,9 +11,6 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState({});
   const [explanationColumns, setExplanationColumns] = useState([]);
   const displayOrder = ["previous word", "offset word before", "current word"];
-  const sortedColumns = explanationColumns.sort(
-    (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column)
-  );
 
   // Handler for cell click: highlight cell and column
   const handleCellClick = (matrixIdx, colIdx) => {
@@ -43,8 +40,20 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       keySize,
       formatAsMatrix
     );
-    console.log("Column Data Map:", Array.from(columnDataMap.values()));
-    setExplanationColumns(Array.from(columnDataMap.values()));
+    const columnsArray = Array.from(columnDataMap.values());
+    const sortedColumns = columnsArray.sort(
+      (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column)
+    );
+    console.log("Sorted Columns for Explanation:", sortedColumns);
+    const xorEntry = { column: "XOR", matrix: null, colidx: null, data: ["", "XOR", "", ""] };
+    const sortedColumnsWithXor = [
+      sortedColumns[0],
+      xorEntry,
+      sortedColumns[1],
+      xorEntry,
+      sortedColumns[2]
+    ];
+    setExplanationColumns(sortedColumnsWithXor);
   };
 
   // You may need to import or define formatAsMatrix here if not already available
@@ -144,7 +153,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               <TableBody>
                 {/* Header row: labels for each column */}
                 <TableRow>
-                  {sortedColumns.map(col =>
+                  {explanationColumns.map(col =>
                     <TableCell
                       key={`header-${col.matrix}-${col.colidx}`}
                       align="center"
@@ -157,7 +166,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
                 {/* Data rows: bytes for each column */}
                 {[0, 1, 2, 3].map(rowIdx => (
                   <TableRow key={`row-${rowIdx}`}>
-                    {sortedColumns.map(col =>
+                    {explanationColumns.map(col =>
                       <TableCell key={`cell-${col.matrix}-${col.colidx}-${rowIdx}`} align="center">
                         {col.data[rowIdx]}
                       </TableCell>
