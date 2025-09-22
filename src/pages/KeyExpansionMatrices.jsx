@@ -164,34 +164,49 @@ if (offset === 4 && matrixIdx > 0) {
             alignItems: "flex-start",
           }}
         >
-          <div className="visual-explanation" style={{ minWidth: 180, flex: "1 1 180px" }}>
-            <Typography variant="h6" align="center">
-              Selected Columns
-            </Typography>
-            <Table size="small" style={{ margin: "0 auto", width: "auto" }}>
-              <TableBody>
-                {Object.entries(highlightedColumnsByMatrix).map(([matrixIdx, cols]) =>
-                  cols.map((col, colIdx) => {
-                    const matrix = formatAsMatrix(toHex(roundKeys[matrixIdx]));
-                    const colBytes = matrix.map(row => row[col]);
-                    return (
-                      <React.Fragment key={`${matrixIdx}-${col}`}>
-                        <TableRow>
-                          <TableCell align="center" colSpan={1} style={{ fontWeight: "bold", color: "#7b1fa2" }}>
-                            Matrix {matrixIdx}, Column {col}
-                          </TableCell>
+          <div
+            className="visual-explanation"
+            style={{
+              display: "flex",
+              gap: 24,
+              flexWrap: "wrap",
+              minWidth: 180,
+              flex: "1 1 180px"
+            }}
+          >
+            {Object.entries(highlightedColumnsByMatrix).map(([matrixIdx, cols]) =>
+              cols.map((col, colIdx) => {
+                const matrix = formatAsMatrix(toHex(roundKeys[matrixIdx]));
+                const colBytes = matrix.map(row => row[col]);
+                return (
+                  <Table
+                    key={`${matrixIdx}-${col}`}
+                    id={`matrix-${matrixIdx}-col-${colIdx}`}
+                    className={`matrix-col-table matrix-${matrixIdx}-col-${colIdx}`}
+                    size="small"
+                    style={{
+                      margin: "0 auto",
+                      width: "80px", // <-- set a width so tables can wrap
+                      minWidth: 60,
+                      flex: "0 0 auto" // <-- prevent tables from stretching
+                    }}
+                  >
+                    <TableBody>
+                      <TableRow>
+                        <TableCell align="center" colSpan={1} style={{ fontWeight: "bold", color: "#7b1fa2" }}>
+                          Matrix {matrixIdx}, Column {col}
+                        </TableCell>
+                      </TableRow>
+                      {colBytes.map((byte, rowIdx) => (
+                        <TableRow key={rowIdx}>
+                          <TableCell align="center">{byte}</TableCell>
                         </TableRow>
-                        {colBytes.map((byte, rowIdx) => (
-                          <TableRow key={rowIdx}>
-                            <TableCell align="center">{byte}</TableCell>
-                          </TableRow>
-                        ))}
-                      </React.Fragment>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
+                      ))}
+                    </TableBody>
+                  </Table>
+                );
+              })
+            )}
           </div>
           {/* Right: Key expansion explanation */}
           <div
@@ -201,6 +216,7 @@ if (offset === 4 && matrixIdx > 0) {
               maxWidth: 400,
               flex: "1 1 220px",
               marginLeft: "auto",
+              width: "100%", // helps wrapping on small screens //didnt work good
             }}
           >
             <Typography variant="body2" component="div" style={{ whiteSpace: "pre-line" }}>
@@ -211,6 +227,6 @@ if (offset === 4 && matrixIdx > 0) {
       )}
     </>
   );
-}
+} 
 
 export default KeyExpansionMatrices;
