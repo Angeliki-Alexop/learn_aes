@@ -38,13 +38,13 @@ export function getColumnsForExplanations(matrixIdx, colIdx, roundKeys, toHex, k
       }
     );
   }
-  // keysize/32 word before
+  // offset word before
   if (offset === 4 && matrixIdx > 0) {
     const beforeMatrix = formatAsMatrix(toHex(roundKeys[matrixIdx - 1]));
     columnDataMap.set(
       `offset-${matrixIdx - 1}-${colIdx}`,
       {
-        column: "keysize/32 word before",
+        column: "offset word before",
         matrix: matrixIdx - 1,
         colidx: colIdx,
         data: beforeMatrix.map(row => row[colIdx])
@@ -55,7 +55,7 @@ export function getColumnsForExplanations(matrixIdx, colIdx, roundKeys, toHex, k
     columnDataMap.set(
       `offset-${matrixIdx - 2}-${colIdx}`,
       {
-        column: "keysize/32 word before",
+        column: "offset word before",
         matrix: matrixIdx - 2,
         colidx: colIdx,
         data: beforeMatrix.map(row => row[colIdx])
@@ -67,7 +67,7 @@ export function getColumnsForExplanations(matrixIdx, colIdx, roundKeys, toHex, k
     columnDataMap.set(
       `offset-${matrixIdx - 2}-${targetCol}`,
       {
-        column: "keysize/32 word before",
+        column: "offset word before",
         matrix: matrixIdx - 2,
         colidx: targetCol,
         data: beforeMatrix.map(row => row[targetCol])
@@ -79,7 +79,7 @@ export function getColumnsForExplanations(matrixIdx, colIdx, roundKeys, toHex, k
     columnDataMap.set(
       `offset-${matrixIdx - 1}-${targetCol}`,
       {
-        column: "keysize/32 word before",
+        column: "offset word before",
         matrix: matrixIdx - 1,
         colidx: targetCol,
         data: beforeMatrix.map(row => row[targetCol])

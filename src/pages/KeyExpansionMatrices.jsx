@@ -9,7 +9,11 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState({});
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState({});
-  const selectedColumns = highlightedColumnsByMatrix[highlightedMatrix] || [];
+  const [explanationColumns, setExplanationColumns] = useState([]);
+  const displayOrder = ["previous word", "offset word before", "current word"];
+  const sortedColumns = explanationColumns.sort(
+    (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column)
+  );
 
   // Handler for cell click: highlight cell and column
   const handleCellClick = (matrixIdx, colIdx) => {
@@ -40,6 +44,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       formatAsMatrix
     );
     console.log("Column Data Map:", Array.from(columnDataMap.values()));
+    setExplanationColumns(Array.from(columnDataMap.values()));
   };
 
   // You may need to import or define formatAsMatrix here if not already available
@@ -104,7 +109,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
         ))}
       </div>
       {/* Info container for selected columns */}
-      {Object.entries(highlightedColumnsByMatrix).length > 0 && (
+      {explanationColumns.length > 0 && (
         <Box
           className="info-container"
           mt={2}
@@ -126,7 +131,6 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               flex: "1 1 180px"
             }}
           >
-            {/* Combine all highlighted columns into one table */}
             <Table
               className="combined-matrix-col-table"
               size="small"
@@ -140,29 +144,24 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               <TableBody>
                 {/* Header row: labels for each column */}
                 <TableRow>
-                  {Object.entries(highlightedColumnsByMatrix).flatMap(([matrixIdx, cols]) =>
-                    cols.map((col, colIdx) => (
-                      <TableCell
-                        key={`header-${matrixIdx}-${col}`}
-                        align="center"
-                        style={{ fontWeight: "bold", color: "#7b1fa2" }}
-                      >
-                        Matrix {matrixIdx}, Col {col}
-                      </TableCell>
-                    ))
+                  {sortedColumns.map(col =>
+                    <TableCell
+                      key={`header-${col.matrix}-${col.colidx}`}
+                      align="center"
+                      style={{ fontWeight: "bold", color: "#7b1fa2" }}
+                    >
+                      {col.column}
+                    </TableCell>
                   )}
                 </TableRow>
                 {/* Data rows: bytes for each column */}
                 {[0, 1, 2, 3].map(rowIdx => (
                   <TableRow key={`row-${rowIdx}`}>
-                    {Object.entries(highlightedColumnsByMatrix).flatMap(([matrixIdx, cols]) => {
-                      const matrix = formatAsMatrix(toHex(roundKeys[matrixIdx]));
-                      return cols.map(col => (
-                        <TableCell key={`cell-${matrixIdx}-${col}-${rowIdx}`} align="center">
-                          {matrix[rowIdx][col]}
-                        </TableCell>
-                      ));
-                    })}
+                    {sortedColumns.map(col =>
+                      <TableCell key={`cell-${col.matrix}-${col.colidx}-${rowIdx}`} align="center">
+                        {col.data[rowIdx]}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>
