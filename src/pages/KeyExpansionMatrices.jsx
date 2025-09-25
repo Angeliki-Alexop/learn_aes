@@ -3,7 +3,7 @@ import { Typography, Box, Table, TableBody, TableCell, TableRow } from "@mui/mat
 import { RenderMatrix } from "./MatrixDisplay";
 import en from '../locales/en';
 import el from '../locales/el';
-import { getColumnsForExplanations, getHighlightedColumnsByMatrix } from "./KeyExpansionHelper";
+import { getColumnsForExplanations, getHighlightedColumnsByMatrix, getExplanationColumns } from "./KeyExpansionHelper";
 import { CirclePlus, RotateCcw, Wand2, Equal } from 'lucide-react';
 import { sBox, rCon } from "../utils/aes_manual_v2";
 
@@ -16,11 +16,11 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
 
   // Handler for cell click: highlight cell and column
   const handleCellClick = (matrixIdx, colIdx) => {
+    if (matrixIdx === 0) return;
     const n = 4;
     const offset = keySize / 32;
-    const isSpecialCol = ((colIdx + matrixIdx * n) % offset) === 0;
 
-    if (matrixIdx === 0) return;
+    // Special cases for AES-192 and AES-256 (skip some columns in round 1)
     if (matrixIdx === 1) {
       if (offset === 8) return;
       if (offset === 6 && colIdx < 2) return;
@@ -30,12 +30,11 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
     setHighlightedCells({ [cellKey]: true });
     setHighlightedMatrix(matrixIdx);
 
-    // Use helper to calculate highlighted columns
+    // Highlighted columns
     const updated = getHighlightedColumnsByMatrix(matrixIdx, colIdx, keySize);
-
     setHighlightedColumnsByMatrix(updated);
 
-    // Use the helper function for explanations
+    // Get explanation columns using helper
     const columnDataMap = getColumnsForExplanations(
       matrixIdx,
       colIdx,
@@ -48,76 +47,15 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
     const sortedColumns = columnsArray.sort(
       (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column)
     );
-    console.log("Sorted Columns for Explanation:", sortedColumns);
-    const xorEntry = { column: "XOR", matrix: null, colidx: null, data: ["", "XOR", "", ""] };
-    const rotateEntry = { column: "Rotate", matrix: null, colidx: null, data: ["", "Rotate", "", ""] };
-    const subEntry = { column: "Substitute", matrix: null, colidx: null, data: ["", "Substitute", "", ""] };
-    const equalsEntry = { column: "Equals", matrix: null, colidx: null, data: ["", "=", "", ""] };
-    // add a check if we the current column is colidx == 0 (first column) then console.log if yes or no
-    if (colIdx === 0) {
-      console.log("Current column is the first column (colIdx == 0)");
-    } else {
-      console.log("Current column is not the first column (colIdx != 0)");
-    }
 
-    const prevWord = sortedColumns[0].data;
+    // Use helper to build the visual explanation columns
+    const sortedColumnsWithXor = getExplanationColumns({
+      matrixIdx,
+      colIdx,
+      sortedColumns,
+      keySize
+    });
 
-    const roratedWordData = [prevWord[1], prevWord[2], prevWord[3], prevWord[0]];
-    const roratedWord = {
-      column: "Rotated Word",
-      matrix: sortedColumns[0].matrix,
-      colidx: sortedColumns[0].colidx,
-      data: roratedWordData
-    };
-    
-    const subbedWordData = roratedWordData.map(byte =>
-      typeof byte === "string"
-        ? sBox[parseInt(byte, 16)].toString(16).padStart(2, "0")
-        : sBox[byte].toString(16).padStart(2, "0")
-    );
-    const subbedWord = {
-      column: "Substituted Word",
-      matrix: sortedColumns[0].matrix,
-      colidx: sortedColumns[0].colidx,
-      data: subbedWordData
-    };
-
-    const rconIndex = Math.floor((colIdx + matrixIdx * n) / offset);
-    const rconValue = rCon[rconIndex];
-    const rconWord = {
-      column: "Rcon",
-      matrix: null,
-      colidx: null,
-      data: [
-        rconValue ? rconValue.toString(16).padStart(2, "0") : "00",
-        "00",
-        "00",
-        "00"
-      ]
-    };
-
-    const sortedColumnsWithXor = isSpecialCol
-  ? [
-      sortedColumns[0],
-      rotateEntry,
-      roratedWord,
-      subEntry,
-      subbedWord,
-      xorEntry,
-      sortedColumns[1],
-      xorEntry,
-      rconWord,
-      equalsEntry,
-      sortedColumns[2]
-    ]
-  : [
-      sortedColumns[0],
-      xorEntry,
-      sortedColumns[1],
-      xorEntry,
-      sortedColumns[2]
-    ];
-    console.log("Sorted Columns with XOR for Explanation:", sortedColumnsWithXor);
     setExplanationColumns(sortedColumnsWithXor);
   };
 

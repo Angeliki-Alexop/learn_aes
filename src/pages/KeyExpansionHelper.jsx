@@ -1,3 +1,5 @@
+import { sBox, rCon } from "../utils/aes_manual_v2";
+
 // Utility function for column explanations in key expansion
 export function getColumnsForExplanations(matrixIdx, colIdx, roundKeys, toHex, keySize, formatAsMatrix) {
   const n = 4;
@@ -125,4 +127,76 @@ export function getHighlightedColumnsByMatrix(matrixIdx, colIdx, keySize) {
   }
 
   return updated;
+}
+// Utility function to get visual explanation columns correct
+export function getExplanationColumns({ matrixIdx, colIdx, sortedColumns, keySize }) {
+  const n = 4;
+  const offset = keySize / 32;
+  const isSpecialCol = ((colIdx + matrixIdx * n) % offset) === 0;
+
+  const xorEntry = { column: "XOR", matrix: null, colidx: null, data: ["", "XOR", "", ""] };
+  const rotateEntry = { column: "Rotate", matrix: null, colidx: null, data: ["", "Rotate", "", ""] };
+  const subEntry = { column: "Substitute", matrix: null, colidx: null, data: ["", "Substitute", "", ""] };
+  const equalsEntry = { column: "Equals", matrix: null, colidx: null, data: ["", "=", "", ""] };
+
+  // Rotated word
+  const prevWord = sortedColumns[0].data;
+  const roratedWordData = [prevWord[1], prevWord[2], prevWord[3], prevWord[0]];
+  const roratedWord = {
+    column: "Rotated Word",
+    matrix: sortedColumns[0].matrix,
+    colidx: sortedColumns[0].colidx,
+    data: roratedWordData
+  };
+
+  // Substituted word
+  const subbedWordData = roratedWordData.map(byte =>
+    typeof byte === "string"
+      ? sBox[parseInt(byte, 16)].toString(16).padStart(2, "0")
+      : sBox[byte].toString(16).padStart(2, "0")
+  );
+  const subbedWord = {
+    column: "Substituted Word",
+    matrix: sortedColumns[0].matrix,
+    colidx: sortedColumns[0].colidx,
+    data: subbedWordData
+  };
+
+  // Rcon word
+  const rconIndex = Math.floor((colIdx + matrixIdx * n) / offset);
+  const rconValue = rCon[rconIndex];
+  const rconWord = {
+    column: "Rcon",
+    matrix: null,
+    colidx: null,
+    data: [
+      rconValue ? rconValue.toString(16).padStart(2, "0") : "00",
+      "00",
+      "00",
+      "00"
+    ]
+  };
+
+  // Build the explanation columns
+  return isSpecialCol
+    ? [
+        sortedColumns[0],
+        rotateEntry,
+        roratedWord,
+        subEntry,
+        subbedWord,
+        xorEntry,
+        sortedColumns[1],
+        xorEntry,
+        rconWord,
+        equalsEntry,
+        sortedColumns[2]
+      ]
+    : [
+        sortedColumns[0],
+        xorEntry,
+        sortedColumns[1],
+        xorEntry,
+        sortedColumns[2]
+      ];
 }
