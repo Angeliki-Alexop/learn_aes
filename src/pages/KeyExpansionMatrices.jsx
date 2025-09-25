@@ -5,7 +5,7 @@ import en from '../locales/en';
 import el from '../locales/el';
 import { getColumnsForExplanations, getHighlightedColumnsByMatrix } from "./KeyExpansionHelper";
 import { CirclePlus, RotateCcw, Wand2, Equal } from 'lucide-react';
-import { sBox } from "../utils/aes_manual_v2";
+import { sBox, rCon } from "../utils/aes_manual_v2";
 
 function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
@@ -81,6 +81,21 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       colidx: sortedColumns[0].colidx,
       data: subbedWordData
     };
+
+    const rconIndex = Math.floor((colIdx + matrixIdx * n) / offset);
+    const rconValue = rCon[rconIndex];
+    const rconWord = {
+      column: "Rcon",
+      matrix: null,
+      colidx: null,
+      data: [
+        rconValue ? rconValue.toString(16).padStart(2, "0") : "00",
+        "00",
+        "00",
+        "00"
+      ]
+    };
+
     const sortedColumnsWithXor = isSpecialCol
   ? [
       sortedColumns[0],
@@ -91,6 +106,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       xorEntry,
       sortedColumns[1],
       xorEntry,
+      rconWord,
       equalsEntry,
       sortedColumns[2]
     ]
