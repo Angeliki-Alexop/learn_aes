@@ -132,7 +132,9 @@ export function getHighlightedColumnsByMatrix(matrixIdx, colIdx, keySize) {
 export function getExplanationColumns({ matrixIdx, colIdx, sortedColumns, keySize }) {
   const n = 4;
   const offset = keySize / 32;
-  const isSpecialCol = ((colIdx + matrixIdx * n) % offset) === 0;
+  const i = colIdx + matrixIdx * n;
+  const isSpecialCol = (i % offset) === 0;
+  const isSubOnlyCol = (offset === 8 && i % offset === 4);
 
   const xorEntry = { column: "XOR", matrix: null, colidx: null, data: ["", "XOR", "", ""] };
   const rotateEntry = { column: "Rotate", matrix: null, colidx: null, data: ["", "Rotate", "", ""] };
@@ -150,7 +152,7 @@ export function getExplanationColumns({ matrixIdx, colIdx, sortedColumns, keySiz
   };
 
   // Substituted word
-  const subbedWordData = roratedWordData.map(byte =>
+  const subbedWordData = (isSpecialCol ? roratedWordData : prevWord).map(byte =>
     typeof byte === "string"
       ? sBox[parseInt(byte, 16)].toString(16).padStart(2, "0")
       : sBox[byte].toString(16).padStart(2, "0")
@@ -163,7 +165,7 @@ export function getExplanationColumns({ matrixIdx, colIdx, sortedColumns, keySiz
   };
 
   // Rcon word
-  const rconIndex = Math.floor((colIdx + matrixIdx * n) / offset);
+  const rconIndex = Math.floor(i / offset);
   const rconValue = rCon[rconIndex];
   const rconWord = {
     column: "Rcon",
@@ -178,25 +180,37 @@ export function getExplanationColumns({ matrixIdx, colIdx, sortedColumns, keySiz
   };
 
   // Build the explanation columns
-  return isSpecialCol
-    ? [
-        sortedColumns[0],
-        rotateEntry,
-        roratedWord,
-        subEntry,
-        subbedWord,
-        xorEntry,
-        sortedColumns[1],
-        xorEntry,
-        rconWord,
-        equalsEntry,
-        sortedColumns[2]
-      ]
-    : [
-        sortedColumns[0],
-        xorEntry,
-        sortedColumns[1],
-        xorEntry,
-        sortedColumns[2]
-      ];
+  if (isSpecialCol) {
+    return [
+      sortedColumns[0],
+      rotateEntry,
+      roratedWord,
+      subEntry,
+      subbedWord,
+      xorEntry,
+      sortedColumns[1],
+      xorEntry,
+      rconWord,
+      equalsEntry,
+      sortedColumns[2]
+    ];
+  } else if (isSubOnlyCol) {
+    return [
+      sortedColumns[0],
+      subEntry,
+      subbedWord,
+      xorEntry,
+      sortedColumns[1],
+      equalsEntry,
+      sortedColumns[2]
+    ];
+  } else {
+    return [
+      sortedColumns[0],
+      xorEntry,
+      sortedColumns[1],
+      equalsEntry,
+      sortedColumns[2]
+    ];
+  }
 }
