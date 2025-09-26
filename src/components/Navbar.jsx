@@ -13,119 +13,13 @@ import {
   Drawer,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { Grid3x3 } from "lucide-react"; // Import the icon
-import { sBox } from "../utils/aes_manual_v2"; // Import S-box
-
-
-function SBoxOverlay({ open, onClose }) {
-  const [selected, setSelected] = React.useState(null); // {row, col}
-
-  const handleCellClick = (row, col) => {
-    setSelected({ row, col });
-  };
-
-  return (
-    <Drawer
-      anchor="right"
-      open={open}
-      onClose={() => {
-        setSelected(null);
-        onClose();
-      }}
-      PaperProps={{
-        sx: {
-          width: 800,
-          zIndex: 1300,
-          padding: 3,
-          background: "#fff",
-        },
-      }}
-    >
-      <Box>
-        <Typography variant="h6" align="center" gutterBottom>
-          AES S-box
-        </Typography>
-        <Box sx={{ overflowX: "auto" }}>
-          <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead>
-              <tr>
-                <th style={{ border: "1px solid #ccc", padding: "8px", background: "#eee" }}></th>
-                {Array.from({ length: 16 }, (_, i) => (
-                  <th
-                    key={i}
-                    style={{
-                      border: "1px solid #ccc",
-                      padding: "8px",
-                      background:
-                        selected && selected.col === i ? "#ffe082" : "#eee",
-                      textAlign: "center",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {i.toString(16).toUpperCase()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 16 }, (_, row) => (
-                <tr key={row}>
-                  <th
-                    style={{
-                      border: "1px solid #ccc",
-                      padding: "8px",
-                      background:
-                        selected && selected.row === row ? "#ffe082" : "#eee",
-                      textAlign: "center",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {row.toString(16).toUpperCase()}
-                  </th>
-                  {Array.from({ length: 16 }, (_, col) => {
-                    const idx = row * 16 + col;
-                    const isSelected =
-                      selected && selected.row === row && selected.col === col;
-                    const isRow =
-                      selected && selected.row === row && !isSelected;
-                    const isCol =
-                      selected && selected.col === col && !isSelected;
-                    return (
-                      <td
-                        key={col}
-                        onClick={() => handleCellClick(row, col)}
-                        style={{
-                          border: "1px solid #ccc",
-                          padding: "8px",
-                          textAlign: "center",
-                          background: isSelected
-                            ? "#ffd54f"
-                            : isRow || isCol
-                            ? "#fff9c4"
-                            : "#f5f5f5",
-                          fontFamily: "monospace",
-                          cursor: "pointer",
-                          transition: "background 0.2s",
-                        }}
-                      >
-                        {sBox[idx].toString(16).padStart(2, "0").toUpperCase()}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Box>
-      </Box>
-    </Drawer>
-  );
-}
+import { Grid3x3 } from "lucide-react";
+import SBoxOverlay from "./SBoxOverlay";
 
 function Navbar() {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [sboxOpen, setSboxOpen] = React.useState(false); // Overlay state
+  const [sboxOpen, setSboxOpen] = React.useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -150,7 +44,6 @@ function Navbar() {
               />
             </Box>
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
-              {/* ...existing buttons... */}
               <Button
                 component={Link}
                 to="/step-by-step"
