@@ -77,6 +77,10 @@ function StepByStep() {
       // Do nothing if the clicked cell is from the current state matrix during SubBytes step
       return;
     }
+    if (currentStep === "MixColumns" && matrixId === "previous") {
+      // Do nothing if the clicked cell is from the previous state matrix during MixColumns step
+      return;
+    }
 
     console.log(id);
     const cell = document.getElementById(id);
