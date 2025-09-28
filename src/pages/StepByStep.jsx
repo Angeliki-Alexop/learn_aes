@@ -24,6 +24,7 @@ import {
 import { RenderMatrix, RenderFixedMatrix, RenderSBox } from "./MatrixDisplay";
 import { RenderExplanation } from "./StepExplanations";
 import { StepNavigation } from "./StepNavigation";
+import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
@@ -213,6 +214,9 @@ function StepByStep() {
               Round {index} Key: {toHex(roundKey)}
             </Typography>
           ))}
+          <div className="key-expansion" style={{ marginTop: "24px" }}>
+            <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
+          </div>
         </Box>
       );
     } else if (currentRound >= 0 && currentRound <= totalRounds) {

@@ -10,9 +10,10 @@ export function RenderMatrix({
   title,
   highlightRows = false,
   highlightColumns = false,
-  highlightedCell,
+  highlightedCells = {}, // <-- change here
   handleCellClick,
-  highlightedCellValue
+  highlightedCellValue,
+  highlightedColumns = []
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
@@ -23,33 +24,22 @@ export function RenderMatrix({
             <tr key={rowIndex}>
               {row.map((byte, colIndex) => {
                 const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
-                const isHighlighted =
-                  highlightedCell &&
-                  highlightedCell.endsWith(`-${rowIndex}-${colIndex}`);
-                const isClickedCell = highlightedCell === cellId;
-                const shift = [0, 1, 2, 3];
+                const isHighlighted = highlightedCells[cellId]; // <-- change here
                 let highlightStyle = {};
-                if (isClickedCell) {
-                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 1)" };
-                } else if (isHighlighted) {
-                  highlightStyle = {
-                    backgroundColor: "rgba(255, 0, 0, 0.2)",
-                  };
-                } else if (highlightRows && matrixId === "previous") {
-                  highlightStyle = {
-                    backgroundColor: `${highlightColor}${1 - colIndex * 0.2})`,
-                  };
-                } else if (highlightColumns && matrixId === "current") {
-                  const originalCol = (colIndex + shift[rowIndex]) % 4;
-                  highlightStyle = {
-                    backgroundColor: `${highlightColor}${1 - originalCol * 0.2})`,
-                  };
+                if (
+                  Array.isArray(highlightedColumns) &&
+                  highlightedColumns.includes(colIndex)
+                ) {
+                  highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.2)" };
+                }
+                if (isHighlighted) {
+                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 0.7)" };
                 }
                 return (
                   <td
                     key={colIndex}
                     id={cellId}
-                    onClick={() => handleCellClick(cellId, byte, matrixId)}
+                    onClick={() => handleCellClick(cellId, byte, matrixId, colIndex)}
                     style={highlightStyle}
                   >
                     {byte}

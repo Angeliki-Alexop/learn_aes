@@ -27,3 +27,4 @@ npm install crypto-js
 npm install --save @emotion/react
 
 npm install --save @emotion/styled
+npm install lucide-react

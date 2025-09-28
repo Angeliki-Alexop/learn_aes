@@ -40,6 +40,7 @@ export function StepNavigation({
       alignItems="center"
       className="buttons-container"
     >
+      {/* Show only the submit button before submission */}
       {currentRound === -2 && !hasSubmitted && (
         <Box
           id="input_text_key"
@@ -105,7 +106,8 @@ export function StepNavigation({
           </Button>
         </Box>
       )}
-      {sidebarVisible && (
+      {/* Show navigation buttons only after submit */}
+      {hasSubmitted && (
         <>
           <Button
             variant="contained"
