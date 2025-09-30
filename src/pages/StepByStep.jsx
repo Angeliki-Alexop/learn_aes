@@ -50,10 +50,21 @@ function StepByStep() {
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
+  const [highlightedColumnMixColumn, setHighlightedColumnMixColumn] = useState(null); // Track highlighted column index
+  const [highlightedColumnValuesMixColumn, setHighlightedColumnValuesMixColumn] = useState([]); // Track values in highlighted column
+  const [previousStepState, setPreviousStepState] = useState("");
+  const [highlightedRowFixedMatrix, setHighlightedRowFixedMatrix] = useState(null);
   const algorithm = "ECB";
   const mode = "Encode";
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
+  
+  useEffect(() => {
+    // Reset MixColumns highlights when step or round changes
+    setHighlightedColumnMixColumn(null);
+    setHighlightedRowFixedMatrix(null);
+    setHighlightedColumnValuesMixColumn([]);
+  }, [currentStep, currentRound]);
 
   // Set default key when keySize changes
   useEffect(() => {
@@ -65,13 +76,40 @@ function StepByStep() {
     setTempKey(defaultKey);
   }, [keySize]);
 
+  // Update previousStepState whenever round/step/stateMap/inputText/keySize changes
+  useEffect(() => {
+    const roundSteps = stateMap.get(currentRound) || [];
+    const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
+    let prevState = "";
+
+    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
+    const paddedState = padPKCS7(initialState, 16);
+
+    if (stepIndex > 0) {
+      prevState = roundSteps[stepIndex - 1]?.state || "";
+    } else if (currentRound > 0) {
+      const previousRoundSteps = stateMap.get(currentRound - 1) || [];
+      const addRoundKeyStep = previousRoundSteps.find(
+        (step) => step.step === "AddRoundKey"
+      );
+      prevState = addRoundKeyStep?.state || "";
+    } else if (currentRound === 0) {
+      prevState = toHex(paddedState);
+    }
+
+    setPreviousStepState(prevState);
+  }, [currentRound, currentStep, stateMap, inputText, keySize]);
+
   const toHex = (arr) => {
     return arr.map((byte) => byte.toString(16).padStart(2, "0")).join(" ");
   };
 
-  const handleCellClick = (id, value, matrixId) => {
+  const handleCellClick = (id, value, matrixId, rowIdx, colIdx) => {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
+
+    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
+    const paddedState = padPKCS7(initialState, 16);
 
     if (currentStep === "SubBytes" && matrixId === "current") {
       // Do nothing if the clicked cell is from the current state matrix during SubBytes step
@@ -81,8 +119,38 @@ function StepByStep() {
       // Do nothing if the clicked cell is from the previous state matrix during MixColumns step
       return;
     }
+    if (currentStep === "MixColumns") {
+      if (matrixId === "previous") {
+        return;
+      }
+      if (matrixId === "current") {
+        setHighlightedCell(id);
+        setHighlightedCellValue(value);
+        setHighlightedColumnMixColumn(colIdx);
 
-    console.log(id);
+        // Highlight row in fixed matrix
+        setHighlightedRowFixedMatrix(rowIdx);
+
+        // Log the values of the highlighted row in the fixed matrix
+        const fixedMatrix = [
+          ["02", "03", "01", "01"],
+          ["01", "02", "03", "01"],
+          ["01", "01", "02", "03"],
+          ["03", "01", "01", "02"],
+        ];
+        const rowValues = fixedMatrix[rowIdx];
+        console.log("Highlighted fixed matrix row values:", rowValues);
+
+        // Get previous state matrix as 4x4 array
+        const prevMatrix = formatAsMatrix(previousStepState);
+        const colValues = prevMatrix.map(row => row[colIdx]);
+        setHighlightedColumnValuesMixColumn(colValues);
+        console.log("Highlighted column values:", colValues);
+        return;
+      }
+    }
+
+    // Default cell highlight logic
     const cell = document.getElementById(id);
     if (highlightedCell === id) {
       // If the clicked cell is already highlighted, remove the highlight
@@ -124,7 +192,6 @@ function StepByStep() {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
     const stepState = roundSteps[stepIndex]?.state || "";
-    let previousStepState = "";
 
     const initialState = inputText.split("").map((char) => char.charCodeAt(0));
     const paddedState = padPKCS7(initialState, 16);
@@ -147,18 +214,6 @@ function StepByStep() {
           .join("")
       );
     };
-
-    if (stepIndex > 0) {
-      previousStepState = roundSteps[stepIndex - 1]?.state || "";
-    } else if (currentRound > 0) {
-      const previousRoundSteps = stateMap.get(currentRound - 1) || [];
-      const addRoundKeyStep = previousRoundSteps.find(
-        (step) => step.step === "AddRoundKey"
-      );
-      previousStepState = addRoundKeyStep?.state || "";
-    } else if (currentRound === 0) {
-      previousStepState = toHex(paddedState);
-    }
 
     const fixedMatrix = [
       ["02", "03", "01", "01"],
@@ -237,10 +292,13 @@ function StepByStep() {
               highlightRows={currentStep === "ShiftRows"}
               highlightColumns={false}
               highlightedCell={highlightedCell}
+              highlightedColumns={highlightedColumnMixColumn !== null ? [highlightedColumnMixColumn] : []}
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
             />
-            {currentStep === "MixColumns" && <RenderFixedMatrix />}
+            {currentStep === "MixColumns" && (
+              <RenderFixedMatrix highlightedRow={highlightedRowFixedMatrix} />
+            )}
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
@@ -328,7 +386,7 @@ function StepByStep() {
       setHighlightedCell(null);
       setHighlightedCellValue("");
     }
-  }, [currentRound, currentStep]);
+  }, [currentRound, currentStep, stateMap, inputText, keySize]);
 
   return (
     <div
@@ -405,7 +463,7 @@ function StepByStep() {
       {/* Main content */}
       <div className="content responsive-content">
         {renderContent()}
-  <StepNavigation
+        <StepNavigation
           currentRound={currentRound}
           currentStep={currentStep}
           keyError={keyError}

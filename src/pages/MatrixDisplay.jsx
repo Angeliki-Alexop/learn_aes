@@ -10,7 +10,8 @@ export function RenderMatrix({
   title,
   highlightRows = false,
   highlightColumns = false,
-  highlightedCells = {}, // <-- change here
+  highlightedCells = {},
+  highlightedCell = {},
   handleCellClick,
   highlightedCellValue,
   highlightedColumns = []
@@ -24,23 +25,29 @@ export function RenderMatrix({
             <tr key={rowIndex}>
               {row.map((byte, colIndex) => {
                 const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
-                const isHighlighted = highlightedCells[cellId]; // <-- change here
                 let highlightStyle = {};
+
+                // Highlight selected cell in red
+                if (highlightedCell === cellId ) {
+                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 0.3)" }; // Red
+                }
+
+                // Highlight column if needed (MixColumns)
                 if (
                   Array.isArray(highlightedColumns) &&
                   highlightedColumns.includes(colIndex)
                 ) {
-                  highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.2)" };
+                  highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.15)" }; // Purple
                 }
-                if (isHighlighted) {
-                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 0.7)" };
-                }
+
                 return (
                   <td
                     key={colIndex}
                     id={cellId}
-                    onClick={() => handleCellClick(cellId, byte, matrixId, colIndex)}
                     style={highlightStyle}
+                    onClick={() =>
+                      handleCellClick(cellId, byte, matrixId, rowIndex, colIndex)
+                    }
                   >
                     {byte}
                   </td>
@@ -63,7 +70,7 @@ export function RenderMatrix({
   );
 }
 
-export function RenderFixedMatrix() {
+export function RenderFixedMatrix({ highlightedRow = null }) {
   const fixedMatrix = [
     ["02", "03", "01", "01"],
     ["01", "02", "03", "01"],
@@ -75,9 +82,17 @@ export function RenderFixedMatrix() {
       <table className="matrix-table">
         <tbody>
           {fixedMatrix.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((byte, colIndex) => (
-                <td key={colIndex}>{byte}</td>
+            <tr
+              key={rowIndex}
+              style={{
+                background:
+                  highlightedRow === rowIndex
+                    ? "rgba(128, 0, 128, 0.15)"
+                    : "transparent",
+              }}
+            >
+              {row.map((cell, colIndex) => (
+                <td key={colIndex}>{cell}</td>
               ))}
             </tr>
           ))}
