@@ -26,6 +26,7 @@ import { RenderExplanation } from "./StepExplanations";
 import { StepNavigation } from "./StepNavigation";
 import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
+import MixColumnsExplanations from "./MixColumnsExplanations";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
 
@@ -345,6 +346,18 @@ function StepByStep() {
                 roundKeys={roundKeys}
                 currentRound={currentRound}
                 toHex={toHex}
+              />
+            )}
+            {currentStep === "MixColumns" && (
+              <MixColumnsExplanations
+                selectedCellValue={highlightedCellValue}
+                highlightedFixedMatrixRow={highlightedRowFixedMatrix !== null ? [
+                  ["02", "03", "01", "01"],
+                  ["01", "02", "03", "01"],
+                  ["01", "01", "02", "03"],
+                  ["03", "01", "01", "02"],
+                ][highlightedRowFixedMatrix] : []}
+                highlightedPrevStateColumn={highlightedColumnValuesMixColumn}
               />
             )}
           </Box>
