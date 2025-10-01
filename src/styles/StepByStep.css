@@ -120,6 +120,7 @@
 .matrix {
   flex: 1;
   margin: 0 8px;
+  margin-left: 100px; /* Add left margin */
 }
 
 .matrix-table {

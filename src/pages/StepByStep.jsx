@@ -285,7 +285,17 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Round {currentRound} - Step: {currentStep}
           </Typography>
-          <div className="matrix-container">
+          <div
+            className="matrix-container"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              width: "100%",
+              gap: "32px", // Optional: adjust spacing between items
+            }}
+          >
             <RenderMatrix
               hexString={previousStepState}
               matrixId="previous"
@@ -297,6 +307,18 @@ function StepByStep() {
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
             />
+            {/* Show S-Box between matrices only for SubBytes step */}
+            {currentStep === "SubBytes" && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                <RenderSBox
+                  sBox={sBox}
+                  highlightedCellValue={highlightedCellValue}
+                />
+                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
+                  S-Box Lookup
+                </Typography>
+              </div>
+            )}
             {currentStep === "MixColumns" && (
               <RenderFixedMatrix highlightedRow={highlightedRowFixedMatrix} />
             )}
@@ -332,12 +354,12 @@ function StepByStep() {
                 highlightedCellValue
               )}
             </Typography>
-            {currentStep === "SubBytes" && (
+            {/* {currentStep === "SubBytes" && (
               <RenderSBox
                 sBox={sBox}
                 highlightedCellValue={highlightedCellValue}
               />
-            )}
+            )} */}
             {currentStep === "AddRoundKey" && (
               <RenderExplanation
                 currentStep={currentStep}
