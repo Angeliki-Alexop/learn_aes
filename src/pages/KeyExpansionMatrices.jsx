@@ -114,7 +114,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               matrixId={idx}
               title=""
               highlightedCells={highlightedCells}
-              handleCellClick={(cellId, byte, matrixId, colIndex) => handleCellClick(idx, colIndex)}
+              handleCellClick={(cellId, byte, matrixId, rowIdx, colIdx) => handleCellClick(idx, colIdx)}
               highlightedColumns={highlightedColumnsByMatrix[idx] || []}
             />
           </div>
