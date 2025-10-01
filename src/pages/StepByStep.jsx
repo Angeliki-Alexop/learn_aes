@@ -307,6 +307,40 @@ function StepByStep() {
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
             />
+            {/* ShiftRows Table in the middle */}
+            {currentStep === "ShiftRows" && (
+            <div className="matrix shiftrows-table">
+              <table className="matrix-table">
+                <tbody>
+                  {(() => {
+                    // Convert previousStepState to 4x4 column-major matrix
+                    const flat = previousStepState.split(" ").filter(Boolean);
+                    // AES state is column-major: state[col][row]
+                    const matrix = [0, 1, 2, 3].map(row =>
+                      [0, 1, 2, 3].map(col => flat[col * 4 + row])
+                    );
+                    // Build the ShiftRows visualization
+                    return [0, 1, 2, 3].map(rowIdx => (
+                      <tr key={rowIdx}>
+                        {[0, 1, 2, 3, 4, 5, 6].map(colIdx => {
+                          let cellValue = "";
+                          // Place the 4 values in shifted positions
+                          if (colIdx === 3 - rowIdx) cellValue = matrix[rowIdx][0];
+                          else if (colIdx === 4 - rowIdx) cellValue = matrix[rowIdx][1];
+                          else if (colIdx === 5 - rowIdx) cellValue = matrix[rowIdx][2];
+                          else if (colIdx === 6 - rowIdx) cellValue = matrix[rowIdx][3];
+                          return <td key={colIdx}>{cellValue || ""}</td>;
+                        })}
+                      </tr>
+                    ));
+                  })()}
+                </tbody>
+              </table>
+              <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
+                ShiftRows Table
+              </Typography>
+            </div>
+          )}
             {/* Show S-Box between matrices only for SubBytes step */}
             {currentStep === "SubBytes" && (
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
