@@ -1,6 +1,43 @@
 import React from "react";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { MoveLeft, Equal, CirclePlus } from "lucide-react";
 import { getMixColumnsTableData, getMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
+
+function renderLabel(label) {
+  if (label.startsWith("Shifted")) {
+    return (
+      <span>
+        <MoveLeft size={18} style={{ verticalAlign: "middle", marginRight: 4 }} /> Shifted
+      </span>
+    );
+  }
+  if (label.startsWith("equals")) {
+    const rest = label.replace("equals", "").trim();
+    return (
+      <span>
+        <Equal size={18} style={{ verticalAlign: "middle", marginRight: 4 }} /> {rest}
+      </span>
+    );
+  }
+  if (label === "XOR equals") {
+    return (
+      <span>
+        <CirclePlus size={18} style={{ verticalAlign: "middle", marginRight: 2 }} />
+        <Equal size={18} style={{ verticalAlign: "middle", marginRight: 4 }} />
+        equals
+      </span>
+    );
+  }
+  if (label === "XOR" || label.startsWith("XOR")) {
+    const rest = label.replace("XOR", "").trim();
+    return (
+      <span>
+        <CirclePlus size={18} style={{ verticalAlign: "middle", marginRight: 4 }} /> {rest}
+      </span>
+    );
+  }
+  return label;
+}
 
 export default function MixColumnsExplanations({
   selectedCellValue,
@@ -28,6 +65,19 @@ export default function MixColumnsExplanations({
         ml: "50px",
       }}
     >
+      {/* Heading */}
+      <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 2 }}>
+  <span style={{ fontWeight: "bold", fontSize: 18 }}>
+    {mappedValues.map((pair, idx) => (
+      <span key={idx}>
+        {pair.fixed} * {pair.prev}
+        {idx < mappedValues.length - 1 ? " + " : ""}
+      </span>
+    ))}
+    {" = "}
+    {selectedCellValue}
+  </span>
+</Box>
       {tables.map(table => (
         <Box
           key={table.key}
@@ -69,7 +119,7 @@ export default function MixColumnsExplanations({
                       textOverflow: "ellipsis",
                     }}
                   >
-                    {row[0]}
+                    {renderLabel(row[0])}
                   </TableCell>
                   <TableCell
                     align="center"
@@ -134,7 +184,7 @@ export default function MixColumnsExplanations({
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {row[0]}
+                  {renderLabel(row[0])} {/* <-- use icon+text rendering here */}
                 </TableCell>
                 <TableCell
                   align="center"

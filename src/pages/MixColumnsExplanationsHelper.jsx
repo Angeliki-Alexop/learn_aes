@@ -106,10 +106,14 @@ export function getMixColumnsResultTable(mappedValues, selectedCellValue) {
     ];
   });
 
-  // Add the last row for the selected cell
+  // Add the last two rows for the selected cell
   if (selectedCellValue) {
     rows.push([
-      "XOR equals",
+      "XOR",
+      ""
+    ]);
+    rows.push([
+      "equals",
       groupBinary(toBinary(selectedCellValue))
     ]);
   }
