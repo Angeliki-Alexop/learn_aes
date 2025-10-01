@@ -67,17 +67,21 @@ export default function MixColumnsExplanations({
     >
       {/* Heading */}
       <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 2 }}>
-  <span style={{ fontWeight: "bold", fontSize: 18 }}>
-    {mappedValues.map((pair, idx) => (
-      <span key={idx}>
-        {pair.fixed} * {pair.prev}
-        {idx < mappedValues.length - 1 ? " + " : ""}
-      </span>
-    ))}
-    {" = "}
-    {selectedCellValue}
-  </span>
-</Box>
+        <span style={{ fontWeight: "bold", fontSize: 18 }}>
+          {mappedValues.map((pair, idx) => (
+            <span key={idx}>
+              {pair.fixed} * {pair.prev}
+              {idx < mappedValues.length - 1 ? " + " : ""}
+            </span>
+          ))}
+          {selectedCellValue && (
+            <>
+              {" = "}
+              {selectedCellValue}
+            </>
+          )}
+        </span>
+      </Box>
       {tables.map(table => (
         <Box
           key={table.key}
@@ -141,68 +145,70 @@ export default function MixColumnsExplanations({
       ))}
 
       {/* Result Table */}
-      <Box
-        className="mixcolumns-table-result"
-        sx={{
-          minWidth: 180,
-          flex: "0 0 180px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Table
-          size="small"
+      {selectedCellValue && (
+        <Box
+          className="mixcolumns-table-result"
           sx={{
-            minWidth: 60,
-            width: "auto",
-            flex: "0 0 auto",
-            tableLayout: "fixed",
+            minWidth: 180,
+            flex: "0 0 180px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14 }}>
-                Result
-              </TableCell>
-            </TableRow>
-            <TableRow>
-              <TableCell align="center" sx={{ fontSize: 14 }}>Key</TableCell>
-              <TableCell align="center" sx={{ fontSize: 14 }}>Value</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {resultTable.map((row, idx) => (
-              <TableRow key={idx}>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: 14,
-                    minWidth: "80px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {renderLabel(row[0])} {/* <-- use icon+text rendering here */}
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: 14,
-                    minWidth: "80px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {row[1]}
+          <Table
+            size="small"
+            sx={{
+              minWidth: 60,
+              width: "auto",
+              flex: "0 0 auto",
+              tableLayout: "fixed",
+            }}
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14 }}>
+                  Result
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
+              <TableRow>
+                <TableCell align="center" sx={{ fontSize: 14 }}>Key</TableCell>
+                <TableCell align="center" sx={{ fontSize: 14 }}>Value</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {resultTable.map((row, idx) => (
+                <TableRow key={idx}>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontSize: 14,
+                      minWidth: "80px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {renderLabel(row[0])}
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      fontSize: 14,
+                      minWidth: "80px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {row[1]}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      )}
     </Box>
   );
 }
