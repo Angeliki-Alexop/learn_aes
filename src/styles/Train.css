@@ -1,0 +1,4 @@
+.train-content {
+  overflow-y: auto;
+  height: 100vh; /* Ensure it fills the viewport */
+}
