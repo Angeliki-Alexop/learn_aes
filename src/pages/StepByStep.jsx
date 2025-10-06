@@ -111,10 +111,42 @@ function StepByStep() {
 
     const initialState = inputText.split("").map((char) => char.charCodeAt(0));
     const paddedState = padPKCS7(initialState, 16);
+    // Used to reset highlights after we click a new cell
+    // Remove highlight from all cells first
+    const highlightedCells = document.querySelectorAll(".highlighted, .highlighted_new");
+      highlightedCells.forEach(cell => {
+      cell.classList.remove("highlighted");
+      cell.classList.remove("highlighted_new");
+    });
 
-    if (currentStep === "SubBytes" && matrixId === "current") {
-      // Do nothing if the clicked cell is from the current state matrix during SubBytes step
-      return;
+    if (currentStep === "SubBytes") {
+      if( matrixId === "previous" ){
+        setHighlightedCell(id);
+        setHighlightedCellValue(value);
+        const cellId = `current-${rowIdx}-${colIdx}`;
+        const cell = document.getElementById(cellId);
+        if (cell) {
+          cell.classList.add("highlighted_new"); 
+        }
+
+        return;
+      }
+      else{
+            // Get the corresponding cell from the previous state matrix
+        
+        const prevId = `previous-${rowIdx}-${colIdx}`;
+        const prevMatrix = formatAsMatrix(previousStepState);
+        const prevValue = prevMatrix[rowIdx][colIdx];
+        setHighlightedCell(prevId);
+        setHighlightedCellValue(prevValue);
+        const cellId = `current-${rowIdx}-${colIdx}`;
+        const cell = document.getElementById(cellId);
+        if (cell) {
+          cell.classList.add("highlighted_new"); 
+        }
+
+        return;
+      }
     }
     if (currentStep === "MixColumns" && matrixId === "previous") {
       // Do nothing if the clicked cell is from the previous state matrix during MixColumns step
@@ -161,12 +193,11 @@ function StepByStep() {
       setHighlightedCell(null);
       setHighlightedCellValue("");
     } else {
-      // If another cell is highlighted, remove its highlight
       if (highlightedCell) {
-        const previousCell = document.getElementById(highlightedCell);
-        if (previousCell) {
-          previousCell.classList.remove("highlighted");
-        }
+        const highlightedCells = document.querySelectorAll(".highlighted");
+        highlightedCells.forEach(cell => {
+          cell.classList.remove("highlighted");
+        });
       }
       // Highlight the clicked cell
       if (cell) {
@@ -343,14 +374,11 @@ function StepByStep() {
           )}
             {/* Show S-Box between matrices only for SubBytes step */}
             {currentStep === "SubBytes" && (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <div className="matrix sbox-matrix">
                 <RenderSBox
                   sBox={sBox}
                   highlightedCellValue={highlightedCellValue}
                 />
-                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
-                  S-Box Lookup
-                </Typography>
               </div>
             )}
             {currentStep === "MixColumns" && (
@@ -445,17 +473,16 @@ function StepByStep() {
     }
   };
 
-  useEffect(() => {
-    // Reset highlighted cell when step or round changes
-    if (highlightedCell) {
-      const previousCell = document.getElementById(highlightedCell);
-      if (previousCell) {
-        previousCell.classList.remove("highlighted");
-      }
-      setHighlightedCell(null);
-      setHighlightedCellValue("");
-    }
-  }, [currentRound, currentStep, stateMap, inputText, keySize]);
+useEffect(() => {
+  // Reset highlighted cell when step or round changes
+  const highlightedCells = document.querySelectorAll(".highlighted, .highlighted_new");
+  highlightedCells.forEach(cell => {
+    cell.classList.remove("highlighted");
+    cell.classList.remove("highlighted_new");
+  });
+  setHighlightedCell(null);
+  setHighlightedCellValue("");
+}, [currentRound, currentStep, stateMap, inputText, keySize]);
 
   return (
     <div
