@@ -3,6 +3,13 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/mate
 import { MoveLeft, Equal, CirclePlus } from "lucide-react";
 import { getMixColumnsTableData, getMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
 
+// color mapping for operators
+const OP_COLORS = {
+  "01": "#6b7280", // neutral gray
+  "02": "#2563eb", // blue (shift)
+  "03": "#7c3aed", // purple (shift + xor)
+};
+
 function renderLabel(label) {
   if (label.startsWith("Shifted")) {
     return (
@@ -52,6 +59,8 @@ export default function MixColumnsExplanations({
   const tables = getMixColumnsTableData(mappedValues);
   const resultTable = getMixColumnsResultTable(mappedValues, selectedCellValue);
 
+  const isBinary = (val) => typeof val === "string" && /^[01]{4} [01]{4}$/.test(val);
+
   return (
     <Box
       className="mixcolumns-explanation-container"
@@ -82,7 +91,10 @@ export default function MixColumnsExplanations({
           )}
         </span>
       </Box>
-      {tables.map(table => (
+      {tables.map(table => {
+        const fixed = table.fixed || (table.name || "").split("*")[0].trim();
+        const color = OP_COLORS[fixed] || "#374151";
+        return (
         <Box
           key={table.key}
           className={`mixcolumns-table-${table.key}`}
@@ -92,6 +104,9 @@ export default function MixColumnsExplanations({
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            borderLeft: `4px solid ${color}`,
+            pl: 1.25,
+            borderRadius: 1,
           }}
         >
           <Table
@@ -105,7 +120,7 @@ export default function MixColumnsExplanations({
           >
             <TableHead>
               <TableRow>
-                <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14 }}>
+                  <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14, color }}>
                   {table.name}
                 </TableCell>
               </TableRow>
@@ -128,7 +143,10 @@ export default function MixColumnsExplanations({
                   <TableCell
                     align="center"
                     sx={{
-                      fontSize: 14,
+                      fontSize: isBinary(row[1]) ? 12 : 14,
+                      fontFamily: isBinary(row[1])
+                        ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+                        : "inherit",
                       minWidth: "80px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
@@ -142,7 +160,8 @@ export default function MixColumnsExplanations({
             </TableBody>
           </Table>
         </Box>
-      ))}
+        )
+      })}
 
       {/* Result Table */}
       {selectedCellValue && (
@@ -177,8 +196,16 @@ export default function MixColumnsExplanations({
               </TableRow>
             </TableHead>
             <TableBody>
-              {resultTable.map((row, idx) => (
-                <TableRow key={idx}>
+              {resultTable.map((row, idx) => {
+                const maybeFixed = (row[0] || "").split("*")[0]?.trim();
+                const rowColor = OP_COLORS[maybeFixed];
+                return (
+                <TableRow
+                  key={idx}
+                  sx={{
+                    ...(rowColor ? { "& td:first-of-type": { color: rowColor, fontWeight: 600 } } : {}),
+                  }}
+                >
                   <TableCell
                     align="center"
                     sx={{
@@ -194,7 +221,10 @@ export default function MixColumnsExplanations({
                   <TableCell
                     align="center"
                     sx={{
-                      fontSize: 14,
+                      fontSize: isBinary(row[1]) ? 12 : 14,
+                      fontFamily: isBinary(row[1])
+                        ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+                        : "inherit",
                       minWidth: "80px",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
@@ -204,7 +234,8 @@ export default function MixColumnsExplanations({
                     {row[1]}
                   </TableCell>
                 </TableRow>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
         </Box>

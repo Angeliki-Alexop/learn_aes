@@ -20,16 +20,36 @@ function xorHex(hex1, hex2) {
 }
 
 export function getMixColumnsTableData(mappedValues) {
-  const allowed = new Set(["02", "03"]);
-  const seen = new Set();
+  // include "01" so we also show its explanatory table
+  const allowed = new Set(["01", "02", "03"]);
+  const counts = {}; // track occurrences per fixed value
   const tables = [];
 
-  mappedValues.forEach(pair => {
+  mappedValues.forEach((pair, idx) => {
     const { fixed, prev } = pair;
-    if (!allowed.has(fixed) || seen.has(fixed)) return;
-    seen.add(fixed);
+    if (!allowed.has(fixed)) return;
+
+    // increment occurrence count and build a unique key/name if needed
+    counts[fixed] = (counts[fixed] || 0) + 1;
+    const occ = counts[fixed];
+    const key = occ > 1 ? `${fixed}-${occ}` : fixed;
+    // use the actual algebraic expression as the displayed heading
+    const name = `${fixed} * ${prev}`;
 
     const prevBin = groupBinary(toBinary(prev));
+
+    // Special-case for 01: it's just the value itself
+    if (fixed === "01") {
+      const rows = [
+        ["Value", prev],
+        ["Binary", prevBin],
+        [`equals 01*${prev}`, prevBin],
+      ];
+      // include fixed so the UI can color-code per operator
+      tables.push({ name, rows, key, fixed });
+      return;
+    }
+
     const shiftedHex = shiftLeft(prev);
     const shiftedBin = groupBinary(toBinary(shiftedHex));
     const xorBin = groupBinary(toBinary("1B"));
@@ -68,16 +88,12 @@ export function getMixColumnsTableData(mappedValues) {
       rows.push([`equals 3*${prev}`, xorWithShiftedBin]);
     }
 
-    tables.push({
-      name: `Table for ${fixed}`,
-      rows,
-      key: fixed,
-    });
+    // include fixed so the UI can color-code per operator
+    tables.push({ name, rows, key, fixed });
   });
 
   return tables;
 }
-
 export function getMixColumnsResultTable(mappedValues, selectedCellValue) {
   const rows = mappedValues.map(pair => {
     const { fixed, prev } = pair;
