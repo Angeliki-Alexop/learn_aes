@@ -321,6 +321,7 @@ function StepByStep() {
             style={{
               display: "flex",
               flexDirection: "row",
+              flexWrap: "wrap", 
               alignItems: "flex-start",
               justifyContent: "space-between",
               width: "100%",
@@ -348,19 +349,62 @@ function StepByStep() {
                     const flat = previousStepState.split(" ").filter(Boolean);
                     // AES state is column-major: state[col][row]
                     const matrix = [0, 1, 2, 3].map(row =>
-                      [0, 1, 2, 3].map(col => flat[col * 4 + row])
+                      [0, 1, 2, 3].map(col => flat[col * 4 + row] || "")
                     );
-                    // Build the ShiftRows visualization
+                    // Build the ShiftRows visualization (4x7)
                     return [0, 1, 2, 3].map(rowIdx => (
                       <tr key={rowIdx}>
-                        {[0, 1, 2, 3, 4, 5, 6].map(colIdx => {
+                        {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
                           let cellValue = "";
-                          // Place the 4 values in shifted positions
+                          // Place the 4 values in shifted positions (visual sliding window)
                           if (colIdx === 3 - rowIdx) cellValue = matrix[rowIdx][0];
                           else if (colIdx === 4 - rowIdx) cellValue = matrix[rowIdx][1];
                           else if (colIdx === 5 - rowIdx) cellValue = matrix[rowIdx][2];
                           else if (colIdx === 6 - rowIdx) cellValue = matrix[rowIdx][3];
-                          return <td key={colIdx}>{cellValue || ""}</td>;
+
+                          // Now highlight the rightmost 4x4 region (columns 3..6) with an outline only
+                          const isOriginalRegion = colIdx >= 3 && colIdx <= 6;
+                          const baseStyle = {
+                            padding: "6px 8px",
+                            textAlign: "center",
+                            minWidth: 16,
+                            height: 30,
+                          };
+
+                          if (isOriginalRegion) {
+                            // draw only the outer border of the 4x4 block
+                            const borderColor = "rgba(100,63,220,0.9)";
+                            const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
+                            const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
+                            const left = colIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
+                            const right = colIdx === 6 ? `2px solid ${borderColor}` : "1px solid transparent";
+                            return (
+                              <td
+                                key={colIdx}
+                                style={{
+                                  ...baseStyle,
+                                  borderTop: top,
+                                  borderBottom: bottom,
+                                  borderLeft: left,
+                                  borderRight: right,
+                                  backgroundColor: "transparent" // no fill, outline only
+                                }}
+                              >
+                                {cellValue || ""}
+                              </td>
+                            );
+                          }
+
+                          const normalCellStyle = { ...baseStyle, border: "1px solid #e6e6e6" };
+
+                          return (
+                            <td
+                              key={colIdx}
+                              style={normalCellStyle}
+                            >
+                              {cellValue || ""}
+                            </td>
+                          );
                         })}
                       </tr>
                     ));
