@@ -180,3 +180,11 @@
 .matrix.sbox-matrix {
   margin-left: 0 !important;
 }
+
+/* Highlight for ShiftRows next-state shifted cells (background + text color) */
+.cell-shifted-highlight {
+  background: rgba(100, 63, 220, 0.9) !important; /* purpleish background */
+  color: #ffffff !important; /* white text for contrast */
+  border: 1px solid rgba(100, 63, 220, 0.9) !important;
+  box-sizing: border-box;
+}

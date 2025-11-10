@@ -341,81 +341,94 @@ function StepByStep() {
             />
             {/* ShiftRows Table in the middle */}
             {currentStep === "ShiftRows" && (
-            <div className="matrix shiftrows-table">
-              <table className="matrix-table">
-                <tbody>
-                  {(() => {
-                    // Convert previousStepState to 4x4 column-major matrix
-                    const flat = previousStepState.split(" ").filter(Boolean);
-                    // AES state is column-major: state[col][row]
-                    const matrix = [0, 1, 2, 3].map(row =>
-                      [0, 1, 2, 3].map(col => flat[col * 4 + row] || "")
-                    );
-                    // Build the ShiftRows visualization (4x7)
-                    return [0, 1, 2, 3].map(rowIdx => (
-                      <tr key={rowIdx}>
-                        {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
-                          let cellValue = "";
-                          // Place the 4 values in shifted positions (visual sliding window)
-                          if (colIdx === 3 - rowIdx) cellValue = matrix[rowIdx][0];
-                          else if (colIdx === 4 - rowIdx) cellValue = matrix[rowIdx][1];
-                          else if (colIdx === 5 - rowIdx) cellValue = matrix[rowIdx][2];
-                          else if (colIdx === 6 - rowIdx) cellValue = matrix[rowIdx][3];
+              <div className="matrix shiftrows-table">
+                <table className="matrix-table">
+                  <tbody>
+                    {(() => {
+                      // Convert previousStepState to 4x4 column-major matrix
+                      const flat = previousStepState.split(" ").filter(Boolean);
+                      // AES state is column-major: state[col][row]
+                      const matrix = [0, 1, 2, 3].map(row =>
+                        [0, 1, 2, 3].map(col => flat[col * 4 + row] || "")
+                      );
+                      // Build the ShiftRows visualization (4x7)
+                      return [0, 1, 2, 3].map(rowIdx => (
+                        <tr key={rowIdx}>
+                          {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
+                            let cellValue = "";
+                            // Place the 4 values in shifted positions (visual sliding window)
+                            if (colIdx === 3 - rowIdx) cellValue = matrix[rowIdx][0];
+                            else if (colIdx === 4 - rowIdx) cellValue = matrix[rowIdx][1];
+                            else if (colIdx === 5 - rowIdx) cellValue = matrix[rowIdx][2];
+                            else if (colIdx === 6 - rowIdx) cellValue = matrix[rowIdx][3];
 
-                          // Now highlight the rightmost 4x4 region (columns 3..6) with an outline only
-                          const isOriginalRegion = colIdx >= 3 && colIdx <= 6;
-                          const baseStyle = {
-                            padding: "6px 8px",
-                            textAlign: "center",
-                            minWidth: 16,
-                            height: 30,
-                          };
+                            // Determine regions
+                            const isOutlineRegion = colIdx >= 3 && colIdx <= 6; // rightmost 4x4 outlined
+                            const isShiftedOut = colIdx < 3 && !!cellValue;     // values shifted outside the outline
+                            const isEmptyInsideOutline = isOutlineRegion && !cellValue; // gap left inside outline
 
-                          if (isOriginalRegion) {
-                            // draw only the outer border of the 4x4 block
-                            const borderColor = "rgba(100,63,220,0.9)";
-                            const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
-                            const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
-                            const left = colIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
-                            const right = colIdx === 6 ? `2px solid ${borderColor}` : "1px solid transparent";
+                            // Keep sizing in CSS; minimal inline style only
+                            const baseStyle = {
+                              padding: "6px 8px",
+                              textAlign: "center",
+                            };
+
+                            // Outline cell: draw only the outer border of the 4x4 block
+                            if (isOutlineRegion) {
+                              const borderColor = "rgba(100,63,220,0.9)"; // purpleish outline
+                              const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const left = colIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const right = colIdx === 6 ? `2px solid ${borderColor}` : "1px solid transparent";
+
+                              // purpleish background for EMPTY slots inside the outlined 4x4 (only these)
+                              const emptyBg = isEmptyInsideOutline ? "rgba(100,63,220,0.12)" : "transparent";
+
+                              return (
+                                <td
+                                  key={colIdx}
+                                  className="shiftrows-cell shiftrows-outline-cell"
+                                  style={{
+                                    ...baseStyle,
+                                    borderTop: top,
+                                    borderBottom: bottom,
+                                    borderLeft: left,
+                                    borderRight: right,
+                                    backgroundColor: emptyBg, // purpleish bg only for empty inside outline
+                                  }}
+                                >
+                                  {cellValue || ""}
+                                </td>
+                              );
+                            }
+
+                            // Outside area: DO NOT change background, only color the text for shifted-out values
+                            const shiftedTextColor = isShiftedOut ? "rgba(100,63,220,0.9)" : undefined;
+
                             return (
                               <td
                                 key={colIdx}
+                                className="shiftrows-cell"
                                 style={{
                                   ...baseStyle,
-                                  borderTop: top,
-                                  borderBottom: bottom,
-                                  borderLeft: left,
-                                  borderRight: right,
-                                  backgroundColor: "transparent" // no fill, outline only
+                                  color: shiftedTextColor, // purple text for shifted-out bytes
+                                  backgroundColor: "transparent", // ensure no bg change
                                 }}
                               >
                                 {cellValue || ""}
                               </td>
                             );
-                          }
-
-                          const normalCellStyle = { ...baseStyle, border: "1px solid #e6e6e6" };
-
-                          return (
-                            <td
-                              key={colIdx}
-                              style={normalCellStyle}
-                            >
-                              {cellValue || ""}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ));
-                  })()}
-                </tbody>
-              </table>
-              <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
-                ShiftRows Table
-              </Typography>
-            </div>
-          )}
+                          })}
+                        </tr>
+                      ));
+                    })()}
+                  </tbody>
+                </table>
+                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
+                  ShiftRows Table
+                </Typography>
+              </div>
+            )} 
             {/* Show S-Box between matrices only for SubBytes step */}
             {currentStep === "SubBytes" && (
               <div className="matrix sbox-matrix">
@@ -437,6 +450,18 @@ function StepByStep() {
               highlightedCell={highlightedCell}
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
+              shiftHighlights={
+                currentStep === "ShiftRows"
+                  ? [
+                      [1, 3], // second row, col 3
+                      [2, 2], // third row, col 2
+                      [2, 3], // third row, col 3
+                      [3, 1], // fourth row, col 1
+                      [3, 2], // fourth row, col 2
+                      [3, 3], // fourth row, col 3
+                    ]
+                  : []
+              }
             />
             {currentStep === "AddRoundKey" && (
               <RenderMatrix

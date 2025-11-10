@@ -14,7 +14,8 @@ export function RenderMatrix({
   highlightedCell = {},
   handleCellClick,
   highlightedCellValue,
-  highlightedColumns = []
+  highlightedColumns = [],
+  shiftHighlights = [], // array of [row,col] to highlight special for ShiftRows next-state
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
@@ -40,13 +41,23 @@ export function RenderMatrix({
                   highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.15)" }; // Purple
                 }
 
+                // Determine if this cell is in the shiftHighlights list
+                const isShiftHighlighted =
+                  Array.isArray(shiftHighlights) &&
+                  shiftHighlights.some(
+                    (coord) => Array.isArray(coord) && coord[0] === rowIndex && coord[1] === colIndex
+                  );
+
+                const className = isShiftHighlighted ? "cell-shifted-highlight" : undefined;
+
                 return (
                   <td
                     key={colIndex}
                     id={cellId}
+                    className={className}
                     style={highlightStyle}
                     onClick={() =>
-                      handleCellClick(cellId, byte, matrixId, rowIndex, colIndex)
+                      handleCellClick && handleCellClick(cellId, byte, matrixId, rowIndex, colIndex)
                     }
                   >
                     {byte}
