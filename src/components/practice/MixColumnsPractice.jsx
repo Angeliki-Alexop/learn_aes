@@ -96,22 +96,27 @@ function MixColumnsCalculator({
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, 32px)",
+              gridTemplateColumns: "repeat(4, 40px)",
               gap: 1,
+              justifyContent: "center",
+              mt: 1,
             }}
           >
-            {matrix.map((row, r) =>
-              row.map((coef, c) => (
+            {MIX_MATRIX.map((row, r) =>
+              row.map((n, c) => (
                 <Box
-                  key={r + "-" + c}
+                  key={`mix-${r}-${c}`}
                   sx={{
                     border: "1px solid #ccc",
                     p: 1,
                     bgcolor: "#fff",
                     textAlign: "center",
+                    fontFamily: "monospace",
+                    fontWeight: "bold",
+                    minWidth: 36,
                   }}
                 >
-                  {coef}
+                  {n.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
               ))
             )}
@@ -220,6 +225,69 @@ function MixColumnsCalculator({
           </Box>
         ))}
       </Box>
+    </Box>
+  );
+}
+
+// Small helper: convert a single byte between hex and binary (8 bits)
+function HexBinConverter() {
+  const [hex, setHex] = React.useState("");
+  const [bin, setBin] = React.useState("");
+
+  const fromHex = (h) => {
+    const cleaned = h.replace(/[^0-9a-fA-F]/g, "").slice(0, 2);
+    setHex(cleaned.toUpperCase());
+    if (cleaned.length === 0) return setBin("");
+    try {
+      const val = parseInt(cleaned, 16);
+      if (Number.isNaN(val)) return setBin("");
+      setBin(val.toString(2).padStart(8, "0"));
+    } catch (e) {
+      setBin("");
+    }
+  };
+
+  const fromBin = (b) => {
+    const cleaned = b.replace(/[^01]/g, "").slice(0, 8);
+    setBin(cleaned);
+    if (cleaned.length === 0) return setHex("");
+    try {
+      const val = parseInt(cleaned, 2);
+      if (Number.isNaN(val)) return setHex("");
+      setHex(val.toString(16).padStart(2, "0").toUpperCase());
+    } catch (e) {
+      setHex("");
+    }
+  };
+
+  return (
+    <Box sx={{ mt: 1, display: "flex", gap: 2, justifyContent: "center" }}>
+      <TextField
+        label="Hex (byte)"
+        value={hex}
+        onChange={(e) => fromHex(e.target.value)}
+        size="small"
+        placeholder="00"
+        inputProps={{
+          maxLength: 2,
+          style: { textAlign: "center", fontFamily: "monospace" },
+        }}
+        helperText="Enter 2 hex digits (00–FF)"
+        aria-label="hex-to-binary"
+      />
+      <TextField
+        label="Binary (8 bits)"
+        value={bin}
+        onChange={(e) => fromBin(e.target.value)}
+        size="small"
+        placeholder="00000000"
+        inputProps={{
+          maxLength: 8,
+          style: { textAlign: "center", fontFamily: "monospace" },
+        }}
+        helperText="Enter 8 bits"
+        aria-label="binary-to-hex"
+      />
     </Box>
   );
 }
@@ -361,6 +429,80 @@ const MixColumnsPractice = () => {
         MixColumns. You can use the helper below to see how each output is
         calculated.
       </Typography>
+      {/* Quick, visible instruction box for clarity */}
+      <Box sx={{ bgcolor: "#fff8e1ff", p: 2, borderRadius: 1, mb: 2 }}>
+        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+          AES MixColumns – Step-by-Step Guide
+        </Typography>
+        <Typography variant="body1" component="div" sx={{ mt: 2 }}>
+          The MixColumns step mixes each column of the 4×4 State matrix using
+          multiplication in the finite field GF(2⁸).
+          <br />
+          <br />
+          <strong> MixColumns Matrix:</strong>
+          <br />
+          Each column is multiplied by this matrix:
+          <br />
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 40px)",
+              gap: 1,
+              justifyContent: "flex-start",
+              mt: 1,
+            }}
+          >
+            {MIX_MATRIX.map((row, r) =>
+              row.map((n, c) => (
+                <Box
+                  key={`quick-mix-${r}-${c}`}
+                  sx={{
+                    border: "1px solid #ccc",
+                    p: 1,
+                    bgcolor: "#fff8e1ff",
+                    textAlign: "center",
+                    fontFamily: "monospace",
+                    fontWeight: "bold",
+                    minWidth: 36,
+                  }}
+                >
+                  {n.toString(16).padStart(2, "0").toUpperCase()}
+                </Box>
+              ))
+            )}
+          </Box>
+          <br />
+          Each new byte is computed as:
+          <br />
+          s′₀ = (02×s₀) ⊕ (03×s₁) ⊕ (01×s₂) ⊕ (01×s₃)
+          <br />
+          s′₁ = (01×s₀) ⊕ (02×s₁) ⊕ (03×s₂) ⊕ (01×s₃)
+          <br />
+          s′₂ = (01×s₀) ⊕ (01×s₁) ⊕ (02×s₂) ⊕ (03×s₃)
+          <br />
+          s′₃ = (03×s₀) ⊕ (01×s₁) ⊕ (01×s₂) ⊕ (02×s₃)
+          <br />
+          <br />
+          <strong>Multiplication Rules in GF(2⁸):</strong>
+          <br />
+          • 01 × x = x<br />
+          • 02 × x = (x Shift Left). If MSB = 1, XOR with 1B (hex).
+          <br />
+          • 03 × x = (02 × x) ⊕ x<br />
+          <br />
+          <strong>Tips:</strong>
+          <br />
+          • XOR = bitwise addition without carry.
+          <br />
+          • 02×x = shift left and reduce by 1B if needed.
+          <br />
+          • 03×x = (02×x) ⊕ x.
+          <br />
+          • Every column is processed independently.
+          <br />
+        </Typography>
+        <HexBinConverter />
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -685,7 +827,7 @@ const MixColumnsPractice = () => {
           onOutputChange={handleOutputChange}
         />
       </Box>
-      <Dialog open={showHelp} onClose={() => setShowHelp(false)}>
+      {/*(<Dialog open={showHelp} onClose={() => setShowHelp(false)}>
         <DialogTitle>What is MixColumns?</DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
@@ -707,6 +849,63 @@ const MixColumnsPractice = () => {
             <b>Task:</b> Enter the transformed values for each column in
             hexadecimal format.
           </Typography>
+        </DialogContent>
+      </Dialog>*/}
+      <Dialog open={showHelp} onClose={() => setShowHelp(false)}>
+        <DialogTitle>What is MixColumns?</DialogTitle>
+        <DialogContent>
+          <Typography gutterBottom sx={{ mb: 1 }}>
+            <b>Overview</b>
+            <br />
+            MixColumns multiplies each 4‑byte column a = (a0, a1, a2, a3)^T by a
+            fixed matrix to produce b = (b0, b1, b2, b3)^T. All arithmetic is in
+            GF(2⁸).
+          </Typography>
+
+          <Box
+            component="div"
+            sx={{
+              bgcolor: "#f5f5f5",
+              p: 1,
+              borderRadius: 1,
+              fontFamily: "monospace",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
+              Step-by-step (simple)
+            </Typography>
+            <Box component="ul" sx={{ pl: 3, mb: 1 }}>
+              <li>
+                <Typography variant="body2">
+                  Pick one column. For each output byte, multiply each column
+                  byte by the coefficient (2,3,1,1).
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  Compute 0x02 × x using xtime(x): shift left one bit; if the
+                  leftmost bit was 1, XOR the result with 0x1B.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  Compute 0x03 × x as xtime(x) ⊕ x. For 0x01 × x just copy x.
+                </Typography>
+              </li>
+              <li>
+                <Typography variant="body2">
+                  When you have the four intermediate bytes, XOR them (bitwise)
+                  to get the output byte. Repeat for each output row.
+                </Typography>
+              </li>
+            </Box>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              You can perform these operations in binary (shift and XOR are
+              easier to see). Use the small converter on the page to translate a
+              hex byte to binary and back while you work.
+            </Typography>
+          </Box>
         </DialogContent>
       </Dialog>
     </Box>
