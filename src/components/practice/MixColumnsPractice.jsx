@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -8,9 +8,10 @@ import {
   DialogContent,
   IconButton,
   TextField,
-  autocompleteClasses,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
 // AES MixColumns matrix
 const MIX_MATRIX = [
@@ -111,8 +112,6 @@ function MixColumnsCalculator({
                     p: 1,
                     bgcolor: "#fff",
                     textAlign: "center",
-                    fontFamily: "monospace",
-                    fontWeight: "bold",
                     minWidth: 36,
                   }}
                 >
@@ -261,33 +260,65 @@ function HexBinConverter() {
   };
 
   return (
-    <Box sx={{ mt: 1, display: "flex", gap: 2, justifyContent: "center" }}>
-      <TextField
-        label="Hex (byte)"
-        value={hex}
-        onChange={(e) => fromHex(e.target.value)}
-        size="small"
-        placeholder="00"
-        inputProps={{
-          maxLength: 2,
-          style: { textAlign: "center", fontFamily: "monospace" },
-        }}
-        helperText="Enter 2 hex digits (00–FF)"
-        aria-label="hex-to-binary"
-      />
-      <TextField
-        label="Binary (8 bits)"
-        value={bin}
-        onChange={(e) => fromBin(e.target.value)}
-        size="small"
-        placeholder="00000000"
-        inputProps={{
-          maxLength: 8,
-          style: { textAlign: "center", fontFamily: "monospace" },
-        }}
-        helperText="Enter 8 bits"
-        aria-label="binary-to-hex"
-      />
+    <Box
+      sx={{
+        mt: 1,
+        display: "flex",
+        flexDirection: "column",
+        gap: 1,
+        p: 2,
+        mx: "auto",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+          Hex
+        </Typography>
+        <SwapHorizIcon sx={{ color: "primary.main" }} />
+        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+          Binary
+        </Typography>
+      </Box>
+      <Typography variant="caption">
+        Convert AES bytes between hexadecimal and binary
+      </Typography>
+
+      <Box sx={{ display: "flex", gap: 2 }}>
+        <TextField
+          label="Hex (byte)"
+          value={hex}
+          onChange={(e) => fromHex(e.target.value)}
+          size="small"
+          placeholder="00"
+          helperText="Enter 2 hex digits (00–FF)"
+          aria-label="hex-to-binary"
+          sx={{
+            width: 140,
+            "& .MuiInputBase-input": {
+              fontFamily: "monospace",
+              fontSize: 14,
+              textAlign: "center",
+            },
+          }}
+        />
+        <TextField
+          label="Binary (8 bits)"
+          value={bin}
+          onChange={(e) => fromBin(e.target.value)}
+          size="small"
+          placeholder="00000000"
+          helperText="Enter 8 bits"
+          aria-label="binary-to-hex"
+          sx={{
+            width: 180,
+            "& .MuiInputBase-input": {
+              fontFamily: "monospace",
+              fontSize: 13,
+              textAlign: "center",
+            },
+          }}
+        />
+      </Box>
     </Box>
   );
 }
@@ -314,6 +345,20 @@ const MixColumnsPractice = () => {
       .map(() => Array(4).fill(""))
   );
   const [outputCalc, setOutputCalc] = useState(Array(4).fill(""));
+
+  // Ref for dialog content to move focus when opened (accessibility)
+  const dialogContentRef = useRef(null);
+
+  useEffect(() => {
+    if (showHelp && dialogContentRef.current) {
+      // focus the dialog content so screen readers announce it and keyboard users land inside
+      try {
+        dialogContentRef.current.focus();
+      } catch (e) {
+        /* ignore focus errors */
+      }
+    }
+  }, [showHelp]);
 
   const solution = mixColumns(inputMatrix);
 
@@ -429,80 +474,7 @@ const MixColumnsPractice = () => {
         MixColumns. You can use the helper below to see how each output is
         calculated.
       </Typography>
-      {/* Quick, visible instruction box for clarity */}
-      <Box sx={{ bgcolor: "#fff8e1ff", p: 2, borderRadius: 1, mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
-          AES MixColumns – Step-by-Step Guide
-        </Typography>
-        <Typography variant="body1" component="div" sx={{ mt: 2 }}>
-          The MixColumns step mixes each column of the 4×4 State matrix using
-          multiplication in the finite field GF(2⁸).
-          <br />
-          <br />
-          <strong> MixColumns Matrix:</strong>
-          <br />
-          Each column is multiplied by this matrix:
-          <br />
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 40px)",
-              gap: 1,
-              justifyContent: "flex-start",
-              mt: 1,
-            }}
-          >
-            {MIX_MATRIX.map((row, r) =>
-              row.map((n, c) => (
-                <Box
-                  key={`quick-mix-${r}-${c}`}
-                  sx={{
-                    border: "1px solid #ccc",
-                    p: 1,
-                    bgcolor: "#fff8e1ff",
-                    textAlign: "center",
-                    fontFamily: "monospace",
-                    fontWeight: "bold",
-                    minWidth: 36,
-                  }}
-                >
-                  {n.toString(16).padStart(2, "0").toUpperCase()}
-                </Box>
-              ))
-            )}
-          </Box>
-          <br />
-          Each new byte is computed as:
-          <br />
-          s′₀ = (02×s₀) ⊕ (03×s₁) ⊕ (01×s₂) ⊕ (01×s₃)
-          <br />
-          s′₁ = (01×s₀) ⊕ (02×s₁) ⊕ (03×s₂) ⊕ (01×s₃)
-          <br />
-          s′₂ = (01×s₀) ⊕ (01×s₁) ⊕ (02×s₂) ⊕ (03×s₃)
-          <br />
-          s′₃ = (03×s₀) ⊕ (01×s₁) ⊕ (01×s₂) ⊕ (02×s₃)
-          <br />
-          <br />
-          <strong>Multiplication Rules in GF(2⁸):</strong>
-          <br />
-          • 01 × x = x<br />
-          • 02 × x = (x Shift Left). If MSB = 1, XOR with 1B (hex).
-          <br />
-          • 03 × x = (02 × x) ⊕ x<br />
-          <br />
-          <strong>Tips:</strong>
-          <br />
-          • XOR = bitwise addition without carry.
-          <br />
-          • 02×x = shift left and reduce by 1B if needed.
-          <br />
-          • 03×x = (02×x) ⊕ x.
-          <br />
-          • Every column is processed independently.
-          <br />
-        </Typography>
-        <HexBinConverter />
-      </Box>
+      {/* Quick instructions moved into dialog (use the Help icon to open) */}
       <Box
         sx={{
           display: "flex",
@@ -827,84 +799,136 @@ const MixColumnsPractice = () => {
           onOutputChange={handleOutputChange}
         />
       </Box>
-      {/*(<Dialog open={showHelp} onClose={() => setShowHelp(false)}>
-        <DialogTitle>What is MixColumns?</DialogTitle>
-        <DialogContent>
-          <Typography gutterBottom>
-            <b>MixColumns</b> is a diffusion step in AES. Each column of the
-            state matrix is multiplied by a fixed matrix using arithmetic in
-            GF(2⁸). This mixes the bytes in each column, increasing security.
-            <br />
-            <br />
-            <b>Transformation:</b>
-            <pre>
-              | 2 3 1 1 | | a0 | | b0 | | 1 2 3 1 | x | a1 | = | b1 | | 1 1 2 3
-              | | a2 | | b2 | | 3 1 1 2 | | a3 | | b3 |
-            </pre>
-            <b>GF(2⁸) multiplication:</b> Multiplication by 2 and 3 is performed
-            using bitwise operations and modular reduction. Use the
-            calculator/helper to see step-by-step calculations.
-            <br />
-            <br />
-            <b>Task:</b> Enter the transformed values for each column in
-            hexadecimal format.
-          </Typography>
-        </DialogContent>
-      </Dialog>*/}
-      <Dialog open={showHelp} onClose={() => setShowHelp(false)}>
-        <DialogTitle>What is MixColumns?</DialogTitle>
-        <DialogContent>
-          <Typography gutterBottom sx={{ mb: 1 }}>
-            <b>Overview</b>
-            <br />
-            MixColumns multiplies each 4‑byte column a = (a0, a1, a2, a3)^T by a
-            fixed matrix to produce b = (b0, b1, b2, b3)^T. All arithmetic is in
-            GF(2⁸).
-          </Typography>
-
+      <Dialog
+        open={showHelp}
+        onClose={() => setShowHelp(false)}
+        fullWidth
+        maxWidth="md"
+        scroll="paper"
+        aria-labelledby="mixcolumns-dialog-title"
+        aria-describedby="mixcolumns-dialog-desc"
+      >
+        <DialogTitle
+          id="mixcolumns-dialog-title"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          AES MixColumns – Step-by-Step Guide
+          <IconButton
+            aria-label="Close MixColumns help"
+            onClick={() => setShowHelp(false)}
+            size="small"
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          id="mixcolumns-dialog-desc"
+          dividers
+          ref={dialogContentRef}
+          tabIndex={-1}
+        >
+          {/* Expanded step-by-step quick instructions moved here */}
           <Box
-            component="div"
             sx={{
-              bgcolor: "#f5f5f5",
-              p: 1,
+              bgcolor: "#fff8e1ff",
+              p: 2,
               borderRadius: 1,
-              fontFamily: "monospace",
-              whiteSpace: "pre-wrap",
+              mt: 2,
+              display: "flex",
+              flexDirection: "column",
             }}
           >
-            <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-              Step-by-step (simple)
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{ mt: 1, width: "100%", maxWidth: 720 }}
+            >
+              <strong>MixColumns Matrix:</strong>
+              <br />
+              Each column is multiplied by this matrix:
+              <br />
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 40px)",
+                  gap: 1,
+                  mt: 1,
+                  ml: 3,
+                }}
+              >
+                {MIX_MATRIX.map((row, r) =>
+                  row.map((n, c) => (
+                    <Box
+                      key={`quick-mix-${r}-${c}-dlg`}
+                      sx={{
+                        border: "1px solid #ccc",
+                        p: 1,
+                        bgcolor: "#fff8e1ff",
+                        textAlign: "center",
+                        fontFamily: "monospace",
+                        fontWeight: "bold",
+                        minWidth: 36,
+                      }}
+                    >
+                      {n.toString(16).padStart(2, "0").toUpperCase()}
+                    </Box>
+                  ))
+                )}
+              </Box>
+              <Box sx={{ mt: 2 }}>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                >
+                  <strong>Each new byte is computed as:</strong>
+                </Typography>
+                <Box component="pre">
+                  <code>{`
+• S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
+• S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
+• S′₂ = (01 × S₀) ⊕ (01 × S₁) ⊕ (02 × S₂) ⊕ (03 × S₃)
+• S′₃ = (03 × S₀) ⊕ (01 × S₁) ⊕ (01 × S₂) ⊕ (02 × S₃)
+    `}</code>
+                </Box>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                >
+                  <strong>Multiplication rules (GF(2^8)):</strong>
+                </Typography>
+                <Box component="pre">
+                  <code>{`
+• 01 × x = x
+• 02 × x = (x Shift Left). If MSB = 1, XOR with 1B (hex)
+• 03 × x = (02 × x) ⊕ x
+    `}</code>
+                </Box>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                >
+                  <strong>Tips</strong>
+                </Typography>
+                <Box component="pre">
+                  <code>{`
+• XOR = bitwise addition without carry
+• 02 × x = shift left and reduce by 1B if needed
+• 03 × x = (02 × x) ⊕ x
+• Every column is processed independently
+`}</code>
+                </Box>
+              </Box>
             </Typography>
-            <Box component="ul" sx={{ pl: 3, mb: 1 }}>
-              <li>
-                <Typography variant="body2">
-                  Pick one column. For each output byte, multiply each column
-                  byte by the coefficient (2,3,1,1).
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Compute 0x02 × x using xtime(x): shift left one bit; if the
-                  leftmost bit was 1, XOR the result with 0x1B.
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  Compute 0x03 × x as xtime(x) ⊕ x. For 0x01 × x just copy x.
-                </Typography>
-              </li>
-              <li>
-                <Typography variant="body2">
-                  When you have the four intermediate bytes, XOR them (bitwise)
-                  to get the output byte. Repeat for each output row.
-                </Typography>
-              </li>
+            <Box sx={{ mt: 2 }}>
+              <HexBinConverter />
             </Box>
-            <Typography variant="body2" sx={{ mt: 1 }}>
-              You can perform these operations in binary (shift and XOR are
-              easier to see). Use the small converter on the page to translate a
-              hex byte to binary and back while you work.
-            </Typography>
           </Box>
         </DialogContent>
       </Dialog>
