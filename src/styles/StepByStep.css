@@ -117,9 +117,14 @@
   margin: 16px;
 }
 
+.key-expansion-matrix-grid .matrix {
+  margin-left: 0 !important;
+}
+
 .matrix {
   flex: 1;
   margin: 0 8px;
+  margin-left: 100px; /* Add left margin */
 }
 
 .matrix-table {
@@ -142,7 +147,10 @@
 }
 
 .matrix-table td.highlighted {
-  background-color: red;
+  background-color: red; /* used in  SubBytes */
+}
+.matrix-table td.highlighted_new {
+  background-color: yellow; /* used in  SubBytes */
 }
 
 .matrix-title {
@@ -150,19 +158,33 @@
   margin-bottom: 0;
 }
 
+.matrix-table.small th,
 .matrix-table.small td {
-  width: 20px;
-  height: 20px;
-  font-size: 10px;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  min-height: 36px;
+  max-width: 36px;
+  max-height: 36px;
   text-align: center;
-  border: 1px solid #ddd;
+  vertical-align: middle;
+  font-size: 0.95rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+.matrix-table.small th {
+  background-color: rgba(255,255,255,0.6);
+  font-weight: bold;
+} 
+/* Remove left margin for S-Box matrix to center it */
+.matrix.sbox-matrix {
+  margin-left: 0 !important;
 }
 
-.matrix-table.small th {
-  width: 20px;
-  height: 20px;
-  font-size: 10px;
-  text-align: center;
-  border: 1px solid #ddd;
-  background-color: #f0f0f0;
+/* Highlight for ShiftRows next-state shifted cells (background + text color) */
+.cell-shifted-highlight {
+  background: rgba(100, 63, 220, 0.9) !important; /* purpleish background */
+  color: #ffffff !important; /* white text for contrast */
+  border: 1px solid rgba(100, 63, 220, 0.9) !important;
+  box-sizing: border-box;
 }
