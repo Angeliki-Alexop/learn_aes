@@ -10,10 +10,12 @@ export function RenderMatrix({
   title,
   highlightRows = false,
   highlightColumns = false,
-  highlightedCells = {}, // <-- change here
+  highlightedCells = {},
+  highlightedCell = {},
   handleCellClick,
   highlightedCellValue,
-  highlightedColumns = []
+  highlightedColumns = [],
+  shiftHighlights = [], // array of [row,col] to highlight special for ShiftRows next-state
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
@@ -24,23 +26,39 @@ export function RenderMatrix({
             <tr key={rowIndex}>
               {row.map((byte, colIndex) => {
                 const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
-                const isHighlighted = highlightedCells[cellId]; // <-- change here
                 let highlightStyle = {};
+
+                // Highlight selected cell in red
+                if (highlightedCell === cellId ) {
+                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 1)" }; // Red as is highlighted class
+                }
+
+                // Highlight column if needed (MixColumns)
                 if (
                   Array.isArray(highlightedColumns) &&
                   highlightedColumns.includes(colIndex)
                 ) {
-                  highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.2)" };
+                  highlightStyle = { backgroundColor: "rgba(128, 0, 128, 0.15)" }; // Purple
                 }
-                if (isHighlighted) {
-                  highlightStyle = { backgroundColor: "rgba(255, 0, 0, 0.7)" };
-                }
+
+                // Determine if this cell is in the shiftHighlights list
+                const isShiftHighlighted =
+                  Array.isArray(shiftHighlights) &&
+                  shiftHighlights.some(
+                    (coord) => Array.isArray(coord) && coord[0] === rowIndex && coord[1] === colIndex
+                  );
+
+                const className = isShiftHighlighted ? "cell-shifted-highlight" : undefined;
+
                 return (
                   <td
                     key={colIndex}
                     id={cellId}
-                    onClick={() => handleCellClick(cellId, byte, matrixId, colIndex)}
+                    className={className}
                     style={highlightStyle}
+                    onClick={() =>
+                      handleCellClick && handleCellClick(cellId, byte, matrixId, rowIndex, colIndex)
+                    }
                   >
                     {byte}
                   </td>
@@ -63,7 +81,7 @@ export function RenderMatrix({
   );
 }
 
-export function RenderFixedMatrix() {
+export function RenderFixedMatrix({ highlightedRow = null }) {
   const fixedMatrix = [
     ["02", "03", "01", "01"],
     ["01", "02", "03", "01"],
@@ -75,9 +93,17 @@ export function RenderFixedMatrix() {
       <table className="matrix-table">
         <tbody>
           {fixedMatrix.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((byte, colIndex) => (
-                <td key={colIndex}>{byte}</td>
+            <tr
+              key={rowIndex}
+              style={{
+                background:
+                  highlightedRow === rowIndex
+                    ? "rgba(128, 0, 128, 0.15)"
+                    : "transparent",
+              }}
+            >
+              {row.map((cell, colIndex) => (
+                <td key={colIndex}>{cell}</td>
               ))}
             </tr>
           ))}
@@ -98,7 +124,7 @@ export function RenderFixedMatrix() {
 export function RenderSBox({ sBox, highlightedCellValue }) {
   const sBoxMatrix = [];
   for (let i = 0; i < 16; i++) {
-    sBoxMatrix.push(sBox.slice(i * 16, i * 16 + 16));
+    sBoxMatrix.push(sBox.slice(i * 16, (i + 1) * 16));
   }
   const highlightRow = highlightedCellValue
     ? parseInt(highlightedCellValue[0], 16)
@@ -107,13 +133,22 @@ export function RenderSBox({ sBox, highlightedCellValue }) {
     ? parseInt(highlightedCellValue[1], 16)
     : -1;
   return (
-    <Box className="matrix">
+    <Box className="matrix sbox-matrix">
       <table className="matrix-table small">
         <thead>
           <tr>
             <th></th>
             {Array.from({ length: 16 }, (_, i) => (
-              <th key={i}>{i.toString(16).toUpperCase()}</th>
+              <th
+                key={i}
+                style={
+                  highlightCol === i
+                    ? { backgroundColor: "rgba(255,0,0,0.2)" }
+                    : {}
+                }
+              >
+                {i.toString(16).toUpperCase()}
+              </th>
             ))}
           </tr>
         </thead>
@@ -127,13 +162,21 @@ export function RenderSBox({ sBox, highlightedCellValue }) {
                   : {}
               }
             >
-              <th>{rowIndex.toString(16).toUpperCase()}</th>
+              <th
+                style={
+                  highlightRow === rowIndex
+                    ? { backgroundColor: "rgba(255,0,0,0.2)" }
+                    : {}
+                }
+              >
+                {rowIndex.toString(16).toUpperCase()}
+              </th>
               {row.map((byte, colIndex) => (
                 <td
                   key={colIndex}
                   style={
                     highlightRow === rowIndex && highlightCol === colIndex
-                      ? { backgroundColor: "red" }
+                      ? { backgroundColor: "yellow" } // !!! Important: same colour as .highlighted_new class in StepByStep.css
                       : highlightRow === rowIndex ||
                         highlightCol === colIndex
                       ? { backgroundColor: "rgba(255, 0, 0, 0.2)" }

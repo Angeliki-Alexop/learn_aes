@@ -34,7 +34,13 @@ function SBoxOverlay({ open, onClose }) {
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
-                <th style={{ border: "1px solid #ccc", padding: "8px", background: "#eee" }}></th>
+                <th
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "8px",
+                    background: "#eee",
+                  }}
+                ></th>
                 {Array.from({ length: 16 }, (_, i) => (
                   <th
                     key={i}
@@ -102,15 +108,20 @@ function SBoxOverlay({ open, onClose }) {
             </tbody>
           </table>
         </Box>
-                <Box sx={{ mt: 3 }}>
+        <Box sx={{ mt: 3 }}>
           <Typography variant="body1" gutterBottom>
-            The AES S-box (Substitution box) is a fundamental component in the AES encryption algorithm. 
-            It provides non-linearity by substituting each byte of the input with another value, 
-            making cryptanalysis more difficult.
+            The AES S-box (Substitution box) is a fundamental component in the
+            AES encryption algorithm. It provides non-linearity by substituting
+            each byte of the input with another value, making cryptanalysis more
+            difficult.
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            <strong>Hint:</strong> Click any cell to highlight its row and column. 
-            The selected cell shows the substituted value for the corresponding input byte.
+          <Typography
+            variant="body2"
+            sx={{ mt: 3, mb: 5, fontStyle: "italic" }}
+          >
+            <strong>Hint:</strong> Click any cell to highlight its row and
+            column. The selected cell shows the substituted value for the
+            corresponding input byte.
           </Typography>
         </Box>
       </Box>

@@ -1,0 +1,8 @@
+.train-content {
+  overflow-y: auto;
+  height: 100vh; /* Ensure it fills the viewport */
+}
+.css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
+  opacity: 1 !important;
+  -webkit-text-fill-color: #1976d2 !important;
+}
