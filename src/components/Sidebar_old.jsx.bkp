@@ -48,39 +48,29 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
           </ListItem>
         </List>
       </Box>
-      {/* Render rounds 1 .. totalRounds-1 individually. Each round shows its steps only when it's the active round. */}
-      {Array.from({ length: Math.max(0, totalRounds - 1) }, (_, i) => i + 1).map((round) => (
-        <Box key={round} id={`round_${round}_box`} className="round-box" mb={2}>
-          <Typography variant="h6" component="h2" align="center" onClick={() => { setCurrentRound(round); /* default to first step when opening a round */ setCurrentStep(round === totalRounds ? finalRoundSteps[0] : steps[0]); }} style={{ cursor: 'pointer' }}>
-            Round {round}
-          </Typography>
-          {/* Only show the steps list when this round is active */}
-          {currentRound === round && (
-            <List>
-              {(round === totalRounds ? finalRoundSteps : steps).map((step, index) => (
-                <ListItem key={index} className={currentStep === step && currentRound === round ? 'active-step' : ''} onClick={() => { setCurrentRound(round); setCurrentStep(step); }}>
-                  <ListItemText primary={step} />
-                </ListItem>
-              ))}
-            </List>
-          )}
-        </Box>
-      ))}
-
-      {/* Final Round - totalRounds (rendered explicitly in case totalRounds===1) */}
+      <Box id="round_x_box" className="round-box" mb={2}>
+        <Typography variant="h6" component="h2" align="center">
+          Round {currentRound <= 1 ? 1 : currentRound >= totalRounds ? totalRounds - 1 : currentRound}
+        </Typography>
+        <List>
+          {steps.map((step, index) => (
+            <ListItem key={index} className={currentStep === step && currentRound > 0 && currentRound < totalRounds ? 'active-step' : ''} onClick={() => handleStepClick(currentRound <= 1 ? 1 : currentRound >= totalRounds ? totalRounds - 1 : currentRound, step)}>
+              <ListItemText primary={step} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
       <Box id="final_round_box" className="round-box" mb={2}>
-        <Typography variant="h6" component="h2" align="center" onClick={() => { setCurrentRound(totalRounds); setCurrentStep(finalRoundSteps[0]); }} style={{ cursor: 'pointer' }}>
+        <Typography variant="h6" component="h2" align="center">
           Final Round ({totalRounds})
         </Typography>
-        {currentRound === totalRounds && (
-          <List>
-            {finalRoundSteps.map((step, index) => (
-              <ListItem key={index} className={currentStep === step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => { setCurrentRound(totalRounds); setCurrentStep(step); }}>
-                <ListItemText primary={step} />
-              </ListItem>
-            ))}
-          </List>
-        )}
+        <List>
+          {finalRoundSteps.map((step, index) => (
+            <ListItem key={index} className={currentStep === step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => handleStepClick(totalRounds, step)}>
+              <ListItemText primary={step} />
+            </ListItem>
+          ))}
+        </List>
       </Box>
       <Box id="result_box" className={`round-box ${currentStep === 'Result' ? 'active-step' : ''}`} mb={2} onClick={() => handleStepClick(totalRounds + 1, 'Result')}>
         <Typography variant="h6" component="h2" align="center">
