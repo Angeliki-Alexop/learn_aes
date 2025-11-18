@@ -10,6 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import CloseIcon from "@mui/icons-material/Close";
 
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
@@ -119,11 +120,15 @@ const ShiftRowsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h6">ShiftRows Practice</Typography>
+        <Typography variant="h5">ShiftRows Practice</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
+      <Typography variant="body1" sx={{ mb: 2, textAlign: "center" }}>
+        Apply the ShiftRows transformation by cyclically shifting each row left
+        by a specific offset.
+      </Typography>
       <Box
         sx={{
           display: "flex",
@@ -310,7 +315,18 @@ const ShiftRowsPractice = () => {
         </Button>
       </Box>
       <Dialog open={showHelp} onClose={() => setShowHelp(false)}>
-        <DialogTitle>What is ShiftRows?</DialogTitle>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <strong>What is ShiftRows?</strong>
+          <IconButton onClick={() => setShowHelp(false)} size="small">
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
             ShiftRows is a transposition step in AES. Each row of the state

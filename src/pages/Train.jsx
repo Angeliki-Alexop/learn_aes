@@ -4,14 +4,14 @@ import "./../styles/Train.css";
 import SubBytesPractice from "../components/practice/SubBytesPractice";
 import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
 import MixColumnsPractice from "../components/practice/MixColumnsPractice";
-// import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
+import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
 // import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 
 // Placeholder components for exercises
 //const SubBytesPractice = () => <div>SubBytes Practice (Coming Soon)</div>;
 //const ShiftRowsPractice = () => <div>ShiftRows Practice (Coming Soon)</div>;
 //const MixColumnsPractice = () => <div>MixColumns Practice (Coming Soon)</div>;
-const AddRoundKeyPractice = () => <div>AddRoundKey Practice (Coming Soon)</div>;
+//const AddRoundKeyPractice = () => <div>AddRoundKey Practice (Coming Soon)</div>;
 const KeyExpansionPractice = () => (
   <div>Key Expansion Practice (Coming Soon)</div>
 );
@@ -51,66 +51,77 @@ function Train() {
   return (
     <div className="train-content">
       <Container>
-        <Typography
-          variant="h4"
-          component="h1"
-          gutterBottom
-          sx={{ textAlign: "center", mt: 4, mb: 4 }}
-        >
-          {!activePage && "AES Training Center"}
-          {activePage === "practice" &&
-            !selectedExercise &&
-            "Practice: Solve AES steps yourself!"}
-          {activePage === "practice" &&
-            selectedExercise &&
-            exercises.find((ex) => ex.key === selectedExercise)?.label}
-          {activePage === "quiz" &&
-            "Quiz: Test your theoretical understanding!"}
-        </Typography>
-        {/* Explanation section */}
         {!activePage && (
-          <Typography
-            variant="body1"
-            sx={{ textAlign: "center", mb: 3, maxWidth: 600, mx: "auto" }}
-          >
-            Welcome to the AES Training Center! Here you can practice each step
-            of the AES algorithm interactively, or test your theoretical
-            understanding with quizzes. Choose "Practice" to solve AES steps
-            yourself, or "Quiz" to answer theory questions.
-          </Typography>
-        )}
-        {!activePage && (
-          <Box
-            sx={{ display: "flex", justifyContent: "center", gap: 4, mb: 4 }}
-          >
-            <Button
-              variant="contained"
-              size="large"
-              onClick={() => setActivePage("practice")}
+          <>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{ textAlign: "center", mt: 4, mb: 4 }}
             >
-              Practice: Solve AES steps yourself!
-            </Button>
-            <Button
-              variant="outlined"
-              size="large"
-              onClick={() => setActivePage("quiz")}
+              AES Training Center
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ textAlign: "center", mb: 3, maxWidth: 600, mx: "auto" }}
             >
-              Quiz: Test your theoretical understanding!
-            </Button>
-          </Box>
+              Welcome to the AES Training Center! Here you can practice each
+              step of the AES algorithm interactively, or test your theoretical
+              understanding with quizzes. Choose "Practice" to solve AES steps
+              yourself, or "Quiz" to answer theory questions.
+            </Typography>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", gap: 4, mb: 4 }}
+            >
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => setActivePage("practice")}
+              >
+                Practice: Solve AES steps yourself!
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => setActivePage("quiz")}
+              >
+                Quiz: Test your theoretical understanding!
+              </Button>
+            </Box>
+          </>
         )}
         {activePage === "practice" && (
           <>
             {!selectedExercise ? (
               <Box>
-                <Button
-                  onClick={() => setActivePage(null)}
-                  sx={{ mb: 2 }}
-                  variant="text"
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-start",
+                    mt: 2,
+                    mb: 2,
+                  }}
                 >
-                  &larr; Back
-                </Button>
-                <Typography variant="h6" gutterBottom>
+                  <Button
+                    onClick={() => setActivePage(null)}
+                    variant="contained"
+                  >
+                    &larr; Back
+                  </Button>
+                </Box>
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  gutterBottom
+                  sx={{ textAlign: "center", mb: 5 }}
+                >
+                  Solve AES steps yourself!
+                </Typography>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{ textAlign: "center", mb: 3 }}
+                >
                   Select an exercise to begin:
                 </Typography>
                 <Box
@@ -126,6 +137,7 @@ function Train() {
                       key={ex.key}
                       variant="contained"
                       size="large"
+                      color="secondary"
                       onClick={() => setSelectedExercise(ex.key)}
                     >
                       {ex.label}
@@ -137,8 +149,8 @@ function Train() {
               <Box>
                 <Button
                   onClick={() => setSelectedExercise(null)}
-                  sx={{ mb: 2 }}
-                  variant="text"
+                  sx={{ mt: 3, mb: 1 }}
+                  variant="contained"
                 >
                   &larr; Back to Exercise List
                 </Button>
@@ -149,14 +161,24 @@ function Train() {
         )}
         {activePage === "quiz" && (
           <Box>
-            <Button
-              onClick={() => setActivePage(null)}
-              sx={{ mb: 2 }}
-              variant="text"
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                mt: 2,
+                mb: 2,
+              }}
             >
-              &larr; Back
-            </Button>
-            <Typography variant="h6" gutterBottom sx={{ textAlign: "center" }}>
+              <Button onClick={() => setActivePage(null)} variant="contained">
+                &larr; Back
+              </Button>
+            </Box>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{ textAlign: "center", mb: 3 }}
+            >
               Quiz: Test your theoretical understanding!
             </Typography>
             <Typography

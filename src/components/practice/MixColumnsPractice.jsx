@@ -463,7 +463,7 @@ const MixColumnsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h6">MixColumns Practice</Typography>
+        <Typography variant="h5">MixColumns Practice</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
@@ -774,8 +774,8 @@ const MixColumnsPractice = () => {
           Next Example
         </Button>
       </Box>
-      <Box sx={{ mt: 2 }}>
-        <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
           Select which column to analyze:
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -883,11 +883,11 @@ const MixColumnsPractice = () => {
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                  sx={{ width: "100%", maxWidth: 720 }}
                 >
                   <strong>Each new byte is computed as:</strong>
                 </Typography>
-                <Box component="pre">
+                <Box component="pre" sx={{ m: 0 }}>
                   <code>{`
 • S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
 • S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
@@ -898,29 +898,29 @@ const MixColumnsPractice = () => {
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                  sx={{ width: "100%", maxWidth: 720 }}
                 >
                   <strong>Multiplication rules (GF(2^8)):</strong>
                 </Typography>
-                <Box component="pre">
+                <Box component="pre" sx={{ m: 0 }}>
                   <code>{`
-• 01 × x = x
-• 02 × x = (x Shift Left). If MSB = 1, XOR with 1B (hex)
-• 03 × x = (02 × x) ⊕ x
+• 01 × X = X
+• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
+• 03 × X = (02 × X) ⊕ X
     `}</code>
                 </Box>
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ mt: 1, width: "100%", maxWidth: 720, mt: 5 }}
+                  sx={{ width: "100%", maxWidth: 720 }}
                 >
                   <strong>Tips</strong>
                 </Typography>
-                <Box component="pre">
+                <Box component="pre" sx={{ m: 0 }}>
                   <code>{`
 • XOR = bitwise addition without carry
-• 02 × x = shift left and reduce by 1B if needed
-• 03 × x = (02 × x) ⊕ x
+• 02 × X = shift left and reduce by 1B if needed
+• 03 × X = (02 × X) ⊕ X
 • Every column is processed independently
 `}</code>
                 </Box>
