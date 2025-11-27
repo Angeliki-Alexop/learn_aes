@@ -292,19 +292,6 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Key Schedule - Key Expansion
           </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Input Key: {toHex(key.split("").map((char) => char.charCodeAt(0)))}
-          </Typography>
-          {roundKeys.map((roundKey, index) => (
-            <Typography
-              key={index}
-              variant="body1"
-              component="p"
-              align="center"
-            >
-              Round {index} Key: {toHex(roundKey)}
-            </Typography>
-          ))}
           <div className="key-expansion" style={{ marginTop: "24px" }}>
             <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
           </div>
