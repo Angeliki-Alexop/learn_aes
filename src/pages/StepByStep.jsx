@@ -428,6 +428,21 @@ function StepByStep() {
             {currentStep === "MixColumns" && (
               <RenderFixedMatrix highlightedRow={highlightedRowFixedMatrix} />
             )}
+
+            {/* For AddRoundKey: show Round Key between Current State and Next State */}
+            {currentStep === "AddRoundKey" && (
+              <RenderMatrix
+                hexString={toHex(roundKeys[currentRound])}
+                matrixId="roundKey"
+                title="Round Key"
+                highlightRows={false}
+                highlightColumns={false}
+                highlightedCell={highlightedCell}
+                handleCellClick={handleCellClick}
+                highlightedCellValue={highlightedCellValue}
+              />
+            )}
+
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
@@ -450,18 +465,6 @@ function StepByStep() {
                   : []
               }
             />
-            {currentStep === "AddRoundKey" && (
-              <RenderMatrix
-                hexString={toHex(roundKeys[currentRound])}
-                matrixId="roundKey"
-                title="Round Key"
-                highlightRows={false}
-                highlightColumns={false}
-                highlightedCell={highlightedCell}
-                handleCellClick={handleCellClick}
-                highlightedCellValue={highlightedCellValue}
-              />
-            )}
           </div>
           <Box className="info-container" mt={2}>
             <Typography variant="body1" component="p" align="center">
