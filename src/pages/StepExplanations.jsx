@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { CirclePlus } from 'lucide-react';
 
 // Explanation rendering for AddRoundKey step
 export function RenderExplanation({
@@ -38,43 +39,64 @@ export function RenderExplanation({
       .toString(2)
       .padStart(8, "0");
 
+    // Group binaries as 4-4 for readability (e.g. "1111 0010")
+    const groupBits = (bits) => {
+      if (!bits || bits.length !== 8) return bits;
+      return bits.slice(0, 4) + " " + bits.slice(4);
+    };
+
+    const previousValueBitsGrouped = groupBits(previousValueBits);
+    const roundKeyValueBitsGrouped = groupBits(roundKeyValueBits);
+    const resultValueBitsGrouped = groupBits(resultValueBits);
+
     return (
       <Box textAlign="center">
-        <Typography variant="body1" component="p">
-          {`Previous State [${rowIndex}, ${colIndex}] (Hex): ${previousValueHex}`}
+        <Typography
+          variant="body1"
+          component="p"
+          sx={{ fontWeight: "bold", color: "#7b1fa2", mb: 1 }}
+        >
+          {`Previous State [${rowIndex}, ${colIndex}] XOR Round Key [${rowIndex}, ${colIndex}] = Result [${rowIndex}, ${colIndex}]`}
         </Typography>
-        <Typography variant="body1" component="p">
-          {`Round Key [${rowIndex}, ${colIndex}] (Hex): ${roundKeyValueHex}`}
-        </Typography>
-        <Typography variant="body1" component="p">
-          {`Result (Hex): ${previousValueHex} XOR ${roundKeyValueHex} = ${resultValueHex}`}
-        </Typography>
-        <br />
-        <table style={{ margin: "0 auto", borderCollapse: "collapse" }}>
+
+        <table
+          style={{
+            margin: "0 auto",
+            borderCollapse: "collapse",
+            width: "360px",
+            maxWidth: "100%",
+            textAlign: "left",
+          }}
+        >
+          <thead>
+            <tr>
+              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>State</th>
+              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>Hex</th>
+              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>Binary</th>
+            </tr>
+          </thead>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                Current State [{rowIndex}, {colIndex}]
-              </td>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                {previousValueBits}
-              </td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Current State [{rowIndex}, {colIndex}]</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{previousValueHex}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{previousValueBitsGrouped}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                Round Key [{rowIndex}, {colIndex}]
-              </td>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                {roundKeyValueBits}
-              </td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Round Key [{rowIndex}, {colIndex}]</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{roundKeyValueHex}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{roundKeyValueBitsGrouped}</td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                Next State [{rowIndex}, {colIndex}]
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", textAlign: "center" }}>
+                <CirclePlus size={18} color="#7b1fa2" />
               </td>
-              <td style={{ border: "1px solid black", padding: "5px" }}>
-                {previousValueBits} XOR {roundKeyValueBits} = {resultValueBits}
-              </td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }} />
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }} />
+            </tr>
+            <tr>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Next State [{rowIndex}, {colIndex}]</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{resultValueHex}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{resultValueBitsGrouped}</td>
             </tr>
           </tbody>
         </table>

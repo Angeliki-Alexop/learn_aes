@@ -467,14 +467,15 @@ function StepByStep() {
             />
           </div>
           <Box className="info-container" mt={2}>
-            <Typography variant="body1" component="p" align="center">
+            {/* removed the below typography that generates info when clicking any cell in current step */}
+            {/* <Typography variant="body1" component="p" align="center">
               {generateExplanation(
                 currentRound,
                 currentStep,
                 highlightedCell,
                 highlightedCellValue
               )}
-            </Typography>
+            </Typography> */}
             {/* {currentStep === "SubBytes" && (
               <RenderSBox
                 sBox={sBox}
