@@ -27,6 +27,7 @@ import { StepNavigation } from "./StepNavigation";
 import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
 import MixColumnsExplanations from "./MixColumnsExplanations";
+import StepInfo from "../stepInformation/StepInfo";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
 
@@ -260,6 +261,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Input Values
           </Typography>
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <Typography variant="body1" component="p" align="center">
             Text: {inputText}
           </Typography>
@@ -292,6 +294,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Key Schedule - Key Expansion
           </Typography>
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <div className="key-expansion" style={{ marginTop: "24px" }}>
             <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
           </div>
@@ -303,6 +306,8 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Round {currentRound} - Step: {currentStep}
           </Typography>
+          {/* Step-specific information and interaction hints */}
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <div
             className="matrix-container"
             style={{
