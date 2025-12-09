@@ -5,16 +5,7 @@ import SubBytesPractice from "../components/practice/SubBytesPractice";
 import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
 import MixColumnsPractice from "../components/practice/MixColumnsPractice";
 import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
-// import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
-
-// Placeholder components for exercises
-//const SubBytesPractice = () => <div>SubBytes Practice (Coming Soon)</div>;
-//const ShiftRowsPractice = () => <div>ShiftRows Practice (Coming Soon)</div>;
-//const MixColumnsPractice = () => <div>MixColumns Practice (Coming Soon)</div>;
-//const AddRoundKeyPractice = () => <div>AddRoundKey Practice (Coming Soon)</div>;
-const KeyExpansionPractice = () => (
-  <div>Key Expansion Practice (Coming Soon)</div>
-);
+import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 
 function Train() {
   const [activePage, setActivePage] = useState(null); // null, "practice", "quiz"
