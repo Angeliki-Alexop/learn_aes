@@ -39,6 +39,7 @@ const KeyExpansionPractice = () => {
   const [userWords, setUserWords] = useState([]);
   const [incorrect, setIncorrect] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
+  const [showComplete, setShowComplete] = useState(false);
 
   const [currentWord, setCurrentWord] = useState(null);
   const [stepUserWord, setStepUserWord] = useState(["", "", "", ""]);
@@ -81,6 +82,22 @@ const KeyExpansionPractice = () => {
   const Nr = Nk + 6;
   const totalWords = 4 * (Nr + 1);
   const expandedWords = wordsFromBytes(expandedKeyBytes);
+
+  // Clear intermediate inputs (Rot/Sub/Rcon) when the current word changes
+  useEffect(() => {
+    // Reset intermediate user inputs and validation for the new step
+    setRotUser(["", "", "", ""]);
+    setSubUser(["", "", "", ""]);
+    setRconUser(["", "", "", ""]);
+
+    setRotIncorrect([false, false, false, false]);
+    setSubIncorrect([false, false, false, false]);
+    setRconIncorrect([false, false, false, false]);
+
+    setRotCorrect(false);
+    setSubCorrect(false);
+    setRconCorrect(false);
+  }, [currentWord]);
 
   useEffect(() => {
     const expanded = keyExpansion(keyBytes.slice(), keySize);
@@ -244,6 +261,7 @@ const KeyExpansionPractice = () => {
         // last word completed
         setStepUserWord(["", "", "", ""]);
         setStepIncorrect([false, false, false, false]);
+        setShowComplete(true);
       }
     }
   };
@@ -500,6 +518,7 @@ const KeyExpansionPractice = () => {
     } else {
       setStepUserWord(["", "", "", ""]);
       setStepIncorrect([false, false, false, false]);
+      setShowComplete(true);
     }
   };
 
@@ -513,10 +532,12 @@ const KeyExpansionPractice = () => {
     // also reveal intermediate values for Case 1
     const prev = expandedWords[currentWord - 1];
     if (prev) {
-      const r = rotWord(prev).map((b) =>
+      const expectedRot = rotWord(prev);
+      const expectedSub = subWord(expectedRot);
+      const r = expectedRot.map((b) =>
         b.toString(16).padStart(2, "0").toUpperCase()
       );
-      const s = subWord(rotWord(prev)).map((b) =>
+      const s = expectedSub.map((b) =>
         b.toString(16).padStart(2, "0").toUpperCase()
       );
       setRotUser(r);
@@ -525,6 +546,25 @@ const KeyExpansionPractice = () => {
       setSubIncorrect([false, false, false, false]);
       setRotCorrect(true);
       setSubCorrect(true);
+
+      // compute and reveal SubWord XOR Rcon
+      const roundIndex = Math.floor(currentWord / Nk);
+      const rc = typeof rCon[roundIndex] !== "undefined" ? rCon[roundIndex] : 0;
+      const expectedRcon = expectedSub.map((b, i) => (i === 0 ? b ^ rc : b));
+      const rconHex = expectedRcon.map((b) =>
+        b.toString(16).padStart(2, "0").toUpperCase()
+      );
+      setRconUser(rconHex);
+      setRconIncorrect([false, false, false, false]);
+      setRconCorrect(true);
+      // focus the step inputs after revealing everything
+      setTimeout(() => {
+        try {
+          stepRefs.current[0] &&
+            stepRefs.current[0].focus &&
+            stepRefs.current[0].focus();
+        } catch (e) {}
+      }, 0);
     }
   };
 
@@ -1304,6 +1344,44 @@ XOR the previous word with the word in the same position from the previous round
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowHelp(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={showComplete}
+        onClose={() => setShowComplete(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <span>Congratulations!</span>
+          <IconButton
+            aria-label="close"
+            size="small"
+            onClick={() => setShowComplete(false)}
+            sx={{ ml: 1 }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <Typography>You calculated all words of the expanded key.</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={() => {
+              setShowComplete(false);
+              handleRegenerate();
+            }}
+          >
+            Continue with New Key
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
