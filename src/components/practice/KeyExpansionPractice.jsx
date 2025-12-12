@@ -1294,7 +1294,7 @@ const KeyExpansionPractice = () => {
         fullWidth
       >
         <DialogTitle>
-          Key Expansion Help
+          What is Key Expansion?
           <IconButton
             aria-label="close"
             onClick={() => setShowHelp(false)}
@@ -1304,42 +1304,27 @@ const KeyExpansionPractice = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <Typography gutterBottom>
-            The key expansion generates an expanded key as a sequence of 32-bit
-            words w[i]. The first Nk words are the original key. For i &ge; Nk,
-            the word w[i] is derived from previous words. Every Nk-th word uses
-            the key schedule core:
-          </Typography>
-          <Typography component="div" sx={{ fontFamily: "monospace", mt: 1 }}>
-            RotWord | SubWord | XOR with Rcon | XOR with w[i - {Nk}]
-          </Typography>
-          <Typography sx={{ mt: 2 }}>
-            For AES-256 there is an extra SubWord step when i % Nk === 4.
-          </Typography>
-          <Typography component="div" sx={{ mt: 2 }}>
-            <div
-              style={{ whiteSpace: "pre-wrap" }}
-            >{`How the 128-bit Key Expansion Works
+          <Typography component="div" sx={{ whiteSpace: "pre-wrap" }}>
+            {`AES uses a different key for each encryption round.
+Key Expansion is the process that generates all these round keys from the original key.
 
-To create each new round key, AES-128 expands the original key into 44 words (4 words per round key × 11 rounds).
-Here’s the rule you will follow for every new word:
+The original key is split into words (1 word = 4 bytes).
+New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
 
-1. For every 4th word (i.e., when i % 4 == 0):
+The key size determines how often these special steps are applied:
+  - AES-128 (16 bytes / 4 words):
+    A special transformation is applied every 4th word.
+  - AES-192 (24 bytes / 6 words):
+    A special transformation is applied every 6th word.
+  - AES-256 (32 bytes / 8 words):
+    A special transformation is applied every 8th word, with an extra S-box 
+    step halfway in each cycle.
 
-You apply a special transformation to the previous word:
-
-Rotate the word: move the first byte to the end.
-
-Substitute each byte using the S-box.
-
-XOR the result with the round constant (Rcon).
-
-XOR that result with the first word of the previous round key → this produces the new word.
-
-2. For all other words:
-
-Simply:
-XOR the previous word with the word in the same position from the previous round key.`}</div>
+AES always needs one round key per round plus one initial key.
+Each round key is 4 words, so the total number of expanded words is:
+  - AES-128: 44 words
+  - AES-192: 52 words
+  - AES-256: 60 words`}
           </Typography>
         </DialogContent>
         <DialogActions>
