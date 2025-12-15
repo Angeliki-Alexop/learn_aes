@@ -27,6 +27,7 @@ import { StepNavigation } from "./StepNavigation";
 import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
 import MixColumnsExplanations from "./MixColumnsExplanations";
+import StepInfo from "../stepInformation/StepInfo";
 
 export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
 
@@ -260,6 +261,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Input Values
           </Typography>
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <Typography variant="body1" component="p" align="center">
             Text: {inputText}
           </Typography>
@@ -292,19 +294,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Key Schedule - Key Expansion
           </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Input Key: {toHex(key.split("").map((char) => char.charCodeAt(0)))}
-          </Typography>
-          {roundKeys.map((roundKey, index) => (
-            <Typography
-              key={index}
-              variant="body1"
-              component="p"
-              align="center"
-            >
-              Round {index} Key: {toHex(roundKey)}
-            </Typography>
-          ))}
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <div className="key-expansion" style={{ marginTop: "24px" }}>
             <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
           </div>
@@ -316,6 +306,8 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Round {currentRound} - Step: {currentStep}
           </Typography>
+          {/* Step-specific information and interaction hints */}
+          <StepInfo currentStep={currentStep} currentRound={currentRound} />
           <div
             className="matrix-container"
             style={{
@@ -441,6 +433,21 @@ function StepByStep() {
             {currentStep === "MixColumns" && (
               <RenderFixedMatrix highlightedRow={highlightedRowFixedMatrix} />
             )}
+
+            {/* For AddRoundKey: show Round Key between Current State and Next State */}
+            {currentStep === "AddRoundKey" && (
+              <RenderMatrix
+                hexString={toHex(roundKeys[currentRound])}
+                matrixId="roundKey"
+                title="Round Key"
+                highlightRows={false}
+                highlightColumns={false}
+                highlightedCell={highlightedCell}
+                handleCellClick={handleCellClick}
+                highlightedCellValue={highlightedCellValue}
+              />
+            )}
+
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
@@ -463,28 +470,17 @@ function StepByStep() {
                   : []
               }
             />
-            {currentStep === "AddRoundKey" && (
-              <RenderMatrix
-                hexString={toHex(roundKeys[currentRound])}
-                matrixId="roundKey"
-                title="Round Key"
-                highlightRows={false}
-                highlightColumns={false}
-                highlightedCell={highlightedCell}
-                handleCellClick={handleCellClick}
-                highlightedCellValue={highlightedCellValue}
-              />
-            )}
           </div>
           <Box className="info-container" mt={2}>
-            <Typography variant="body1" component="p" align="center">
+            {/* removed the below typography that generates info when clicking any cell in current step */}
+            {/* <Typography variant="body1" component="p" align="center">
               {generateExplanation(
                 currentRound,
                 currentStep,
                 highlightedCell,
                 highlightedCellValue
               )}
-            </Typography>
+            </Typography> */}
             {/* {currentStep === "SubBytes" && (
               <RenderSBox
                 sBox={sBox}

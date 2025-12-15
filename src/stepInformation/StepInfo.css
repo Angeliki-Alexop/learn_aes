@@ -1,0 +1,67 @@
+.stepinfo-root {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 16px 20px;
+  margin: 12px 0 18px 0;
+  background: rgba(100,63,220,0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(100,63,220,0.08);
+}
+.stepinfo-content {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.stepinfo-left {
+  flex: 1 1 60%;
+}
+.stepinfo-right {
+  flex: 0 0 35%;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.stepinfo-title {
+  margin: 0 0 10px 0;
+  color: #2e2e2e;
+  font-size: 1.08rem;
+}
+.stepinfo-section {
+  margin-bottom: 10px;
+}
+.stepinfo-section-title {
+  margin: 0 0 6px 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+.stepinfo-section-content {
+  margin: 0;
+  color: #333;
+  font-size: 0.92rem;
+  line-height: 1.35;
+}
+.stepinfo-hint {
+  margin: 0 0 4px 0;
+  color: #643fdc;
+  font-size: 0.9rem;
+}
+.stepinfo-round {
+  margin: 0;
+  color: #666;
+  font-size: 0.82rem;
+}
+
+/* Responsive: on small screens stack hint under description */
+@media (max-width: 720px) {
+  .stepinfo-content {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+  }
+  .stepinfo-right {
+    text-align: left;
+    margin-top: 8px;
+  }
+}

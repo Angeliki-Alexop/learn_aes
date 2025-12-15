@@ -29,24 +29,45 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
         </Typography>
       </Box>
       <Box id="key_schedule_box" className="round-box" mb={2}>
-        <Typography variant="h6" component="h2" align="center">
+        <Typography
+          variant="h6"
+          component="h2"
+          align="center"
+          onClick={() => { setCurrentRound(-1); setCurrentStep('Key Expansion'); }}
+          style={{ cursor: 'pointer' }}
+        >
           Key Schedule
         </Typography>
-        <List>
-          <ListItem className={currentStep === 'Key Expansion' ? 'active-step' : ''} onClick={() => handleStepClick(-1, 'Key Expansion')}>
-            <ListItemText primary="Key Expansion" />
-          </ListItem>
-        </List>
+        {/* Only show Key Expansion when Key Schedule is active */}
+        {currentRound === -1 && (
+          <List>
+            <ListItem className={currentStep === 'Key Expansion' && currentRound === -1 ? 'active-step' : ''} onClick={() => { setCurrentRound(-1); setCurrentStep('Key Expansion'); }}>
+              <ListItemText primary="Key Expansion" />
+            </ListItem>
+          </List>
+        )}
       </Box>
       <Box id="round_zero_box" className="round-box" mb={2}>
-        <Typography variant="h6" component="h2" align="center">
+        <Typography
+          variant="h6"
+          component="h2"
+          align="center"
+          onClick={() => { setCurrentRound(0); setCurrentStep('AddRoundKey'); }}
+          style={{ cursor: 'pointer' }}
+        >
           Round 0
         </Typography>
-        <List>
-          <ListItem className={currentStep === 'AddRoundKey' && currentRound === 0 ? 'active-step' : ''} onClick={() => handleStepClick(0, 'AddRoundKey')}>
-            <ListItemText primary="AddRoundKey" />
-          </ListItem>
-        </List>
+        {/* Only show the steps list when this round is active */}
+        {currentRound === 0 && (
+          <List>
+            <ListItem
+              className={currentStep === 'AddRoundKey' && currentRound === 0 ? 'active-step' : ''}
+              onClick={() => { setCurrentRound(0); setCurrentStep('AddRoundKey'); }}
+            >
+              <ListItemText primary="AddRoundKey" />
+            </ListItem>
+          </List>
+        )}
       </Box>
       {/* Render rounds 1 .. totalRounds-1 individually. Each round shows its steps only when it's the active round. */}
       {Array.from({ length: Math.max(0, totalRounds - 1) }, (_, i) => i + 1).map((round) => (
