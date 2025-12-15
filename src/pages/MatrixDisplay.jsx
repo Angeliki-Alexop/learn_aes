@@ -16,6 +16,7 @@ export function RenderMatrix({
   highlightedCellValue,
   highlightedColumns = [],
   shiftHighlights = [], // array of [row,col] to highlight special for ShiftRows next-state
+  disabledColumns = [],
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
@@ -27,6 +28,7 @@ export function RenderMatrix({
               {row.map((byte, colIndex) => {
                 const cellId = `${matrixId}-${rowIndex}-${colIndex}`;
                 let highlightStyle = {};
+                const isDisabled = Array.isArray(disabledColumns) && disabledColumns.includes(colIndex);
 
                 // Highlight selected cell in red
                 if (highlightedCell === cellId ) {
@@ -55,10 +57,15 @@ export function RenderMatrix({
                     key={colIndex}
                     id={cellId}
                     className={className}
-                    style={highlightStyle}
-                    onClick={() =>
-                      handleCellClick && handleCellClick(cellId, byte, matrixId, rowIndex, colIndex)
-                    }
+                    style={{
+                      ...highlightStyle,
+                      cursor: isDisabled ? "not-allowed" : undefined,
+                      opacity: isDisabled ? 0.45 : 1,
+                    }}
+                    onClick={() => {
+                      if (isDisabled) return;
+                      handleCellClick && handleCellClick(cellId, byte, matrixId, rowIndex, colIndex);
+                    }}
                   >
                     {byte}
                   </td>

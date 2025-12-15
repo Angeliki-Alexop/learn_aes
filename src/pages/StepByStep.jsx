@@ -261,7 +261,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Input Values
           </Typography>
-          <StepInfo currentStep={currentStep} currentRound={currentRound} />
+          <StepInfo currentStep={currentStep} currentRound={currentRound} keySize={keySize} />
           <Typography variant="body1" component="p" align="center">
             Text: {inputText}
           </Typography>
@@ -294,7 +294,7 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Key Schedule - Key Expansion
           </Typography>
-          <StepInfo currentStep={currentStep} currentRound={currentRound} />
+          <StepInfo currentStep={currentStep} currentRound={currentRound} keySize={keySize} />
           <div className="key-expansion" style={{ marginTop: "24px" }}>
             <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
           </div>
@@ -307,7 +307,7 @@ function StepByStep() {
             Round {currentRound} - Step: {currentStep}
           </Typography>
           {/* Step-specific information and interaction hints */}
-          <StepInfo currentStep={currentStep} currentRound={currentRound} />
+          <StepInfo currentStep={currentStep} currentRound={currentRound} keySize={keySize} />
           <div
             className="matrix-container"
             style={{

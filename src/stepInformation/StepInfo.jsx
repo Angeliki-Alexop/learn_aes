@@ -4,10 +4,28 @@ import "./StepInfo.css";
 // Rich informational content for each step: what, why, how
 const STEP_INFO = {
   "Key Expansion": {
-    title: "Key Expansion",
-    what: `Key Expansion (also called the key schedule) transforms the initial AES key into a series of round keys. Each round of AES uses one round key which is 16 bytes (for AES-128). The algorithm expands the single input key into (Nr + 1) round keys where Nr is the number of rounds.`,
+    title: "What is Key Expansion?",
+    what: `AES uses a different key for each encryption round. Key Expansion is the process that generates all these round keys from the original key.
+
+The original key is split into words (1 word = 4 bytes). New words are created one by one by combining previous words and, 
+at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+
+The key size determines how often these special steps are applied:
+  - AES-128 (16 bytes / 4 words):
+    A special transformation is applied every 4th word.
+  - AES-192 (24 bytes / 6 words):
+    A special transformation is applied every 6th word.
+  - AES-256 (32 bytes / 8 words):
+    A special transformation is applied every 8th word, with an extra S-box 
+    step halfway in each cycle.
+
+AES always needs one round key per round plus one initial key.
+Each round key is 4 words, so the total number of expanded words is:
+  - AES-128: 44 words
+  - AES-192: 52 words
+  - AES-256: 60 words`,
     why: `Without a different round key at each round, the cipher would be much easier to analyze. The key schedule ensures the key material is mixed and varied across rounds so that each round contributes uniquely to the final ciphertext.`,
-    how: `Use the Key Schedule panel to the left to inspect all generated round keys. Click any round to jump to that round's view. You can compare the Round Key bytes with the Current State to understand how AddRoundKey will combine them.`,
+    how: ``,
   },
   SubBytes: {
     title: "SubBytes",
@@ -33,43 +51,65 @@ const STEP_INFO = {
     why: `This is the only step that uses the actual key material in each round. Because XOR is reversible, the proper round keys are necessary to recover the original plaintext during decryption.`,
     how: `Click bytes in the Current State or the Round Key to see the XOR operation and the resulting Next State. Comparing Current State and Round Key byte-by-byte helps understand how the next state is computed.`,
   },
-  Input: {
-    title: "Input",
-    what: `The Input section shows the plaintext that will be processed by AES. The plaintext is converted to bytes and padded using PKCS#7 to fill a 16-byte block for AES-128.`,
-    why: `Understanding how your plaintext is padded and represented as bytes is important: small differences in input produce very different ciphertexts due to avalanche properties of AES.`,
-    how: `Edit the input text in the controller below the visualization, select the key size, and submit to regenerate the padded state and the round key schedule. The Input view shows the original text and its hex representation.`,
-  },
+  
 };
 
 function Section({ title, content }) {
   return (
     <div className="stepinfo-section">
       <h4 className="stepinfo-section-title">{title}</h4>
-      <p className="stepinfo-section-content">{content}</p>
+      <div className="stepinfo-section-content" style={{ whiteSpace: "pre-line", lineHeight: 1.4 }}>
+        {content}
+      </div>
     </div>
   );
 }
 
-export default function StepInfo({ currentStep, currentRound }) {
+export default function StepInfo({ currentStep, currentRound, keySize }) {
   const info = STEP_INFO[currentStep] || null;
 
   if (!info) {
     return null;
   }
 
+  // Build a dynamic How-to text for Key Expansion that depends on keySize
+  let howContent = info.how || "";
+  if (currentStep === "Key Expansion") {
+    const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
+      const extra = `Current key size: AES-${keySize} (${wordsPerKey} words per round key).
+
+  In the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of ${wordsPerKey} words; the special core transformation is applied every ${wordsPerKey}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.
+
+  There are two cases when computing a new word w[i]:
+
+  Case 1 — Special transform (i % ${wordsPerKey} === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - ${wordsPerKey}]: XOR the result with the word ${wordsPerKey} positions before (start of the previous round key) to produce w[i].
+
+  Case 2 — Simple XOR
+    w[i] = w[i - ${wordsPerKey}] XOR w[i - 1]
+
+  Use the above rules with the current round key size (words per key = ${wordsPerKey}).`;
+
+
+    howContent = howContent + extra;
+  }
+
   return (
     <div className="stepinfo-root">
-      <div className="stepinfo-content">
-        <div className="stepinfo-left">
-          <h3 className="stepinfo-title">{info.title}</h3>
-          <Section title="What" content={info.what} />
-          <Section title="Why it matters" content={info.why} />
+      <h3 className="stepinfo-title">{info.title}</h3>
+      {typeof currentRound === "number" && currentRound >= 0 && (
+        <p className="stepinfo-round">Round: {currentRound}</p>
+      )}
+      <div className="stepinfo-content two-cols">
+        <div className="stepinfo-left-col">
+          <Section content={info.what} />
         </div>
-        <div className="stepinfo-right">
-          <Section title="How to interact" content={info.how} />
-          {typeof currentRound === "number" && currentRound >= 0 && (
-            <p className="stepinfo-round">Round: {currentRound}</p>
-          )}
+        <div className="stepinfo-right-col">
+          <Section title="How to interact" content={howContent} />
         </div>
       </div>
     </div>
