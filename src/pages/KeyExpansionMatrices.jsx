@@ -104,7 +104,19 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
           justifyContent: "center",
         }}
       >
-        {roundKeys.map((roundKey, idx) => (
+        {roundKeys.map((roundKey, idx) => {
+          // compute disabled columns (words) that belong to the original key
+          const initialBytes = (keySize || userKeySize) / 8; // e.g., 16,24,32
+          const matrixStartByte = idx * 16;
+          const disabledCols = [];
+          for (let col = 0; col < 4; col++) {
+            const wordStart = matrixStartByte + col * 4;
+            if (wordStart < initialBytes) {
+              disabledCols.push(col);
+            }
+          }
+
+          return (
           <div key={idx} style={{ width: "100%" }}>
             <Typography variant="caption" align="center">
               Round {idx}
@@ -116,9 +128,10 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               highlightedCells={highlightedCells}
               handleCellClick={(cellId, byte, matrixId, rowIdx, colIdx) => handleCellClick(idx, colIdx)}
               highlightedColumns={highlightedColumnsByMatrix[idx] || []}
+              disabledColumns={disabledCols}
             />
           </div>
-        ))}
+        )})}
       </div>
       {/* Info container for selected columns */}
       {explanationColumns.length > 0 && (

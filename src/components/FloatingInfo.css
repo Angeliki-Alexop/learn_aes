@@ -1,0 +1,77 @@
+.floating-info-button {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+  transition: transform .12s ease;
+}
+.floating-info-button:hover { transform: translateY(-3px); }
+
+.floating-info-panel {
+  position: fixed;
+  right: 28px;
+  /* bottom spacing. This changes how far the panel is from the button */
+  bottom: 180px; 
+  width: 480px;
+  max-width: calc(100% - 56px);
+  max-height: 64vh;
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.14);
+  z-index: 9999;
+  border: 1px solid rgba(91,44,217,0.08);
+}
+
+.floating-info-close {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+
+.floating-info-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
+}
+
+.floating-info-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.floating-info-section {
+  margin-top: 6px;
+}
+.floating-info-section-title {
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  color: #2e2e2e;
+  font-weight: 600;
+}
+.floating-info-section-content {
+  margin: 0;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.4;
+}
