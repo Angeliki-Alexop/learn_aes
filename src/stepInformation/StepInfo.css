@@ -31,14 +31,16 @@
 .stepinfo-title {
   margin: 0 0 8px 0;
   color: #2e2e2e;
-  font-size: 1rem;
+  font-size: 18px;
+  font-family: inherit;
 }
 .stepinfo-section {
   margin-bottom: 8px;
 }
 .stepinfo-section-title {
   margin: 0 0 6px 0;
-  font-size: 0.92rem;
+  font-size: 18px;
+  font-family: inherit;
   color: #333;
 }
 .stepinfo-section-content {
