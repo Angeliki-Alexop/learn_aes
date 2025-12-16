@@ -1,11 +1,11 @@
 .floating-info-button {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
-  width: 56px;
-  height: 56px;
+  right: 28px;
+  bottom: 28px;
+  width: 160px;
+  height: 160px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #7b4ef2 0%, #5b2cd9 100%);
+  background: transparent;
   color: #fff;
   border: none;
   cursor: pointer;
@@ -13,17 +13,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10px 30px rgba(91,44,217,0.28);
-  transition: transform .12s ease, box-shadow .12s ease;
+  box-shadow: none;
+  transition: transform .12s ease;
 }
-.floating-info-button:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(91,44,217,0.32); }
+.floating-info-button:hover { transform: translateY(-3px); }
 
 .floating-info-panel {
   position: fixed;
-  right: 22px;
-  bottom: 92px;
-  width: 420px;
-  max-width: calc(100% - 48px);
+  right: 28px;
+  /* bottom spacing. This changes how far the panel is from the button */
+  bottom: 180px; 
+  width: 480px;
+  max-width: calc(100% - 56px);
   max-height: 64vh;
   overflow: auto;
   background: #ffffff;
@@ -43,6 +44,14 @@
   cursor: pointer;
   font-size: 14px;
   color: #666;
+}
+
+.floating-info-img {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  display: block;
+  border-radius: 0;
 }
 
 .floating-info-body {

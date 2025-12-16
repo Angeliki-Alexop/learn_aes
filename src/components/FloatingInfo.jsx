@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./FloatingInfo.css";
 import { STEP_INFO } from "../stepInformation/StepInfo";
+import infoImg from "../assets/aes_info_image.png";
 
 export default function FloatingInfo({ keySize = 128, currentStep = null }) {
   const [open, setOpen] = useState(false);
@@ -68,10 +69,7 @@ export default function FloatingInfo({ keySize = 128, currentStep = null }) {
         aria-label="Open info"
         onClick={() => setOpen((s) => !s)}
       >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="0" fill="transparent" />
-          <path d="M11 17h2v-6h-2v6zM11 7h2V5h-2v2z" fill="white" />
-        </svg>
+        <img src={infoImg} alt="info" className="floating-info-img" />
       </button>
 
       {open && (
