@@ -8,7 +8,7 @@ import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
 import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 
 function Train() {
-  const [activePage, setActivePage] = useState(null); // null, "practice", "quiz"
+  const [activePage, setActivePage] = useState("practice"); // default to practice landing
   const [selectedExercise, setSelectedExercise] = useState(null);
 
   const exercises = [
@@ -42,78 +42,33 @@ function Train() {
   return (
     <div className="train-content">
       <Container>
-        {!activePage && (
-          <>
-            <Typography
-              variant="h4"
-              component="h1"
-              gutterBottom
-              sx={{ textAlign: "center", mt: 4, mb: 4 }}
-            >
-              AES Training Center
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={{ textAlign: "center", mb: 3, maxWidth: 600, mx: "auto" }}
-            >
-              Welcome to the AES Training Center! Here you can practice each
-              step of the AES algorithm interactively, or test your theoretical
-              understanding with quizzes. Choose "Practice" to solve AES steps
-              yourself, or "Quiz" to answer theory questions.
-            </Typography>
-            <Box
-              sx={{ display: "flex", justifyContent: "center", gap: 4, mb: 4 }}
-            >
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => setActivePage("practice")}
-              >
-                Practice: Solve AES steps yourself!
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => setActivePage("quiz")}
-              >
-                Quiz: Test your theoretical understanding!
-              </Button>
-            </Box>
-          </>
-        )}
+        {/* Landing now directly shows Practice exercises; removed choice buttons and Quiz */}
         {activePage === "practice" && (
           <>
             {!selectedExercise ? (
               <Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    mt: 2,
-                    mb: 2,
-                  }}
-                >
-                  <Button
-                    onClick={() => setActivePage(null)}
-                    variant="contained"
-                  >
-                    &larr; Back
-                  </Button>
-                </Box>
                 <Typography
                   variant="h4"
                   component="h1"
                   gutterBottom
-                  sx={{ textAlign: "center", mb: 5 }}
+                  sx={{ textAlign: "center", mt: 4, mb: 4 }}
                 >
-                  Solve AES steps yourself!
+                  AES Training Center
+                </Typography>
+                <Typography
+                  variant="body1"
+                  sx={{ textAlign: "center", mb: 3, maxWidth: 600, mx: "auto" }}
+                >
+                  Welcome to the AES Training Center! Here you can practice each
+                  step of the AES algorithm interactively. Select an exercise
+                  below to get started!
                 </Typography>
                 <Typography
                   variant="h6"
                   gutterBottom
                   sx={{ textAlign: "center", mb: 3 }}
                 >
-                  Select an exercise to begin:
+                  Select a step to train on:
                 </Typography>
                 <Box
                   sx={{
@@ -150,38 +105,7 @@ function Train() {
             )}
           </>
         )}
-        {activePage === "quiz" && (
-          <Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                mt: 2,
-                mb: 2,
-              }}
-            >
-              <Button onClick={() => setActivePage(null)} variant="contained">
-                &larr; Back
-              </Button>
-            </Box>
-            <Typography
-              variant="h4"
-              component="h1"
-              gutterBottom
-              sx={{ textAlign: "center", mb: 3 }}
-            >
-              Quiz: Test your theoretical understanding!
-            </Typography>
-            <Typography
-              variant="body1"
-              gutterBottom
-              sx={{ textAlign: "center" }}
-            >
-              Multiple choice and theory quizzes about AES will appear here.
-              (Coming Soon)
-            </Typography>
-          </Box>
-        )}
+        {/* Quiz removed — Train landing now directly shows Practice exercises */}
       </Container>
     </div>
   );

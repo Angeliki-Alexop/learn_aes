@@ -582,9 +582,6 @@ const KeyExpansionPractice = () => {
           <IconButton onClick={() => setShowHelp(true)}>
             <HelpOutlineIcon />
           </IconButton>
-          <Button onClick={handleRegenerate} sx={{ ml: 1 }}>
-            New Key
-          </Button>
         </Box>
       </Box>
 
@@ -639,6 +636,16 @@ const KeyExpansionPractice = () => {
               </Typography>
             </Box>
           ))}
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "Left", mt: 1 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={handleRegenerate}
+          >
+            New Key
+          </Button>
         </Box>
       </Box>
 
