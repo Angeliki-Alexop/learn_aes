@@ -4,6 +4,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Tooltip,
   Typography,
   Menu,
   MenuItem,
@@ -37,14 +38,16 @@ function Navbar() {
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={import.meta.env.BASE_URL + "Logo.svg"}
-                alt="AES Learning & Training"
-                style={{
-                  height: "55px",
-                  width: "auto",
-                }}
-              />
+              <Link to="/">
+                <img
+                  src={import.meta.env.BASE_URL + "Logo.svg"}
+                  alt="AES Learning & Training"
+                  style={{
+                    height: "55px",
+                    width: "auto",
+                  }}
+                />
+              </Link>
             </Box>
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
               <Button
@@ -92,23 +95,27 @@ function Navbar() {
                 About
               </Button>
               {/* S-box Icon Button */}
-              <IconButton
-                color="inherit"
-                sx={{ ml: 2 }}
-                onClick={() => setSboxOpen(true)}
-                aria-label="Show S-box"
-              >
-                <Grid3x3 />
-              </IconButton>
+              <Tooltip title="S-box" arrow>
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 2 }}
+                  onClick={() => setSboxOpen(true)}
+                  aria-label="Show S-box"
+                >
+                  <Grid3x3 />
+                </IconButton>
+              </Tooltip>
               {/* Calculator Icon Button */}
-              <IconButton
-                color="inherit"
-                sx={{ ml: 1 }}
-                onClick={() => setCalcOpen(true)}
-                aria-label="Open calculator"
-              >
-                <CalculateIcon />
-              </IconButton>
+              <Tooltip title="Calculator" arrow>
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 1 }}
+                  onClick={() => setCalcOpen(true)}
+                  aria-label="Open calculator"
+                >
+                  <CalculateIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
             {/* ...mobile menu code unchanged... */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
