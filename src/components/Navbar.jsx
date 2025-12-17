@@ -15,11 +15,14 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Grid3x3 } from "lucide-react";
 import SBoxOverlay from "./SBoxOverlay";
+import CalculateIcon from '@mui/icons-material/Calculate';
+import CalculatorOverlay from "./CalculatorOverlay";
 
 function Navbar() {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [sboxOpen, setSboxOpen] = React.useState(false);
+  const [calcOpen, setCalcOpen] = React.useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -97,6 +100,15 @@ function Navbar() {
               >
                 <Grid3x3 />
               </IconButton>
+              {/* Calculator Icon Button */}
+              <IconButton
+                color="inherit"
+                sx={{ ml: 1 }}
+                onClick={() => setCalcOpen(true)}
+                aria-label="Open calculator"
+              >
+                <CalculateIcon />
+              </IconButton>
             </Box>
             {/* ...mobile menu code unchanged... */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -144,6 +156,9 @@ function Navbar() {
                 <MenuItem onClick={() => { setSboxOpen(true); handleMenuClose(); }}>
                   S-box
                 </MenuItem>
+                <MenuItem onClick={() => { setCalcOpen(true); handleMenuClose(); }}>
+                  Calculator
+                </MenuItem>
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}
               </Menu>
             </Box>
@@ -152,6 +167,7 @@ function Navbar() {
       </AppBar>
       {/* S-box Overlay */}
       <SBoxOverlay open={sboxOpen} onClose={() => setSboxOpen(false)} />
+      <CalculatorOverlay open={calcOpen} onClose={() => setCalcOpen(false)} />
     </>
   );
 }
