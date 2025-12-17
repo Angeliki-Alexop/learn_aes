@@ -141,6 +141,9 @@ function Navbar() {
                 >
                   StepByStep
                 </MenuItem>
+                <MenuItem onClick={() => { setSboxOpen(true); handleMenuClose(); }}>
+                  S-box
+                </MenuItem>
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}
               </Menu>
             </Box>
