@@ -1,5 +1,6 @@
 import React from "react";
-import { Drawer, Box, Typography } from "@mui/material";
+import { Drawer, Box, Typography, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { sBox } from "../utils/aes_manual_v2";
 
 function SBoxOverlay({ open, onClose }) {
@@ -19,17 +20,25 @@ function SBoxOverlay({ open, onClose }) {
       }}
       PaperProps={{
         sx: {
-          width: 800,
+          width: { xs: "95vw", sm: 600, md: 800 },
+          maxWidth: "100%",
+          maxHeight: "90vh",
           zIndex: 1300,
           padding: 3,
           background: "#fff",
+          overflow: "auto",
         },
       }}
     >
       <Box>
-        <Typography variant="h6" align="center" gutterBottom>
-          AES S-box
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Typography variant="h6" align="left" gutterBottom sx={{ flex: 1 }}>
+            AES S-box
+          </Typography>
+          <IconButton onClick={() => { setSelected(null); onClose(); }} aria-label="Close S-box">
+            <CloseIcon />
+          </IconButton>
+        </Box>
         <Box sx={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>

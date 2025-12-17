@@ -4,6 +4,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Tooltip,
   Typography,
   Menu,
   MenuItem,
@@ -15,11 +16,14 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Grid3x3 } from "lucide-react";
 import SBoxOverlay from "./SBoxOverlay";
+import CalculateIcon from '@mui/icons-material/Calculate';
+import CalculatorOverlay from "./CalculatorOverlay";
 
 function Navbar() {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [sboxOpen, setSboxOpen] = React.useState(false);
+  const [calcOpen, setCalcOpen] = React.useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,14 +38,16 @@ function Navbar() {
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={import.meta.env.BASE_URL + "Logo.svg"}
-                alt="AES Learning & Training"
-                style={{
-                  height: "55px",
-                  width: "auto",
-                }}
-              />
+              <Link to="/">
+                <img
+                  src={import.meta.env.BASE_URL + "Logo.svg"}
+                  alt="AES Learning & Training"
+                  style={{
+                    height: "55px",
+                    width: "auto",
+                  }}
+                />
+              </Link>
             </Box>
             <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
               <Button
@@ -89,14 +95,27 @@ function Navbar() {
                 About
               </Button>
               {/* S-box Icon Button */}
-              <IconButton
-                color="inherit"
-                sx={{ ml: 2 }}
-                onClick={() => setSboxOpen(true)}
-                aria-label="Show S-box"
-              >
-                <Grid3x3 />
-              </IconButton>
+              <Tooltip title="S-box" arrow>
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 2 }}
+                  onClick={() => setSboxOpen(true)}
+                  aria-label="Show S-box"
+                >
+                  <Grid3x3 />
+                </IconButton>
+              </Tooltip>
+              {/* Calculator Icon Button */}
+              <Tooltip title="Calculator" arrow>
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 1 }}
+                  onClick={() => setCalcOpen(true)}
+                  aria-label="Open calculator"
+                >
+                  <CalculateIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
             {/* ...mobile menu code unchanged... */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -141,6 +160,12 @@ function Navbar() {
                 >
                   StepByStep
                 </MenuItem>
+                <MenuItem onClick={() => { setSboxOpen(true); handleMenuClose(); }}>
+                  S-box
+                </MenuItem>
+                <MenuItem onClick={() => { setCalcOpen(true); handleMenuClose(); }}>
+                  Calculator
+                </MenuItem>
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}
               </Menu>
             </Box>
@@ -149,6 +174,7 @@ function Navbar() {
       </AppBar>
       {/* S-box Overlay */}
       <SBoxOverlay open={sboxOpen} onClose={() => setSboxOpen(false)} />
+      <CalculatorOverlay open={calcOpen} onClose={() => setCalcOpen(false)} />
     </>
   );
 }
