@@ -43,14 +43,16 @@ Each round key is 4 words, so the total number of expanded words is:
     what: `AddRoundKey XORs the current state with a round-specific key. XOR is a reversible bitwise operation which combines the key material directly into the state bytes.`,
     how: `Click bytes in the Current State or the Round Key to see the XOR operation and the resulting Next State. Comparing Current State and Round Key byte-by-byte helps understand how the next state is computed.`,
   },
-  
 };
 
 function Section({ title, content }) {
   return (
     <div className="stepinfo-section">
       <h4 className="stepinfo-section-title">{title}</h4>
-      <div className="stepinfo-section-content" style={{ whiteSpace: "pre-line", lineHeight: 1.4 }}>
+      <div
+        className="stepinfo-section-content"
+        style={{ whiteSpace: "pre-line", lineHeight: 1.4 }}
+      >
         {content}
       </div>
     </div>
@@ -68,10 +70,34 @@ export default function StepInfo({ currentStep, currentRound, keySize }) {
   let howContent = info.how || "";
   if (currentStep === "Key Expansion") {
     const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
-      const extra = `Current key size: AES-${keySize} (${wordsPerKey} words per round key).
+    const extra = `Current key size: AES-${keySize} (${wordsPerKey} words per round key).
 
   In the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of ${wordsPerKey} words; the special core transformation is applied every ${wordsPerKey}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.
+`;
 
+    if (wordsPerKey === 8) {
+      extra += `
+  There are three cases when computing a new word w[i]:
+
+  Case 1 — Special transform (i % 8 === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
+
+  Case 2 — Mid-cycle SubWord (i % 8 === 4)
+  Apply the following step to the previous word (w[i-1]):
+    1. SubWord: substitute each byte using the S-box.
+    2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
+  
+
+  Case 3 — Simple XOR
+    w[i] = w[i - 8] XOR w[i - 1]
+
+  Use the above rules with the current round key size (words per key = ${wordsPerKey}).`;
+    } else {
+      extra += `
   There are two cases when computing a new word w[i]:
 
   Case 1 — Special transform (i % ${wordsPerKey} === 0)
@@ -86,24 +112,24 @@ export default function StepInfo({ currentStep, currentRound, keySize }) {
 
   Use the above rules with the current round key size (words per key = ${wordsPerKey}).`;
 
+      howContent = howContent + extra;
+    }
 
-    howContent = howContent + extra;
-  }
-
-  return (
-    <div className="stepinfo-root">
-      <h3 className="stepinfo-title">What is {currentStep}?</h3>
-      {typeof currentRound === "number" && currentRound >= 0 && (
-        <p className="stepinfo-round">Round: {currentRound}</p>
-      )}
-      <div className="stepinfo-content two-cols">
-        <div className="stepinfo-left-col">
-          <Section content={info.what} />
-        </div>
-        <div className="stepinfo-right-col">
-          <Section title="How to interact" content={howContent} />
+    return (
+      <div className="stepinfo-root">
+        <h3 className="stepinfo-title">What is {currentStep}?</h3>
+        {typeof currentRound === "number" && currentRound >= 0 && (
+          <p className="stepinfo-round">Round: {currentRound}</p>
+        )}
+        <div className="stepinfo-content two-cols">
+          <div className="stepinfo-left-col">
+            <Section content={info.what} />
+          </div>
+          <div className="stepinfo-right-col">
+            <Section title="How to interact" content={howContent} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

@@ -85,7 +85,6 @@ const KeyExpansionPractice = () => {
 
   // Clear intermediate inputs (Rot/Sub/Rcon) when the current word changes
   useEffect(() => {
-    // Reset intermediate user inputs and validation for the new step
     setRotUser(["", "", "", ""]);
     setSubUser(["", "", "", ""]);
     setRconUser(["", "", "", ""]);
@@ -134,6 +133,17 @@ const KeyExpansionPractice = () => {
   const getExpectedWord = (idx) => {
     if (!expandedWords || !expandedWords[idx]) return null;
     return expandedWords[idx];
+  };
+
+  const getCaseKind = (i) => {
+    if (!Number.isFinite(Nk)) return "simple";
+    if (Nk === 8) {
+      if (i % Nk === 0) return "special"; // rotate + sub + rcon
+      if (i % Nk === 4) return "subonly"; // sub (no rotate)
+      return "simple"; // plain xor
+    }
+    // Nk = 4 or 6: only special when i % Nk === 0
+    return i % Nk === 0 ? "special" : "simple";
   };
 
   const renderBytesAsCells = (bytes) => {
@@ -349,6 +359,8 @@ const KeyExpansionPractice = () => {
   const handleCheckRot = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
+    const caseKind = getCaseKind(currentWord);
+    if (caseKind !== "special") return; // rot only applies to special case
     const expected = rotWord(prev);
     const newIncorrect = [false, false, false, false];
     let ok = true;
@@ -376,8 +388,16 @@ const KeyExpansionPractice = () => {
   const handleCheckSub = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
-    const expectedRot = rotWord(prev);
-    const expectedSub = subWord(expectedRot);
+    const caseKind = getCaseKind(currentWord);
+    let expectedSub;
+    if (caseKind === "special") {
+      const expectedRot = rotWord(prev);
+      expectedSub = subWord(expectedRot);
+    } else if (caseKind === "subonly") {
+      expectedSub = subWord(prev);
+    } else {
+      return; // no sub step for simple case
+    }
     const newIncorrect = [false, false, false, false];
     let ok = true;
     for (let i = 0; i < 4; i++) {
@@ -404,6 +424,8 @@ const KeyExpansionPractice = () => {
   const handleCheckRcon = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
+    const caseKind = getCaseKind(currentWord);
+    if (caseKind !== "special") return; // Rcon only for special case
     const expectedRot = rotWord(prev);
     const expectedSub = subWord(expectedRot);
     const roundIndex = Math.floor(currentWord / Nk);
@@ -434,6 +456,8 @@ const KeyExpansionPractice = () => {
   const handleShowRcon = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
+    const caseKind = getCaseKind(currentWord);
+    if (caseKind !== "special") return; // only relevant for special
     const expectedRot = rotWord(prev);
     const expectedSub = subWord(expectedRot);
     const roundIndex = Math.floor(currentWord / Nk);
@@ -457,6 +481,8 @@ const KeyExpansionPractice = () => {
   const handleShowRot = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
+    const caseKind = getCaseKind(currentWord);
+    if (caseKind !== "special") return; // rot only for special case
     const r = rotWord(prev).map((b) =>
       b.toString(16).padStart(2, "0").toUpperCase()
     );
@@ -475,9 +501,12 @@ const KeyExpansionPractice = () => {
   const handleShowSub = () => {
     const prev = expandedWords[currentWord - 1];
     if (!prev) return;
-    const s = subWord(rotWord(prev)).map((b) =>
-      b.toString(16).padStart(2, "0").toUpperCase()
-    );
+    const caseKind = getCaseKind(currentWord);
+    let sBytes;
+    if (caseKind === "special") sBytes = subWord(rotWord(prev));
+    else if (caseKind === "subonly") sBytes = subWord(prev);
+    else return; // nothing to show for simple case
+    const s = sBytes.map((b) => b.toString(16).padStart(2, "0").toUpperCase());
     setSubUser(s);
     setSubIncorrect([false, false, false, false]);
     setSubCorrect(true);
@@ -522,6 +551,9 @@ const KeyExpansionPractice = () => {
     }
   };
 
+  // current case kind for rendering (special / subonly / simple)
+  const caseKind = currentWord !== null ? getCaseKind(currentWord) : null;
+
   const handleStepShow = () => {
     const expected = getExpectedWord(currentWord);
     if (!expected) return;
@@ -529,35 +561,59 @@ const KeyExpansionPractice = () => {
       expected.map((b) => b.toString(16).padStart(2, "0").toUpperCase())
     );
     setStepIncorrect([false, false, false, false]);
-    // also reveal intermediate values for Case 1
+    // reveal intermediate values depending on case
     const prev = expandedWords[currentWord - 1];
+    const caseKind = getCaseKind(currentWord);
     if (prev) {
-      const expectedRot = rotWord(prev);
-      const expectedSub = subWord(expectedRot);
-      const r = expectedRot.map((b) =>
-        b.toString(16).padStart(2, "0").toUpperCase()
-      );
-      const s = expectedSub.map((b) =>
-        b.toString(16).padStart(2, "0").toUpperCase()
-      );
-      setRotUser(r);
-      setSubUser(s);
-      setRotIncorrect([false, false, false, false]);
-      setSubIncorrect([false, false, false, false]);
-      setRotCorrect(true);
-      setSubCorrect(true);
+      if (caseKind === "special") {
+        const expectedRot = rotWord(prev);
+        const expectedSub = subWord(expectedRot);
+        const r = expectedRot.map((b) =>
+          b.toString(16).padStart(2, "0").toUpperCase()
+        );
+        const s = expectedSub.map((b) =>
+          b.toString(16).padStart(2, "0").toUpperCase()
+        );
+        setRotUser(r);
+        setSubUser(s);
+        setRotIncorrect([false, false, false, false]);
+        setSubIncorrect([false, false, false, false]);
+        setRotCorrect(true);
+        setSubCorrect(true);
 
-      // compute and reveal SubWord XOR Rcon
-      const roundIndex = Math.floor(currentWord / Nk);
-      const rc = typeof rCon[roundIndex] !== "undefined" ? rCon[roundIndex] : 0;
-      const expectedRcon = expectedSub.map((b, i) => (i === 0 ? b ^ rc : b));
-      const rconHex = expectedRcon.map((b) =>
-        b.toString(16).padStart(2, "0").toUpperCase()
-      );
-      setRconUser(rconHex);
-      setRconIncorrect([false, false, false, false]);
-      setRconCorrect(true);
-      // focus the step inputs after revealing everything
+        // compute and reveal SubWord XOR Rcon
+        const roundIndex = Math.floor(currentWord / Nk);
+        const rc =
+          typeof rCon[roundIndex] !== "undefined" ? rCon[roundIndex] : 0;
+        const expectedRcon = expectedSub.map((b, i) => (i === 0 ? b ^ rc : b));
+        const rconHex = expectedRcon.map((b) =>
+          b.toString(16).padStart(2, "0").toUpperCase()
+        );
+        setRconUser(rconHex);
+        setRconIncorrect([false, false, false, false]);
+        setRconCorrect(true);
+      } else if (caseKind === "subonly") {
+        // reveal only SubWord (no rotate, no rcon)
+        const expectedSub = subWord(prev);
+        const s = expectedSub.map((b) =>
+          b.toString(16).padStart(2, "0").toUpperCase()
+        );
+        setRotUser(["", "", "", ""]);
+        setRotIncorrect([false, false, false, false]);
+        setRotCorrect(false);
+        setSubUser(s);
+        setSubIncorrect([false, false, false, false]);
+        setSubCorrect(true);
+        setRconUser(["", "", "", ""]);
+        setRconIncorrect([false, false, false, false]);
+        setRconCorrect(false);
+      } else {
+        // simple case: nothing to reveal, focus step input
+        setRotUser(["", "", "", ""]);
+        setSubUser(["", "", "", ""]);
+        setRconUser(["", "", "", ""]);
+      }
+      // focus the step inputs after revealing everything (or none)
       setTimeout(() => {
         try {
           stepRefs.current[0] &&
@@ -661,7 +717,7 @@ const KeyExpansionPractice = () => {
               Step guidance — compute w[{currentWord}]
             </Typography>
             <Box sx={{ mt: 1 }}>
-              {currentWord % Nk === 0 ? (
+              {caseKind === "special" ? (
                 <Box
                   sx={{
                     bgcolor: "#f0f7ff",
@@ -703,6 +759,37 @@ const KeyExpansionPractice = () => {
                     </Box>
                   </Box>
                 </Box>
+              ) : caseKind === "subonly" ? (
+                <Box
+                  sx={{
+                    bgcolor: "#fff7e6",
+                    p: 2,
+                    borderRadius: 1,
+                    border: "1px solid #fff0d6",
+                  }}
+                >
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Case 2 — Mid-cycle SubWord (i % {Nk} === 4)
+                  </Typography>
+                  <Typography variant="body2">
+                    Apply the following steps to the previous word, in order:
+                  </Typography>
+                  <Box component="ol" sx={{ pl: 3, mt: 1 }}>
+                    <Box component="li" sx={{ mb: 1 }}>
+                      <Typography variant="body2">
+                        <strong>SubWord:</strong> substitute each byte using the
+                        S-box.
+                      </Typography>
+                    </Box>
+                    <Box component="li">
+                      <Typography variant="body2">
+                        <strong>XOR w[i - {Nk}]:</strong> XOR the result with
+                        the first word of the previous round key to produce
+                        w[i].
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
               ) : (
                 <Box
                   sx={{
@@ -713,7 +800,7 @@ const KeyExpansionPractice = () => {
                   }}
                 >
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Case 2 — Simple XOR
+                    Case 3 — Simple XOR
                   </Typography>
                   <Box component="ol" sx={{ pl: 3, mt: 1 }}>
                     <Box component="li">
@@ -734,7 +821,7 @@ const KeyExpansionPractice = () => {
                 alignItems: "center",
               }}
             >
-              {currentWord % Nk === 0 ? (
+              {caseKind === "special" ? (
                 <>
                   <Box
                     sx={{
@@ -831,7 +918,7 @@ const KeyExpansionPractice = () => {
                   <Box>
                     <Typography variant="body2">RotWord(w[i - 1])</Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
-                      {currentWord % Nk === 0 ? (
+                      {caseKind === "special" ? (
                         <Box sx={{ display: "flex", gap: 1 }}>
                           {Array.from({ length: 4 }).map((__, ri) => (
                             <TextField
@@ -885,9 +972,9 @@ const KeyExpansionPractice = () => {
                   </Box>
 
                   <Box>
-                    <Typography variant="body2">SubWord(RotWord)</Typography>
+                    <Typography variant="body2">SubWord</Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
-                      {currentWord % Nk === 0 ? (
+                      {caseKind === "special" ? (
                         <Box
                           sx={{
                             display: "flex",
@@ -943,6 +1030,45 @@ const KeyExpansionPractice = () => {
                             Show
                           </Button>
                         </Box>
+                      ) : caseKind === "subonly" ? (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          {Array.from({ length: 4 }).map((__, si) => (
+                            <TextField
+                              key={`sub-${si}`}
+                              value={subUser[si]}
+                              onChange={(e) =>
+                                handleSubInputChange(si, e.target.value)
+                              }
+                              inputRef={(el) => (subRefs.current[si] = el)}
+                              inputProps={{
+                                maxLength: 2,
+                                style: {
+                                  textTransform: "uppercase",
+                                  fontFamily: "monospace",
+                                  fontSize: 13,
+                                  textAlign: "center",
+                                },
+                              }}
+                              size="small"
+                              error={subIncorrect[si]}
+                              disabled={subCorrect}
+                              sx={{ width: 64 }}
+                            />
+                          ))}
+                          <Button variant="contained" onClick={handleCheckSub}>
+                            Check Sub
+                          </Button>
+                          <Button variant="contained" onClick={handleShowSub}>
+                            Show
+                          </Button>
+                        </Box>
                       ) : expandedWords[currentWord - 1] ? (
                         renderBytesAsCells(
                           subWord(rotWord(expandedWords[currentWord - 1]))
@@ -958,7 +1084,7 @@ const KeyExpansionPractice = () => {
                   <Box>
                     <Typography variant="body2">SubWord XOR Rcon</Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
-                      {currentWord % Nk === 0 ? (
+                      {caseKind === "special" ? (
                         <Box
                           sx={{ display: "flex", gap: 1, alignItems: "center" }}
                         >
@@ -1053,14 +1179,26 @@ const KeyExpansionPractice = () => {
                               }}
                               size="small"
                               error={stepIncorrect[bi]}
-                              disabled={currentWord % Nk === 0 && !rconCorrect}
+                              disabled={
+                                caseKind === "special"
+                                  ? !rconCorrect
+                                  : caseKind === "subonly"
+                                  ? !subCorrect
+                                  : false
+                              }
                               sx={{ width: 64 }}
                             />
                           ))}
                           <Button
                             variant="contained"
                             onClick={handleStepCheck}
-                            disabled={currentWord % Nk === 0 && !rconCorrect}
+                            disabled={
+                              caseKind === "special"
+                                ? !rconCorrect
+                                : caseKind === "subonly"
+                                ? !subCorrect
+                                : false
+                            }
                           >
                             Check
                           </Button>
@@ -1143,11 +1281,75 @@ const KeyExpansionPractice = () => {
                     </Box>
                   </Box>
 
+                  {caseKind === "subonly" && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: 1,
+                        mb: 2,
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ mr: 1 }}>
+                        SubWord
+                      </Typography>
+                      <Box
+                        sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                      >
+                        {Array.from({ length: 4 }).map((__, si) => (
+                          <TextField
+                            key={`subonly-step-${si}`}
+                            value={subUser[si]}
+                            onChange={(e) =>
+                              handleSubInputChange(si, e.target.value)
+                            }
+                            inputRef={(el) => (subRefs.current[si] = el)}
+                            inputProps={{
+                              maxLength: 2,
+                              style: {
+                                textTransform: "uppercase",
+                                fontFamily: "monospace",
+                                fontSize: 13,
+                                textAlign: "center",
+                              },
+                            }}
+                            size="small"
+                            error={subIncorrect[si]}
+                            disabled={subCorrect}
+                            sx={{
+                              width: 64,
+                              '& .MuiOutlinedInput-root': {
+                                bgcolor:
+                                  subCorrect && keySize === 256
+                                    ? '#e8f5e9'
+                                    : '#fff',
+                              },
+                            }}
+                          />
+                        ))}
+                        <Button
+                          variant="contained"
+                          onClick={handleCheckSub}
+                          sx={{ ml: 1 }}
+                        >
+                          Check Sub
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={handleShowSub}
+                          sx={{ ml: 1 }}
+                        >
+                          Show
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 3,
+                      gap: 1,
                       mt: 1,
                     }}
                   >
@@ -1313,25 +1515,41 @@ const KeyExpansionPractice = () => {
         <DialogContent dividers>
           <Typography component="div" sx={{ whiteSpace: "pre-wrap" }}>
             {`AES uses a different key for each encryption round.
-Key Expansion is the process that generates all these round keys from the original key.
+  Key Expansion is the process that generates all these round keys from the original key.
 
-The original key is split into words (1 word = 4 bytes).
-New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+  The original key is split into words (1 word = 4 bytes).
+  New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
 
-The key size determines how often these special steps are applied:
-  - AES-128 (16 bytes / 4 words):
-    A special transformation is applied every 4th word.
-  - AES-192 (24 bytes / 6 words):
-    A special transformation is applied every 6th word.
-  - AES-256 (32 bytes / 8 words):
-    A special transformation is applied every 8th word, with an extra S-box 
-    step halfway in each cycle.
+  The key size determines how often these special steps are applied:
+    - AES-128 (16 bytes / 4 words):
+      A special transformation is applied every 4th word.
+    - AES-192 (24 bytes / 6 words):
+      A special transformation is applied every 6th word.
+    - AES-256 (32 bytes / 8 words):
+      AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).
 
-AES always needs one round key per round plus one initial key.
-Each round key is 4 words, so the total number of expanded words is:
-  - AES-128: 44 words
-  - AES-192: 52 words
-  - AES-256: 60 words`}
+  There are three cases for AES-256 when computing a new word w[i]:
+
+  Case 1 — Special transform (i % 8 === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
+
+  Case 2 — Mid-cycle SubWord (i % 8 === 4)
+  Apply the following step to the previous word (w[i-1]):
+    1. SubWord: substitute each byte using the S-box.
+    2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
+
+  Case 3 — Simple XOR (all other words)
+    w[i] = w[i - 8] XOR w[i - 1]
+
+  AES always needs one round key per round plus one initial key.
+  Each round key is 4 words, so the total number of expanded words is:
+    - AES-128: 44 words
+    - AES-192: 52 words
+    - AES-256: 60 words`}
           </Typography>
         </DialogContent>
         <DialogActions>

@@ -39,7 +39,7 @@ For each new word:
 - Otherwise, leave the word unchanged.
 - XOR the result with the word 8 positions back.
 
-Continue until you have 60 words (15 round keys).`
+Continue until you have 60 words (15 round keys).`,
 };
 
 export default { keyExpansion };
