@@ -12,6 +12,7 @@ import {
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import CalculateIcon from "@mui/icons-material/Calculate";
 
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
@@ -523,12 +524,13 @@ const AddRoundKeyPractice = () => {
 
           <Typography variant="body2" sx={{ mt: 3, fontStyle: "italic" }}>
             <strong>Hint:</strong> Convert each byte to binary, perform XOR bit
-            by bit, then convert back to hexadecimal. You can use the converter
-            below.
+            by bit, then convert back to hexadecimal. Click the
+            <CalculateIcon
+              fontSize="small"
+              sx={{ display: "inline-block", verticalAlign: "middle", mx: 0.5 }}
+            />
+            icon in the navbar to open the converter.
           </Typography>
-          <Box sx={{ mt: 2 }}>
-            <HexBinConverter />
-          </Box>
         </DialogContent>
       </Dialog>
     </Box>

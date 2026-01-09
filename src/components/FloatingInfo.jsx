@@ -5,6 +5,7 @@ import infoImg from "../assets/aes_info_image.png";
 
 export default function FloatingInfo({ keySize = 128, currentStep = null }) {
   const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState("what");
   const panelRef = useRef(null);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function FloatingInfo({ keySize = 128, currentStep = null }) {
         extra += `\nThere are two cases when computing a new word w[i]:\n\nCase 1 — Special transform (i % ${wordsPerKey} === 0)\nApply the following steps to the previous word (w[i-1]), in order:\n  1. Rotate: move the first byte to the end.\n  2. SubWord: substitute each byte using the S-box.\n  3. XOR Rcon: XOR the result with the round constant (Rcon).\n  4. XOR w[i - ${wordsPerKey}]: XOR the result with the word ${wordsPerKey} positions before (start of the previous round key) to produce w[i].\n\nCase 2 — Simple XOR\n  w[i] = w[i - ${wordsPerKey}] XOR w[i - 1]\n\nUse the above rules with the current round key size (words per key = ${wordsPerKey}).`;
       }
 
-      how = how + "\n\n" + extra;
+      how = how + "\n" + extra;
     }
     return how;
   };
@@ -92,23 +93,34 @@ export default function FloatingInfo({ keySize = 128, currentStep = null }) {
             ✕
           </button>
           <div className="floating-info-body">
-            <div className="floating-info-section">
-              <div className="floating-info-section-title">What is it</div>
-              <div
-                className="floating-info-section-content"
-                style={{ whiteSpace: "pre-line" }}
+            <div className="floating-info-tabs">
+              <button
+                type="button"
+                className={`floating-info-tab ${
+                  tab === "what" ? "active" : ""
+                }`}
+                onClick={() => setTab("what")}
               >
-                {renderWhat()}
-              </div>
+                What is it?
+              </button>
+              <button
+                type="button"
+                className={`floating-info-tab ${tab === "how" ? "active" : ""}`}
+                onClick={() => setTab("how")}
+              >
+                How to interact?
+              </button>
             </div>
 
             <div className="floating-info-section">
-              <div className="floating-info-section-title">How to interact</div>
+              <h4 className="floating-info-section-title">
+                {tab === "what" ? "What is it?" : "How to interact?"}
+              </h4>
               <div
                 className="floating-info-section-content"
                 style={{ whiteSpace: "pre-line" }}
               >
-                {renderHow()}
+                {tab === "what" ? renderWhat() : renderHow()}
               </div>
             </div>
           </div>

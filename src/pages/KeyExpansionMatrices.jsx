@@ -149,7 +149,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       } else if (wordIndex % 8 === 4) {
         // Case 2: SubWord-only then XOR with w[i-8]
         setExplanationText(
-          `Case 2 — (i % 8 === 4)\n
+          `Case 2 — Mid-cycle SubWord (i % 8 === 4)\n
           Apply the following step to the previous word (w[i-1]):\n
           1. SubWord: substitute each byte using the S-box.
           2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].`
@@ -157,7 +157,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
       } else {
         // Case 3: simple XOR
         setExplanationText(
-          `Case 3 — Simple XOR\n
+          `Case 3 — Simple XOR (all other words)\n
           w[i] = w[i - 8] XOR w[i - 1]`
         );
       }

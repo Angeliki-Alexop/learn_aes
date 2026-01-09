@@ -30,7 +30,7 @@
   position: fixed;
   right: 28px;
   /* bottom spacing. This changes how far the panel is from the button */
-  bottom: 180px;
+  bottom: 140px;
   width: 480px;
   max-width: calc(100% - 56px);
   max-height: 64vh;
@@ -66,6 +66,41 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.floating-info-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  padding-bottom: 8px;
+}
+.floating-info-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 8px 12px;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #333;
+  margin-right: 6px;
+  transition: background-color 120ms ease, color 120ms ease,
+    border-color 120ms ease;
+}
+.floating-info-tab:not(.active) {
+  background: rgba(0, 0, 0, 0.02);
+  color: #333;
+  border-color: transparent;
+}
+.floating-info-tab.active {
+  background: #643fdc;
+  color: #fff;
+  border-color: #643fdc;
+  box-shadow: none;
+}
+.floating-info-tab:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(100, 63, 220, 0.08);
 }
 
 .floating-info-section {

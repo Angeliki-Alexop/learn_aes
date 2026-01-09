@@ -199,7 +199,6 @@ export function getExplanationColumns({
       roratedWord,
       subEntry,
       subbedWord,
-      // First XOR with Rcon, then XOR with w[i-4], then show Equals and result
       xorEntry,
       rconWord,
       xorEntry,
