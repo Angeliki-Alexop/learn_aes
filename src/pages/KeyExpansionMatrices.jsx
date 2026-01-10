@@ -257,6 +257,8 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               flexWrap: "wrap",
               minWidth: 180,
               flex: "1 1 180px",
+              marginLeft: "200x",
+              marginRight: "500px",
             }}
           >
             <Table
@@ -343,6 +345,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               maxWidth: 400,
               flex: "1 1 220px",
               marginLeft: "auto",
+              marginRight: { xs: 0, md: "100px" },
               width: "100%",
               p: 2,
               bgcolor: "#cae2fc",
