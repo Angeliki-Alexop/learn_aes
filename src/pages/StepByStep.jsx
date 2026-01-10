@@ -308,7 +308,7 @@ function StepByStep() {
           </Typography>
           {/* Step-specific information and interaction hints (StepInfo removed) */}
           <div
-            className="matrix-container"
+            className={`matrix-container ${currentStep === "ShiftRows" ? "shiftrows-step" : ""}`}
             style={{
               display: "flex",
               flexDirection: "row",

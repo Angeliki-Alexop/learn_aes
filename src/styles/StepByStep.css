@@ -188,3 +188,23 @@
   border: 1px solid rgba(100, 63, 220, 0.9) !important;
   box-sizing: border-box;
 }
+
+/* Disable hover background change and clicking for ShiftRows visualization only */
+.shiftrows-table .shiftrows-cell,
+.shiftrows-table .shiftrows-outline-cell {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.shiftrows-table .shiftrows-cell:hover,
+.shiftrows-table .shiftrows-outline-cell:hover {
+  background-color: transparent; /* Override global hover */
+}
+
+/* During ShiftRows step disable clicks and hover for all matrices (previous + next) */
+.shiftrows-step .matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.shiftrows-step .matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
+}
