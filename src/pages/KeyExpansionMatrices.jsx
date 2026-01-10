@@ -257,7 +257,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
               flexWrap: "wrap",
               minWidth: 180,
               flex: "1 1 180px",
-              marginLeft: "200x",
+              marginLeft: "100px",
               marginRight: "500px",
             }}
           >
