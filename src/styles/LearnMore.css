@@ -1,0 +1,134 @@
+/* Styles for LearnMore page: full-height sections with scroll-snap and keyboard navigation */
+.learn-page-root {
+  padding: 0;
+}
+
+.learn-header {
+  position: relative;
+  background: transparent;
+  z-index: 2;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.learn-sub {
+  color: #6f6f8a;
+  margin-top: 6px;
+}
+
+.learn-container {
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+}
+
+.learn-section {
+  scroll-snap-align: start;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  box-sizing: border-box;
+  position: relative;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.learn-content {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+}
+
+.learn-text {
+  flex: 1 1 360px;
+}
+
+.learn-description {
+  margin-top: 12px;
+  color: #2f2f3a;
+  line-height: 1.5;
+  font-size: 1.05rem;
+}
+
+.learn-text h2, .learn-text .MuiTypography-root.MuiTypography-h5 {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.learn-figure {
+  flex: 1 1 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.learn-figure img {
+  max-width: 100%;
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(14,30,37,0.08);
+}
+
+.learn-caption {
+  margin-top: 8px;
+  color: #7c5fe6;
+}
+
+.learn-section-footer {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.nav-up, .nav-down {
+  background: #643fdc;
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(100,63,220,0.18);
+  border-radius: 8px;
+}
+
+/* floating nav — always visible */
+.learn-floating-nav {
+  position: fixed;
+  right: 48px; /* moved away from scrollbar */
+  bottom: 18px;
+  z-index: 60;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: rgba(255,255,255,0.02);
+  padding: 6px;
+  border-radius: 12px;
+}
+
+@media (max-width: 880px) {
+  .learn-floating-nav { right: 12px; }
+}
+
+/* keep per-section footer available for screen readers but visually hidden */
+.learn-section-footer[aria-hidden] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.learn-header h4, .learn-header h1, .learn-header .MuiTypography-root {
+  color: #643fdc;
+}
+
+@media (max-width: 880px) {
+  .learn-content { flex-direction: column-reverse; }
+  .learn-figure img { max-height: 40vh; }
+  .learn-section-footer { right: 8px; bottom: 8px; }
+  .learn-container { height: calc(100vh - 104px); }
+}
