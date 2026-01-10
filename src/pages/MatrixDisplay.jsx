@@ -20,7 +20,7 @@ export function RenderMatrix({
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
-    <Box className="matrix">
+    <Box className={"matrix " + (matrixId === "previous" ? "previous-matrix" : "") }>
       <table className="matrix-table">
         <tbody>
           {matrix.map((row, rowIndex) => (
@@ -96,7 +96,7 @@ export function RenderFixedMatrix({ highlightedRow = null }) {
     ["03", "01", "01", "02"],
   ];
   return (
-    <Box className="matrix">
+    <Box className="matrix fixed-matrix">
       <table className="matrix-table">
         <tbody>
           {fixedMatrix.map((row, rowIndex) => (

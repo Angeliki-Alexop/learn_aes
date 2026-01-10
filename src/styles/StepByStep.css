@@ -208,3 +208,14 @@
 .shiftrows-step .matrix .matrix-table td:hover {
   background-color: transparent; /* Override global hover */
 }
+
+/* During MixColumns step disable clicks and hover for Current State (previous) and Fixed Matrix only */
+.mixcolumns-step .matrix.previous-matrix .matrix-table td,
+.mixcolumns-step .matrix.fixed-matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.mixcolumns-step .matrix.previous-matrix .matrix-table td:hover,
+.mixcolumns-step .matrix.fixed-matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
+}
