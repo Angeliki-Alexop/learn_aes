@@ -219,3 +219,14 @@
 .mixcolumns-step .matrix.fixed-matrix .matrix-table td:hover {
   background-color: transparent; /* Override global hover */
 }
+
+/* During AddRoundKey step disable clicks and hover for Previous State and Round Key tables */
+.addroundkey-step .matrix.previous-matrix .matrix-table td,
+.addroundkey-step .matrix.roundkey-matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.addroundkey-step .matrix.previous-matrix .matrix-table td:hover,
+.addroundkey-step .matrix.roundkey-matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
+}

@@ -308,7 +308,7 @@ function StepByStep() {
           </Typography>
           {/* Step-specific information and interaction hints (StepInfo removed) */}
           <div
-            className={`matrix-container ${currentStep === "ShiftRows" ? "shiftrows-step" : ""} ${currentStep === "MixColumns" ? "mixcolumns-step" : ""}`}
+            className={`matrix-container ${currentStep === "ShiftRows" ? "shiftrows-step" : ""} ${currentStep === "MixColumns" ? "mixcolumns-step" : ""} ${currentStep === "AddRoundKey" ? "addroundkey-step" : ""}`}
             style={{
               display: "flex",
               flexDirection: "row",

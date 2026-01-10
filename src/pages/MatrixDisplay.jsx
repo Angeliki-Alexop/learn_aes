@@ -20,7 +20,7 @@ export function RenderMatrix({
 }) {
   const matrix = formatAsMatrix(hexString);
   return (
-    <Box className={"matrix " + (matrixId === "previous" ? "previous-matrix" : "") }>
+    <Box className={"matrix " + (matrixId === "previous" ? "previous-matrix" : matrixId === "roundKey" ? "roundkey-matrix" : "") }>
       <table className="matrix-table">
         <tbody>
           {matrix.map((row, rowIndex) => (
