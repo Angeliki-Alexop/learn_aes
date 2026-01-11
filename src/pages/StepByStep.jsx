@@ -232,6 +232,12 @@ function StepByStep() {
       stateMap.get(totalRounds)?.find((step) => step.step === "AddRoundKey")
         ?.state || "";
 
+    // If we're on the Input screen before the user has submitted, don't show
+    // the Input details or Result block — just render an empty placeholder.
+    if (currentRound === -2 && currentStep === "Input" && !hasSubmitted) {
+      return <Box />;
+    }
+
     const hexToText = (hex) => {
       return hex
         .split(" ")
@@ -255,7 +261,7 @@ function StepByStep() {
       ["03", "01", "01", "02"],
     ];
 
-    if (currentRound === -2 && currentStep === "Input") {
+    if (currentRound === -2 && currentStep === "Input" && hasSubmitted) {
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
