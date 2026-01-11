@@ -3,7 +3,11 @@ import "./FloatingInfo.css";
 import { STEP_INFO } from "../stepInformation/StepInfo";
 import infoImg from "../assets/aes_info_image.png";
 
-export default function FloatingInfo({ keySize = 128, currentStep = null }) {
+export default function FloatingInfo({
+  keySize = 128,
+  currentStep = null,
+  hasSubmitted = false,
+}) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState("what");
   const panelRef = useRef(null);
@@ -44,10 +48,15 @@ export default function FloatingInfo({ keySize = 128, currentStep = null }) {
 
   const info = showInfoFor(currentStep);
 
-  // phrasing for input/result
-  const minimalForInput = {
-    what: "This is the input of the algorithm. Enter plaintext and key values here before running the step-by-step simulation.",
-    how: "Before submitting: edit the Input values and select the Key Size. After submitting: use the sidebar or the navigation buttons (Previous/Next Step, Previous/Next Round) to move through the rounds and steps.",
+  // phrasing for input/result (before and after submit)
+  const minimalForInputBefore = {
+    what: "This section serves as the algorithm’s input area. Select the operation mode (Encryption or Decryption), specify the key size, enter the secret key, and provide the text to be encrypted or decrypted.",
+    how: "Step 1: Choose mode (Encryption or Decryption). This determines whether the simulation runs the forward AES steps (Encryption) or the inverse steps (Decryption). For Decryption you must use the same key size and key that were used to produce the ciphertext.\n\nStep 2: Select Key Size (128, 192, or 256 bits). The key size sets the expected key length and the number of AES rounds.\n\nStep 3: Enter the text to process. For Encryption provide plaintext and for Decryption provide ciphertext.\n\n Step 4: Enter the secret key matching the selected key size. The key must have the correct length for the chosen size (e.g., 128-bit = 32 hex characters). For Decryption this must be the original key used during encryption.\n\n Step 5: Click Submit to start the step‑by‑step simulation. ",
+  };
+
+  const minimalForInputAfter = {
+    what: "Input submitted — the simulation is ready. Use the sidebar or navigation to explore AES rounds and steps.",
+    how: "Use the sidebar or the navigation buttons (Previous/Next Step, Previous/Next Round) to move through the rounds and steps. Click any cell to inspect transformations.",
   };
   const minimalForResult = {
     what: "Step-by-step AES has ended.",
@@ -55,13 +64,19 @@ export default function FloatingInfo({ keySize = 128, currentStep = null }) {
   };
 
   const renderWhat = () => {
-    if (currentStep === "Input") return minimalForInput.what;
+    if (currentStep === "Input")
+      return hasSubmitted
+        ? minimalForInputAfter.what
+        : minimalForInputBefore.what;
     if (currentStep === "Result") return minimalForResult.what;
     return info ? info.what : "";
   };
 
   const renderHow = () => {
-    if (currentStep === "Input") return minimalForInput.how;
+    if (currentStep === "Input")
+      return hasSubmitted
+        ? minimalForInputAfter.how
+        : minimalForInputBefore.how;
     if (currentStep === "Result") return minimalForResult.how;
     if (!info) return "";
     // for Key Expansion append dynamic text

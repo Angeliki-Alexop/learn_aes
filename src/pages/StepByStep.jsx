@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, IconButton } from "@mui/material";
+import {
+  Typography,
+  Box,
+  IconButton,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import Sidebar from "../components/Sidebar";
@@ -52,10 +62,15 @@ function StepByStep() {
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
-  const [highlightedColumnMixColumn, setHighlightedColumnMixColumn] = useState(null); // Track highlighted column index
-  const [highlightedColumnValuesMixColumn, setHighlightedColumnValuesMixColumn] = useState([]); // Track values in highlighted column
+  const [highlightedColumnMixColumn, setHighlightedColumnMixColumn] =
+    useState(null); // Track highlighted column index
+  const [
+    highlightedColumnValuesMixColumn,
+    setHighlightedColumnValuesMixColumn,
+  ] = useState([]); // Track values in highlighted column
   const [previousStepState, setPreviousStepState] = useState("");
-  const [highlightedRowFixedMatrix, setHighlightedRowFixedMatrix] = useState(null);
+  const [highlightedRowFixedMatrix, setHighlightedRowFixedMatrix] =
+    useState(null);
   const algorithm = "ECB";
   const [mode, setMode] = useState("Encrypt");
 
@@ -77,7 +92,7 @@ function StepByStep() {
     window.addEventListener("stepbystep-reset", resetHandler);
     return () => window.removeEventListener("stepbystep-reset", resetHandler);
   }, []);
-  
+
   useEffect(() => {
     // Reset MixColumns highlights when step or round changes
     setHighlightedColumnMixColumn(null);
@@ -89,7 +104,8 @@ function StepByStep() {
   useEffect(() => {
     let defaultKey = "";
     if (keySize === 128) defaultKey = "DefaultKey123456"; // 16 chars
-    else if (keySize === 192) defaultKey = "DefaultKeyForAES192Key!!"; // 24 chars
+    else if (keySize === 192)
+      defaultKey = "DefaultKeyForAES192Key!!"; // 24 chars
     else if (keySize === 256) defaultKey = "DefaultKeyForAES256Key0123456789"; // 32 chars
     setKey(defaultKey);
     setTempKey(defaultKey);
@@ -119,6 +135,12 @@ function StepByStep() {
     setPreviousStepState(prevState);
   }, [currentRound, currentStep, stateMap, inputText, keySize]);
 
+  const defaultKeyForSize = (size) => {
+    if (size === 128) return "DefaultKey123456";
+    if (size === 192) return "DefaultKeyForAES192Key!!";
+    return "DefaultKeyForAES256Key0123456789";
+  };
+
   const toHex = (arr) => {
     return arr.map((byte) => byte.toString(16).padStart(2, "0")).join(" ");
   };
@@ -131,27 +153,28 @@ function StepByStep() {
     const paddedState = padPKCS7(initialState, 16);
     // Used to reset highlights after we click a new cell
     // Remove highlight from all cells first
-    const highlightedCells = document.querySelectorAll(".highlighted, .highlighted_new");
-      highlightedCells.forEach(cell => {
+    const highlightedCells = document.querySelectorAll(
+      ".highlighted, .highlighted_new"
+    );
+    highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
       cell.classList.remove("highlighted_new");
     });
 
     if (currentStep === "SubBytes") {
-      if( matrixId === "previous" ){
+      if (matrixId === "previous") {
         setHighlightedCell(id);
         setHighlightedCellValue(value);
         const cellId = `current-${rowIdx}-${colIdx}`;
         const cell = document.getElementById(cellId);
         if (cell) {
-          cell.classList.add("highlighted_new"); 
+          cell.classList.add("highlighted_new");
         }
 
         return;
-      }
-      else{
-            // Get the corresponding cell from the previous state matrix
-        
+      } else {
+        // Get the corresponding cell from the previous state matrix
+
         const prevId = `previous-${rowIdx}-${colIdx}`;
         const prevMatrix = formatAsMatrix(previousStepState);
         const prevValue = prevMatrix[rowIdx][colIdx];
@@ -160,7 +183,7 @@ function StepByStep() {
         const cellId = `current-${rowIdx}-${colIdx}`;
         const cell = document.getElementById(cellId);
         if (cell) {
-          cell.classList.add("highlighted_new"); 
+          cell.classList.add("highlighted_new");
         }
 
         return;
@@ -194,7 +217,7 @@ function StepByStep() {
 
         // Get previous state matrix as 4x4 array
         const prevMatrix = formatAsMatrix(previousStepState);
-        const colValues = prevMatrix.map(row => row[colIdx]);
+        const colValues = prevMatrix.map((row) => row[colIdx]);
         setHighlightedColumnValuesMixColumn(colValues);
         console.log("Highlighted column values:", colValues);
         return;
@@ -213,7 +236,7 @@ function StepByStep() {
     } else {
       if (highlightedCell) {
         const highlightedCells = document.querySelectorAll(".highlighted");
-        highlightedCells.forEach(cell => {
+        highlightedCells.forEach((cell) => {
           cell.classList.remove("highlighted");
         });
       }
@@ -249,10 +272,185 @@ function StepByStep() {
       stateMap.get(totalRounds)?.find((step) => step.step === "AddRoundKey")
         ?.state || "";
 
-    // If we're on the Input screen before the user has submitted, don't show
-    // the Input details or Result block — just render an empty placeholder.
+    // If we're on the Input screen before the user has submitted, show
+    // an introductory title and short description (based on selected mode).
     if (currentRound === -2 && currentStep === "Input" && !hasSubmitted) {
-      return <Box />;
+      const subtitle = mode === "Encrypt" ? "AES Encryption" : "AES Decryption";
+      return (
+        <Box sx={{ textAlign: "center", mb: 4 }}>
+          <Typography
+            variant="h3"
+            component="h1"
+            gutterBottom
+            sx={{
+              fontWeight: 700,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Exploring the Advanced Encryption Standard (AES)
+          </Typography>
+          <Typography
+            variant="body1"
+            color="information"
+            sx={{ maxWidth: 900, mx: "auto", mb: 2 }}
+          >
+            Welcome! This interactive tool will guide you through the AES
+            algorithm step by step, making it easy to understand how each
+            operation works. Use the AES Helper to get extra explanations, see
+            what’s happening at every stage, and learn how to interact with the
+            tool to explore all its features. Have fun learning and
+            experimenting with AES!
+          </Typography>
+          <Typography
+            variant="h5"
+            component="h2"
+            gutterBottom
+            sx={{ fontWeight: 700, color: "text.primary", mb: 1 }}
+          >
+            {subtitle}
+          </Typography>
+
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="body1" color="information">
+              Select the desired mode:
+            </Typography>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <Button
+                variant={mode === "Encrypt" ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => {
+                  setMode("Encrypt");
+                  setTempInputText("Test");
+                  setTempKey(defaultKeyForSize(keySize));
+                }}
+                sx={
+                  mode === "Encrypt"
+                    ? {
+                        backgroundColor: "#9c27b0",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#87219a" },
+                      }
+                    : {}
+                }
+              >
+                ENCRYPTION
+              </Button>
+              <Button
+                variant={mode === "Decrypt" ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => {
+                  setMode("Decrypt");
+                  setTempInputText("AA==");
+                  setTempKey(defaultKeyForSize(keySize));
+                }}
+                sx={
+                  mode === "Decrypt"
+                    ? {
+                        backgroundColor: "#9c27b0",
+                        color: "#fff",
+                        "&:hover": { backgroundColor: "#87219a" },
+                      }
+                    : {}
+                }
+              >
+                DECRYPTION
+              </Button>
+            </Box>
+            <Typography
+              variant="body1"
+              color="information"
+              display="block"
+              sx={{ mt: 1 }}
+            >
+              Select the desired Key Size:
+            </Typography>
+            <Box sx={{ mt: 1, width: 220 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel id="keysize-label">Key Size</InputLabel>
+                <Select
+                  labelId="keysize-label"
+                  id="keysize-select"
+                  value={keySize}
+                  label="Key Size"
+                  onChange={(e) => {
+                    const newSize = Number(e.target.value);
+                    setKeySize(newSize);
+                    setTempKey(defaultKeyForSize(newSize));
+                  }}
+                >
+                  <MenuItem value={128}>128 bits</MenuItem>
+                  <MenuItem value={192}>192 bits</MenuItem>
+                  <MenuItem value={256}>256 bits</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Box sx={{ width: "60%", maxWidth: 720, mt: 2 }}>
+              <TextField
+                label={
+                  mode === "Encrypt"
+                    ? "Enter Plain Text to Encrypt"
+                    : "AES Encrypted Text"
+                }
+                value={tempInputText}
+                onChange={(e) => setTempInputText(e.target.value)}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                inputProps={{ maxLength: 256 }}
+              />
+              <TextField
+                label={
+                  mode === "Encrypt"
+                    ? "Enter Secret Key"
+                    : "Enter Secret Key used for Encryption"
+                }
+                value={tempKey}
+                onChange={(e) => setTempKey(e.target.value)}
+                variant="outlined"
+                fullWidth
+                margin="normal"
+                error={!!keyError}
+                helperText={keyError}
+                inputProps={{
+                  maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32,
+                }}
+              />
+              <Box textAlign="center">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() =>
+                    handleSubmitButtonClick(
+                      tempKey,
+                      tempInputText,
+                      keySize,
+                      setKeyError,
+                      setInputText,
+                      setKey,
+                      setSidebarVisible,
+                      setRoundKeys,
+                      setStateMap,
+                      setHasSubmitted
+                    )
+                  }
+                  sx={{ mt: 2 }}
+                  disabled={mode === "Decrypt"}
+                >
+                  Submit
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      );
     }
 
     const hexToText = (hex) => {
@@ -331,11 +529,15 @@ function StepByStep() {
           </Typography>
           {/* Step-specific information and interaction hints (StepInfo removed) */}
           <div
-            className={`matrix-container ${currentStep === "ShiftRows" ? "shiftrows-step" : ""} ${currentStep === "MixColumns" ? "mixcolumns-step" : ""} ${currentStep === "AddRoundKey" ? "addroundkey-step" : ""}`}
+            className={`matrix-container ${
+              currentStep === "ShiftRows" ? "shiftrows-step" : ""
+            } ${currentStep === "MixColumns" ? "mixcolumns-step" : ""} ${
+              currentStep === "AddRoundKey" ? "addroundkey-step" : ""
+            }`}
             style={{
               display: "flex",
               flexDirection: "row",
-              flexWrap: "wrap", 
+              flexWrap: "wrap",
               alignItems: "flex-start",
               justifyContent: "space-between",
               width: "100%",
@@ -349,7 +551,11 @@ function StepByStep() {
               highlightRows={currentStep === "ShiftRows"}
               highlightColumns={false}
               highlightedCell={highlightedCell}
-              highlightedColumns={highlightedColumnMixColumn !== null ? [highlightedColumnMixColumn] : []}
+              highlightedColumns={
+                highlightedColumnMixColumn !== null
+                  ? [highlightedColumnMixColumn]
+                  : []
+              }
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
             />
@@ -362,24 +568,29 @@ function StepByStep() {
                       // Convert previousStepState to 4x4 column-major matrix
                       const flat = previousStepState.split(" ").filter(Boolean);
                       // AES state is column-major: state[col][row]
-                      const matrix = [0, 1, 2, 3].map(row =>
-                        [0, 1, 2, 3].map(col => flat[col * 4 + row] || "")
+                      const matrix = [0, 1, 2, 3].map((row) =>
+                        [0, 1, 2, 3].map((col) => flat[col * 4 + row] || "")
                       );
                       // Build the ShiftRows visualization (4x7)
-                      return [0, 1, 2, 3].map(rowIdx => (
+                      return [0, 1, 2, 3].map((rowIdx) => (
                         <tr key={rowIdx}>
                           {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
                             let cellValue = "";
                             // Place the 4 values in shifted positions (visual sliding window)
-                            if (colIdx === 3 - rowIdx) cellValue = matrix[rowIdx][0];
-                            else if (colIdx === 4 - rowIdx) cellValue = matrix[rowIdx][1];
-                            else if (colIdx === 5 - rowIdx) cellValue = matrix[rowIdx][2];
-                            else if (colIdx === 6 - rowIdx) cellValue = matrix[rowIdx][3];
+                            if (colIdx === 3 - rowIdx)
+                              cellValue = matrix[rowIdx][0];
+                            else if (colIdx === 4 - rowIdx)
+                              cellValue = matrix[rowIdx][1];
+                            else if (colIdx === 5 - rowIdx)
+                              cellValue = matrix[rowIdx][2];
+                            else if (colIdx === 6 - rowIdx)
+                              cellValue = matrix[rowIdx][3];
 
                             // Determine regions
                             const isOutlineRegion = colIdx >= 3 && colIdx <= 6; // rightmost 4x4 outlined
-                            const isShiftedOut = colIdx < 3 && !!cellValue;     // values shifted outside the outline
-                            const isEmptyInsideOutline = isOutlineRegion && !cellValue; // gap left inside outline
+                            const isShiftedOut = colIdx < 3 && !!cellValue; // values shifted outside the outline
+                            const isEmptyInsideOutline =
+                              isOutlineRegion && !cellValue; // gap left inside outline
 
                             // Keep sizing in CSS; minimal inline style only
                             const baseStyle = {
@@ -390,13 +601,27 @@ function StepByStep() {
                             // Outline cell: draw only the outer border of the 4x4 block
                             if (isOutlineRegion) {
                               const borderColor = "rgba(100,63,220,0.9)"; // purpleish outline
-                              const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const left = colIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const right = colIdx === 6 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const top =
+                                rowIdx === 0
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const bottom =
+                                rowIdx === 3
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const left =
+                                colIdx === 3
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const right =
+                                colIdx === 6
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
 
                               // purpleish background for EMPTY slots inside the outlined 4x4 (only these)
-                              const emptyBg = isEmptyInsideOutline ? "rgba(100,63,220,0.12)" : "transparent";
+                              const emptyBg = isEmptyInsideOutline
+                                ? "rgba(100,63,220,0.12)"
+                                : "transparent";
 
                               return (
                                 <td
@@ -417,7 +642,9 @@ function StepByStep() {
                             }
 
                             // Outside area: DO NOT change background, only color the text for shifted-out values
-                            const shiftedTextColor = isShiftedOut ? "rgba(100,63,220,0.9)" : undefined;
+                            const shiftedTextColor = isShiftedOut
+                              ? "rgba(100,63,220,0.9)"
+                              : undefined;
 
                             return (
                               <td
@@ -438,11 +665,15 @@ function StepByStep() {
                     })()}
                   </tbody>
                 </table>
-                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
+                <Typography
+                  variant="caption"
+                  align="center"
+                  style={{ marginTop: 4 }}
+                >
                   ShiftRows Table
                 </Typography>
               </div>
-            )} 
+            )}
             {/* Show S-Box between matrices only for SubBytes step */}
             {currentStep === "SubBytes" && (
               <div className="matrix sbox-matrix">
@@ -522,12 +753,16 @@ function StepByStep() {
             {currentStep === "MixColumns" && (
               <MixColumnsExplanations
                 selectedCellValue={highlightedCellValue}
-                highlightedFixedMatrixRow={highlightedRowFixedMatrix !== null ? [
-                  ["02", "03", "01", "01"],
-                  ["01", "02", "03", "01"],
-                  ["01", "01", "02", "03"],
-                  ["03", "01", "01", "02"],
-                ][highlightedRowFixedMatrix] : []}
+                highlightedFixedMatrixRow={
+                  highlightedRowFixedMatrix !== null
+                    ? [
+                        ["02", "03", "01", "01"],
+                        ["01", "02", "03", "01"],
+                        ["01", "01", "02", "03"],
+                        ["03", "01", "01", "02"],
+                      ][highlightedRowFixedMatrix]
+                    : []
+                }
                 highlightedPrevStateColumn={highlightedColumnValuesMixColumn}
               />
             )}
@@ -560,16 +795,18 @@ function StepByStep() {
     }
   };
 
-useEffect(() => {
-  // Reset highlighted cell when step or round changes
-  const highlightedCells = document.querySelectorAll(".highlighted, .highlighted_new");
-  highlightedCells.forEach(cell => {
-    cell.classList.remove("highlighted");
-    cell.classList.remove("highlighted_new");
-  });
-  setHighlightedCell(null);
-  setHighlightedCellValue("");
-}, [currentRound, currentStep, stateMap, inputText, keySize]);
+  useEffect(() => {
+    // Reset highlighted cell when step or round changes
+    const highlightedCells = document.querySelectorAll(
+      ".highlighted, .highlighted_new"
+    );
+    highlightedCells.forEach((cell) => {
+      cell.classList.remove("highlighted");
+      cell.classList.remove("highlighted_new");
+    });
+    setHighlightedCell(null);
+    setHighlightedCellValue("");
+  }, [currentRound, currentStep, stateMap, inputText, keySize]);
 
   return (
     <div
@@ -678,8 +915,13 @@ useEffect(() => {
           hasSubmitted={hasSubmitted}
           mode={mode}
           setMode={setMode}
+          showInitialControls={false}
         />
-        <FloatingInfo keySize={keySize} currentStep={currentStep} />
+        <FloatingInfo
+          keySize={keySize}
+          currentStep={currentStep}
+          hasSubmitted={hasSubmitted}
+        />
       </div>
     </div>
   );

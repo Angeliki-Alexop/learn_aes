@@ -32,7 +32,8 @@ export function StepNavigation({
   mode,
   setMode,
   setHasSubmitted,
-  hasSubmitted
+  hasSubmitted,
+  showInitialControls = true,
 }) {
   const defaultKeyForSize = (size) => {
     if (size === 128) return "DefaultKey123456";
@@ -48,7 +49,7 @@ export function StepNavigation({
       className="buttons-container"
     >
       {/* Show only the submit button before submission */}
-      {currentRound === -2 && !hasSubmitted && (
+      {currentRound === -2 && !hasSubmitted && showInitialControls && (
         <Box
           id="input_text_key"
           display="flex"
@@ -67,15 +68,26 @@ export function StepNavigation({
                 setTempKey(defaultKeyForSize(keySize));
               }}
               style={{ marginRight: 8 }}
+              sx={
+                mode === "Encrypt"
+                  ? {
+                      backgroundColor: "#9c27b0",
+                      color: "#fff",
+                      "&:hover": { backgroundColor: "#87219a" },
+                    }
+                  : {}
+              }
             >
               Encryption
             </Button>
             <Box display="flex" alignItems="center" sx={{ mx: 1 }}>
-              <label htmlFor="key-size-select" style={{ marginRight: 8 }}>Key Size:</label>
+              <label htmlFor="key-size-select" style={{ marginRight: 8 }}>
+                Key Size:
+              </label>
               <select
                 id="key-size-select"
                 value={keySize}
-                onChange={e => setKeySize(Number(e.target.value))}
+                onChange={(e) => setKeySize(Number(e.target.value))}
                 style={{ padding: "4px 8px", fontSize: "1rem" }}
               >
                 <option value={128}>128 bits</option>
@@ -92,12 +104,25 @@ export function StepNavigation({
                 setTempKey(defaultKeyForSize(keySize));
               }}
               style={{ marginLeft: 8 }}
+              sx={
+                mode === "Decrypt"
+                  ? {
+                      backgroundColor: "#9c27b0",
+                      color: "#fff",
+                      "&:hover": { backgroundColor: "#87219a" },
+                    }
+                  : {}
+              }
             >
               Decryption
             </Button>
           </Box>
           <TextField
-            label={mode === "Encrypt" ? "Enter Plain Text to Encrypt" : "AES Encrypted Text"}
+            label={
+              mode === "Encrypt"
+                ? "Enter Plain Text to Encrypt"
+                : "AES Encrypted Text"
+            }
             value={tempInputText}
             onChange={(e) => setTempInputText(e.target.value)}
             variant="outlined"
@@ -118,7 +143,9 @@ export function StepNavigation({
             margin="normal"
             error={!!keyError}
             helperText={keyError}
-            inputProps={{ maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32 }}
+            inputProps={{
+              maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32,
+            }}
           />
           <Button
             variant="contained"
@@ -164,11 +191,7 @@ export function StepNavigation({
             color="primary"
             style={{ margin: "8px" }}
             onClick={() =>
-              handlePreviousRound(
-                currentRound,
-                setCurrentRound,
-                setCurrentStep
-              )
+              handlePreviousRound(currentRound, setCurrentRound, setCurrentStep)
             }
             disabled={currentRound <= 0}
           >
