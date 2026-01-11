@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { Container, Typography, Button, Box } from "@mui/material";
 import "./../styles/Train.css";
 import SubBytesPractice from "../components/practice/SubBytesPractice";
@@ -10,6 +11,17 @@ import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 function Train() {
   const [activePage, setActivePage] = useState("practice"); // default to practice landing
   const [selectedExercise, setSelectedExercise] = useState(null);
+
+  // Listen for header-triggered reset events (clicking Train in header)
+  useEffect(() => {
+    const resetHandler = () => {
+      setActivePage("practice");
+      setSelectedExercise(null);
+    };
+
+    window.addEventListener("train-reset", resetHandler);
+    return () => window.removeEventListener("train-reset", resetHandler);
+  }, []);
 
   const exercises = [
     {

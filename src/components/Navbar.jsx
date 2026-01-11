@@ -55,6 +55,11 @@ function Navbar() {
               <Button
                 component={Link}
                 to="/step-by-step"
+                onClick={() => {
+                  if (location.pathname === "/step-by-step") {
+                    window.dispatchEvent(new CustomEvent("stepbystep-reset"));
+                  }
+                }}
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
@@ -69,6 +74,11 @@ function Navbar() {
               <Button
                 component={Link}
                 to="/"
+                onClick={() => {
+                  if (location.pathname === "/") {
+                    window.dispatchEvent(new CustomEvent("train-reset"));
+                  }
+                }}
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },

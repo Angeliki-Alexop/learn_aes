@@ -29,9 +29,16 @@ export function StepNavigation({
   handleNextStep,
   handleNextRound,
   handleFinalRound,
+  mode,
+  setMode,
   setHasSubmitted,
   hasSubmitted
 }) {
+  const defaultKeyForSize = (size) => {
+    if (size === 128) return "DefaultKey123456";
+    if (size === 192) return "DefaultKeyForAES192Key!!";
+    return "DefaultKeyForAES256Key0123456789";
+  };
   return (
     <Box
       mt={2}
@@ -49,31 +56,61 @@ export function StepNavigation({
           alignItems="center"
           width="50%"
         >
-          {/* Key Size Selector */}
+          {/* Mode buttons with Key Size Selector in the middle */}
           <Box display="flex" flexDirection="row" alignItems="center" mb={2}>
-            <label htmlFor="key-size-select" style={{ marginRight: 8 }}>Key Size:</label>
-            <select
-              id="key-size-select"
-              value={keySize}
-              onChange={e => setKeySize(Number(e.target.value))}
-              style={{ padding: "4px 8px", fontSize: "1rem" }}
+            <Button
+              variant={mode === "Encrypt" ? "contained" : "outlined"}
+              color={mode === "Encrypt" ? "primary" : "inherit"}
+              onClick={() => {
+                setMode("Encrypt");
+                setTempInputText("Test");
+                setTempKey(defaultKeyForSize(keySize));
+              }}
+              style={{ marginRight: 8 }}
             >
-              <option value={128}>128 bits</option>
-              <option value={192}>192 bits</option>
-              <option value={256}>256 bits</option>
-            </select>
+              Encryption
+            </Button>
+            <Box display="flex" alignItems="center" sx={{ mx: 1 }}>
+              <label htmlFor="key-size-select" style={{ marginRight: 8 }}>Key Size:</label>
+              <select
+                id="key-size-select"
+                value={keySize}
+                onChange={e => setKeySize(Number(e.target.value))}
+                style={{ padding: "4px 8px", fontSize: "1rem" }}
+              >
+                <option value={128}>128 bits</option>
+                <option value={192}>192 bits</option>
+                <option value={256}>256 bits</option>
+              </select>
+            </Box>
+            <Button
+              variant={mode === "Decrypt" ? "contained" : "outlined"}
+              color={mode === "Decrypt" ? "primary" : "inherit"}
+              onClick={() => {
+                setMode("Decrypt");
+                setTempInputText("AA==");
+                setTempKey(defaultKeyForSize(keySize));
+              }}
+              style={{ marginLeft: 8 }}
+            >
+              Decryption
+            </Button>
           </Box>
           <TextField
-            label="Input Text"
+            label={mode === "Encrypt" ? "Enter Plain Text to Encrypt" : "AES Encrypted Text"}
             value={tempInputText}
             onChange={(e) => setTempInputText(e.target.value)}
             variant="outlined"
             fullWidth
             margin="normal"
-            inputProps={{ maxLength: 32 }}
+            inputProps={{ maxLength: 64 }}
           />
           <TextField
-            label="Key"
+            label={
+              mode === "Encrypt"
+                ? "Enter Secret Key"
+                : "Enter Secret Key used for Encryption"
+            }
             value={tempKey}
             onChange={(e) => setTempKey(e.target.value)}
             variant="outlined"
@@ -101,6 +138,7 @@ export function StepNavigation({
               )
             }
             style={{ marginTop: "16px" }}
+            disabled={mode === "Decrypt"}
           >
             Submit
           </Button>

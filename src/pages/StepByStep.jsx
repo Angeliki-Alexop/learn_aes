@@ -57,9 +57,26 @@ function StepByStep() {
   const [previousStepState, setPreviousStepState] = useState("");
   const [highlightedRowFixedMatrix, setHighlightedRowFixedMatrix] = useState(null);
   const algorithm = "ECB";
-  const mode = "Encode";
+  const [mode, setMode] = useState("Encrypt");
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
+
+  // Listen for header-triggered reset events (clicking StepByStep in header)
+  useEffect(() => {
+    const resetHandler = () => {
+      setCurrentRound(-2);
+      setCurrentStep("Input");
+      setHasSubmitted(false);
+      setSidebarVisible(false);
+      setRoundKeys([]);
+      setStateMap(new Map());
+      setHighlightedCell(null);
+      setHighlightedCellValue("");
+    };
+
+    window.addEventListener("stepbystep-reset", resetHandler);
+    return () => window.removeEventListener("stepbystep-reset", resetHandler);
+  }, []);
   
   useEffect(() => {
     // Reset MixColumns highlights when step or round changes
@@ -659,6 +676,8 @@ useEffect(() => {
           handleFinalRound={handleFinalRound}
           setHasSubmitted={setHasSubmitted}
           hasSubmitted={hasSubmitted}
+          mode={mode}
+          setMode={setMode}
         />
         <FloatingInfo keySize={keySize} currentStep={currentStep} />
       </div>
