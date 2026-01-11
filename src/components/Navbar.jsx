@@ -16,7 +16,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Grid3x3 } from "lucide-react";
 import SBoxOverlay from "./SBoxOverlay";
-import CalculateIcon from '@mui/icons-material/Calculate';
+import CalculateIcon from "@mui/icons-material/Calculate";
 import CalculatorOverlay from "./CalculatorOverlay";
 
 function Navbar() {
@@ -49,14 +49,19 @@ function Navbar() {
                 />
               </Link>
             </Box>
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+            <Box
+              sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+            >
               <Button
                 component={Link}
                 to="/step-by-step"
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/step-by-step" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/step-by-step"
+                      ? "#7c5fe6"
+                      : "inherit",
                 }}
               >
                 StepByStep
@@ -67,7 +72,8 @@ function Navbar() {
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/" ? "#7c5fe6" : "inherit",
                 }}
               >
                 Train
@@ -78,21 +84,11 @@ function Navbar() {
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
                 }}
               >
                 Learn More
-              </Button>
-              <Button
-                component={Link}
-                to="/About"
-                color="inherit"
-                sx={{
-                  "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/About" ? "#7c5fe6" : "inherit",
-                }}
-              >
-                About
               </Button>
               {/* S-box Icon Button */}
               <Tooltip title="S-box" arrow>
@@ -147,10 +143,18 @@ function Navbar() {
                 <MenuItem component={Link} to="/" onClick={handleMenuClose}>
                   Home
                 </MenuItem>
-                <MenuItem component={Link} to="/decode" onClick={handleMenuClose}>
+                <MenuItem
+                  component={Link}
+                  to="/decode"
+                  onClick={handleMenuClose}
+                >
                   Decode
                 </MenuItem>
-                <MenuItem component={Link} to="/encode" onClick={handleMenuClose}>
+                <MenuItem
+                  component={Link}
+                  to="/encode"
+                  onClick={handleMenuClose}
+                >
                   Encode
                 </MenuItem>
                 <MenuItem
@@ -160,10 +164,20 @@ function Navbar() {
                 >
                   StepByStep
                 </MenuItem>
-                <MenuItem onClick={() => { setSboxOpen(true); handleMenuClose(); }}>
+                <MenuItem
+                  onClick={() => {
+                    setSboxOpen(true);
+                    handleMenuClose();
+                  }}
+                >
                   S-box
                 </MenuItem>
-                <MenuItem onClick={() => { setCalcOpen(true); handleMenuClose(); }}>
+                <MenuItem
+                  onClick={() => {
+                    setCalcOpen(true);
+                    handleMenuClose();
+                  }}
+                >
                   Calculator
                 </MenuItem>
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}
