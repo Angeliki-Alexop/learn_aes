@@ -11,7 +11,8 @@ function App() {
     <Router basename="/learn_aes">
       <Navbar />
       <Routes>
-        <Route path="/" element={<Train />} />
+        <Route path="/" element={<StepByStep />} />
+        <Route path="/train" element={<Train />} />
         <Route path="/step-by-step" element={<StepByStep />} />
         <Route path="/LearnMore" element={<LearnMore />} />
         {/* <Route path="/incremental" element={<Incremental />} /> */}

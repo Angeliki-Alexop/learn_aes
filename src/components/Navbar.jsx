@@ -73,9 +73,9 @@ function Navbar() {
               </Button>
               <Button
                 component={Link}
-                to="/"
+                to="/train"
                 onClick={() => {
-                  if (location.pathname === "/") {
+                  if (location.pathname === "/train") {
                     window.dispatchEvent(new CustomEvent("train-reset"));
                   }
                 }}
@@ -83,7 +83,7 @@ function Navbar() {
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
                   backgroundColor:
-                    location.pathname === "/" ? "#7c5fe6" : "inherit",
+                    location.pathname === "/train" ? "#7c5fe6" : "inherit",
                 }}
               >
                 Train
