@@ -25,20 +25,52 @@ function SBoxOverlay({ open, onClose }) {
           maxHeight: "90vh",
           zIndex: 1300,
           padding: 3,
-          background: "#fff",
+          background: "#ffffff",
           overflow: "auto",
         },
       }}
     >
       <Box>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography variant="h6" align="left" gutterBottom sx={{ flex: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            align="left"
+            gutterBottom
+            sx={{ flex: 1, marginTop: -2 }}
+          >
             AES S-box
           </Typography>
-          <IconButton onClick={() => { setSelected(null); onClose(); }} aria-label="Close S-box">
+          <IconButton
+            onClick={() => {
+              setSelected(null);
+              onClose();
+            }}
+            aria-label="Close S-box"
+            sx={{ marginTop: -2 }}
+          >
             <CloseIcon />
           </IconButton>
         </Box>
+        <Typography variant="body1" gutterBottom>
+          The S-box (Substitution box) is a fixed lookup table used in AES to
+          replace each byte with a different byte. It adds non-linearity, making
+          the encryption resistant to patterns and attacks. Each byte is
+          substituted independently by using its hexadecimal value to select a
+          row and column in the S-box and the value found there becomes the new
+          byte.
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1, mb: 1, fontStyle: "italic" }}>
+          <strong>Hint:</strong> Click any cell to highlight its row and column.
+          The selected cell shows the substituted value for the corresponding
+          input byte.
+        </Typography>
         <Box sx={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
@@ -116,22 +148,6 @@ function SBoxOverlay({ open, onClose }) {
               ))}
             </tbody>
           </table>
-        </Box>
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="body1" gutterBottom>
-            The AES S-box (Substitution box) is a fundamental component in the
-            AES encryption algorithm. It provides non-linearity by substituting
-            each byte of the input with another value, making cryptanalysis more
-            difficult.
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ mt: 3, mb: 5, fontStyle: "italic" }}
-          >
-            <strong>Hint:</strong> Click any cell to highlight its row and
-            column. The selected cell shows the substituted value for the
-            corresponding input byte.
-          </Typography>
         </Box>
       </Box>
     </Drawer>

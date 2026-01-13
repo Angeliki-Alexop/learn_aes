@@ -55,12 +55,12 @@ export default function FloatingInfo({
   };
 
   const minimalForInputAfter = {
-    what: "Input submitted — the simulation is ready. Use the sidebar or navigation to explore AES rounds and steps.",
-    how: "Use the sidebar or the navigation buttons (Previous/Next Step, Previous/Next Round) to move through the rounds and steps. Click any cell to inspect transformations.",
+    what: "This page summarizes all the parameters selected for the AES operation and shows how your input is prepared before the algorithm steps begin.",
+    how: "This tool lets you explore the AES algorithm step by step, giving you full control over each round and operation. Use the navigation options below to move through the algorithm at your own pace and focus on the parts you want to understand.\n\n • Use the sidebar to select any AES round and jump directly to a specific step (SubBytes, ShiftRows, MixColumns, or AddRoundKey).\n\n • Use the Previous / Next Step buttons to move through the algorithm steps within the current round.\n\n • Use the Previous / Next Round buttons to navigate between AES rounds.\n\n • The Input button returns you to the input and configuration summary page.\n\n • The Final Round button takes you directly to the last round of the AES algorithm.\n\nEnjoy exploring AES!",
   };
   const minimalForResult = {
-    what: "Step-by-step AES has ended.",
-    how: "You can review the final state or restart from the Input step.",
+    what: "The step-by-step AES process has now been completed!\n This page presents a complete overview of the AES encryption outcome, showing how the original input text and encryption key are processed and transformed into the final encrypted output.",
+    how: "You have reached the end of the step-by-step AES process!\n\n If you’d like to try again with different values, you can restart the process at any time by clicking the STEPBYSTEP button in the navigation bar, or revisit any round and step to review how the algorithm works in detail.\n\n When you feel confident with the AES process, head over to the Train page to challenge yourself and practice the AES steps on your own.\n Good luck!",
   };
 
   const renderWhat = () => {

@@ -108,13 +108,15 @@
 }
 .floating-info-section-title {
   margin: 0 0 6px 0;
-  font-size: 16px;
+  font-size: 18px;
   color: #2e2e2e;
   font-weight: 600;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
 .floating-info-section-content {
   margin: 0;
   color: #333;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 16px;
+  line-height: 1.5;
+  font-family: Arial, Helvetica, sans-serif;
 }

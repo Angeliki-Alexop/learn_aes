@@ -10,8 +10,22 @@ import {
   MenuItem,
   TextField,
 } from "@mui/material";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+
+const LightTooltip = styled(({ className, ...props }) => (
+  <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: theme.palette.common.white,
+    color: "rgba(0, 0, 0, 0.87)",
+    boxShadow: theme.shadows[1],
+    fontSize: 15,
+  },
+}));
 import Sidebar from "../components/Sidebar";
 import {
   handleSubmitButtonClick,
@@ -285,6 +299,7 @@ function StepByStep() {
             sx={{
               fontWeight: 700,
               letterSpacing: "-0.02em",
+              color: "#661974",
             }}
           >
             Exploring the Advanced Encryption Standard (AES)
@@ -478,35 +493,169 @@ function StepByStep() {
 
     if (currentRound === -2 && currentStep === "Input" && hasSubmitted) {
       return (
-        <Box>
-          <Typography variant="h6" component="h2" align="center">
-            Input Values
-          </Typography>
-          {/* StepInfo removed. Floating info button available at bottom-right. */}
-          <Typography variant="body1" component="p" align="center">
-            Text: {inputText}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Text (Hex): {toHex(initialState)}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Padded Text (Hex): {toHex(paddedState)}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Key: {key}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Key (Hex): {toHex(key.split("").map((char) => char.charCodeAt(0)))}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Algorithm: {algorithm}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Key Size: {keySize} bits
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Mode: {mode}
-          </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ width: "100%", maxWidth: 920 }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              align="center"
+              gutterBottom
+              sx={{
+                fontWeight: 700,
+                mb: 3,
+              }}
+            >
+              Input Summary
+            </Typography>
+
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+                alignItems: "start",
+                justifyContent: "center",
+                mt: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  textAlign: "left",
+                  border: "5px solid rgba(129, 18, 180, 0.08)",
+                  borderRadius: 3,
+                  p: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Original Input Text
+                  </Typography>
+                  <LightTooltip
+                    title="The original plaintext message entered by the user"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography>{inputText || "(empty)"}</Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Input Text (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The hexadecimal representation of the input text"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(initialState)}
+                </Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Padded Input Text (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The input text after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
+                    placement="top-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(paddedState)}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  textAlign: "left",
+                  border: "5px solid rgba(129, 18, 180, 0.08)",
+                  borderRadius: 3,
+                  p: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Encryption Key
+                  </Typography>
+                  <LightTooltip
+                    title="The secret key provided by the user for the AES encryption process"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography>{key}</Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Encryption Key (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The hexadecimal representation of the encryption key"
+                    placement="top-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(key.split("").map((char) => char.charCodeAt(0)))}
+                </Typography>
+
+                {/* Commented out Cipher Mode info for simplicity. We can add it back later if Eui requests it.
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>Cipher Mode</Typography>
+                  <LightTooltip
+                    title="AES block cipher mode being used (fixed)"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography>{algorithm}</Typography> */}
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Operation Mode
+                  </Typography>
+                  <LightTooltip
+                    title="Encrypt or Decrypt mode selected by the user"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography>{mode}</Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>Key Size</Typography>
+                  <LightTooltip
+                    title="Selected key size in bits)"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography>{keySize} bits</Typography>
+              </Box>
+            </Box>
+          </Box>
         </Box>
       );
     } else if (currentRound === -1 && currentStep === "Key Expansion") {
@@ -771,25 +920,143 @@ function StepByStep() {
       );
     } else {
       return (
-        <Box>
-          <Typography variant="h6" component="h2" align="center">
-            Result
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Input Text Padded (Hex): {toHex(paddedState)}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Input Text Padded: {hexToText(toHex(paddedState))}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Key (Hex): {toHex(key.split("").map((char) => char.charCodeAt(0)))}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Result (Hex): {resultState}
-          </Typography>
-          <Typography variant="body1" component="p" align="center">
-            Result (Base64): {hexToBase64(resultState)}
-          </Typography>
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ width: "100%", maxWidth: 920 }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              align="center"
+              gutterBottom
+              sx={{ fontWeight: 700, mb: 3 }}
+            >
+              Result Summary
+            </Typography>
+
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+                alignItems: "start",
+                justifyContent: "center",
+                mt: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  textAlign: "left",
+                  border: "5px solid rgba(129, 18, 180, 0.08)",
+                  borderRadius: 3,
+                  p: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Original Input Text
+                  </Typography>
+                  <LightTooltip
+                    title="The original plaintext entered by the user"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {inputText || "(empty)"}
+                </Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Padded Input (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="Input after PKCS#7 padding, in hexadecimal format"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(paddedState)}
+                </Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Encryption Key
+                  </Typography>
+                  <LightTooltip
+                    title="The secret key provided by the user"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>{key}</Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Encryption Key (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The hexadecimal representation of the encryption key"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(key.split("").map((char) => char.charCodeAt(0)))}
+                </Typography>
+              </Box>
+
+              <Box
+                sx={{
+                  textAlign: "left",
+                  border: "5px solid rgba(129, 18, 180, 0.08)",
+                  borderRadius: 3,
+                  p: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    AES Encrypted Output (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="AES Encrypted Output in hexadecimal"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {resultState}
+                </Typography>
+
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    AES Encrypted Output (Base64)
+                  </Typography>
+                  <LightTooltip
+                    title="AES Encrypted Output encoded in Base64"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {hexToBase64(resultState)}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
         </Box>
       );
     }

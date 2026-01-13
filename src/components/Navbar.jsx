@@ -101,7 +101,19 @@ function Navbar() {
                 Learn More
               </Button>
               {/* S-box Icon Button */}
-              <Tooltip title="S-box" arrow>
+              <Tooltip
+                title="S-box"
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontSize: "14px",
+                      p: "8px 10px",
+                      backgroundColor: "#000000",
+                    },
+                  },
+                }}
+              >
                 <IconButton
                   color="inherit"
                   sx={{ ml: 2 }}
@@ -112,7 +124,19 @@ function Navbar() {
                 </IconButton>
               </Tooltip>
               {/* Calculator Icon Button */}
-              <Tooltip title="Calculator" arrow>
+              <Tooltip
+                title="Calculator"
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontSize: "14px",
+                      p: "8px 10px",
+                      backgroundColor: "#000000",
+                    },
+                  },
+                }}
+              >
                 <IconButton
                   color="inherit"
                   sx={{ ml: 1 }}

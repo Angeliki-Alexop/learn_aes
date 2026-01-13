@@ -1,5 +1,14 @@
 import React from "react";
-import { Drawer, Box, Typography, IconButton, Button, TextField } from "@mui/material";
+import {
+  Drawer,
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Tabs,
+  Tab,
+  TextField,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./CalculatorOverlay.css";
 
@@ -38,12 +47,12 @@ function binaryToHexStr(bin) {
   const clean = bin.replace(/\s+/g, "");
   if (!/^[01]+$/.test(clean)) return "";
   const padded = clean.padStart(Math.ceil(clean.length / 4) * 4, "0");
-  let res = BigInt("0b" + padded).toString(16).toUpperCase();
+  let res = BigInt("0b" + padded)
+    .toString(16)
+    .toUpperCase();
   if (res.length % 2 === 1) res = "0" + res;
   return res;
 }
-
-
 
 function CalculatorOverlay({ open, onClose }) {
   const [view, setView] = React.useState("xor");
@@ -118,8 +127,20 @@ function CalculatorOverlay({ open, onClose }) {
       }}
     >
       <Box>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <Typography variant="h6" align="left" gutterBottom sx={{ flex: 1 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            variant="h5"
+            align="left"
+            gutterBottom
+            fontWeight="bold"
+            sx={{ flex: 1 }}
+          >
             Calculator
           </Typography>
           <IconButton onClick={() => onClose()} aria-label="Close calculator">
@@ -127,21 +148,32 @@ function CalculatorOverlay({ open, onClose }) {
           </IconButton>
         </Box>
 
-        <Box className="calc-tabs" sx={{ mb: 2 }}>
-          <Button variant={view === "xor" ? "contained" : "outlined"} onClick={() => setView("xor")} sx={{ mr: 1 }}>
-            Xor
-          </Button>
-          <Button variant={view === "binhex" ? "contained" : "outlined"} onClick={() => setView("binhex")} sx={{ mr: 1 }}>
-            Binary to Hex
-          </Button>
-          <Button variant={view === "hexbin" ? "contained" : "outlined"} onClick={() => setView("hexbin")}>
-            Hex to Binary
-          </Button>
+        <Box sx={{ mb: 2 }}>
+          <Tabs
+            value={view}
+            onChange={(e, val) => setView(val)}
+            aria-label="Calculator tabs"
+            variant="fullWidth"
+            textColor="primary"
+            indicatorColor="primary"
+          >
+            <Tab label="Xor" value="xor" />
+            <Tab label="Binary to Hex" value="binhex" />
+            <Tab label="Hex to Binary" value="hexbin" />
+          </Tabs>
         </Box>
 
         {view === "xor" && (
           <Box>
-            <Box sx={{ display: "flex", gap: 1, alignItems: "center", mt: 1, mb: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1,
+                alignItems: "center",
+                mt: 1,
+                mb: 1,
+              }}
+            >
               <Button
                 variant={xorFormat === "hex" ? "contained" : "outlined"}
                 onClick={() => setXorFormat("hex")}
@@ -149,7 +181,10 @@ function CalculatorOverlay({ open, onClose }) {
                   mr: 1,
                   backgroundColor: xorFormat === "hex" ? "#7c5fe6" : undefined,
                   color: xorFormat === "hex" ? "#fff" : undefined,
-                  '&:hover': { backgroundColor: xorFormat === "hex" ? "#6f54d9" : undefined },
+                  "&:hover": {
+                    backgroundColor:
+                      xorFormat === "hex" ? "#6f54d9" : undefined,
+                  },
                 }}
               >
                 HEX
@@ -160,7 +195,10 @@ function CalculatorOverlay({ open, onClose }) {
                 sx={{
                   backgroundColor: xorFormat === "bin" ? "#7c5fe6" : undefined,
                   color: xorFormat === "bin" ? "#fff" : undefined,
-                  '&:hover': { backgroundColor: xorFormat === "bin" ? "#6f54d9" : undefined },
+                  "&:hover": {
+                    backgroundColor:
+                      xorFormat === "bin" ? "#6f54d9" : undefined,
+                  },
                 }}
               >
                 BIN
@@ -173,11 +211,19 @@ function CalculatorOverlay({ open, onClose }) {
                 value={aVal}
                 onChange={(e) => {
                   const v = e.target.value;
-                  setAVal(xorFormat === "hex" ? sanitizeHexInput(v) : sanitizeBinInput(v));
+                  setAVal(
+                    xorFormat === "hex"
+                      ? sanitizeHexInput(v)
+                      : sanitizeBinInput(v)
+                  );
                 }}
                 size="small"
                 fullWidth
-                helperText={xorFormat === "hex" ? `0-9,A-F — max ${MAX_HEX} chars` : `0 or 1 — max ${MAX_BIN} bits`}
+                helperText={
+                  xorFormat === "hex"
+                    ? `0-9,A-F — max ${MAX_HEX} chars`
+                    : `0 or 1 — max ${MAX_BIN} bits`
+                }
               />
             </Box>
 
@@ -187,19 +233,39 @@ function CalculatorOverlay({ open, onClose }) {
                 value={bVal}
                 onChange={(e) => {
                   const v = e.target.value;
-                  setBVal(xorFormat === "hex" ? sanitizeHexInput(v) : sanitizeBinInput(v));
+                  setBVal(
+                    xorFormat === "hex"
+                      ? sanitizeHexInput(v)
+                      : sanitizeBinInput(v)
+                  );
                 }}
                 size="small"
                 fullWidth
-                helperText={xorFormat === "hex" ? `0-9,A-F — max ${MAX_HEX} chars` : `0 or 1 — max ${MAX_BIN} bits`}
+                helperText={
+                  xorFormat === "hex"
+                    ? `0-9,A-F — max ${MAX_HEX} chars`
+                    : `0 or 1 — max ${MAX_BIN} bits`
+                }
               />
             </Box>
 
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2">Result:</Typography>
               <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-                <TextField label="HEX" value={xorResult === null ? "" : bigintToHex(xorResult)} size="small" fullWidth InputProps={{ readOnly: true }} />
-                <TextField label="BIN" value={xorResult === null ? "" : bigintToBin(xorResult)} size="small" fullWidth InputProps={{ readOnly: true }} />
+                <TextField
+                  label="HEX"
+                  value={xorResult === null ? "" : bigintToHex(xorResult)}
+                  size="small"
+                  fullWidth
+                  InputProps={{ readOnly: true }}
+                />
+                <TextField
+                  label="BIN"
+                  value={xorResult === null ? "" : bigintToBin(xorResult)}
+                  size="small"
+                  fullWidth
+                  InputProps={{ readOnly: true }}
+                />
               </Box>
             </Box>
           </Box>
@@ -220,7 +286,14 @@ function CalculatorOverlay({ open, onClose }) {
             </Box>
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2">Hex output:</Typography>
-              <TextField label="HEX" value={binToHexOut || ""} size="small" fullWidth InputProps={{ readOnly: true }} sx={{ mt: 1 }} />
+              <TextField
+                label="HEX"
+                value={binToHexOut || ""}
+                size="small"
+                fullWidth
+                InputProps={{ readOnly: true }}
+                sx={{ mt: 1 }}
+              />
             </Box>
           </Box>
         )}
@@ -240,11 +313,17 @@ function CalculatorOverlay({ open, onClose }) {
             </Box>
             <Box sx={{ mt: 2 }}>
               <Typography variant="body2">Binary output:</Typography>
-              <TextField label="BIN" value={hexToBinOut || ""} size="small" fullWidth InputProps={{ readOnly: true }} sx={{ mt: 1 }} />
+              <TextField
+                label="BIN"
+                value={hexToBinOut || ""}
+                size="small"
+                fullWidth
+                InputProps={{ readOnly: true }}
+                sx={{ mt: 1 }}
+              />
             </Box>
           </Box>
         )}
-
       </Box>
     </Drawer>
   );

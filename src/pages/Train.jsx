@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { Container, Typography, Button, Box } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import "./../styles/Train.css";
 import SubBytesPractice from "../components/practice/SubBytesPractice";
 import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
@@ -69,11 +70,17 @@ function Train() {
                 </Typography>
                 <Typography
                   variant="body1"
-                  sx={{ textAlign: "center", mb: 3, maxWidth: 600, mx: "auto" }}
+                  sx={{ textAlign: "center", mb: 3, maxWidth: 800, mx: "auto" }}
                 >
                   Welcome to the AES Training Center! Here you can practice each
-                  step of the AES algorithm interactively. Select an exercise
-                  below to get started!
+                  step of the AES algorithm in an interactive way. Choose an
+                  exercise below to get started and test your understanding.
+                  Need help along the way? Click the{" "}
+                  <HelpOutlineIcon
+                    fontSize="small"
+                    sx={{ ml: 0.1, mb: 0.3, verticalAlign: "middle" }}
+                  />{" "}
+                  icon at any step to get guidance.
                 </Typography>
                 <Typography
                   variant="h6"
