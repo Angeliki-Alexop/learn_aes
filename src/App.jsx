@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Train from "./pages/Train";
 import LearnMore from "./pages/LearnMore";
@@ -11,7 +11,7 @@ function App() {
     <Router basename="/learn_aes">
       <Navbar />
       <Routes>
-        <Route path="/" element={<StepByStep />} />
+        <Route path="/" element={<Navigate to="/step-by-step" replace />} />
         <Route path="/train" element={<Train />} />
         <Route path="/step-by-step" element={<StepByStep />} />
         <Route path="/LearnMore" element={<LearnMore />} />
