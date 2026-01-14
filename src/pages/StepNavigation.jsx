@@ -272,6 +272,21 @@ export function StepNavigation({
           >
             Final Round
           </Button>
+          {/* Show Result button only when we're on the final round's last step (AddRoundKey) */}
+          {currentRound === totalRounds && currentStep === "AddRoundKey" && (
+            <Button
+              variant="contained"
+              color="secondary"
+              style={{ margin: "8px", backgroundColor: "#7c5fe6" }}
+              onClick={() => {
+                // move past the last round so StepByStep shows the Result screen
+                setCurrentRound(totalRounds + 1);
+                setCurrentStep("Result");
+              }}
+            >
+              Result
+            </Button>
+          )}
         </>
       )}
     </Box>
