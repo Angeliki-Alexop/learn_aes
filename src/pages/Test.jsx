@@ -270,6 +270,11 @@ export default function Test() {
                   <Typography variant="caption">Last step state (hex): {Array.isArray(r.details.lastStep.state) ? r.details.lastStep.state.join(' ') : JSON.stringify(r.details.lastStep)}</Typography>
                 </Box>
               )}
+              {r.details && typeof r.details.plaintext !== 'undefined' && (
+                <Box sx={{ mt: 1 }}>
+                  <Typography variant="caption">Decrypted plaintext: "{r.details.plaintext}"</Typography>
+                </Box>
+              )}
             </Box>
           ))}
         </Box>
