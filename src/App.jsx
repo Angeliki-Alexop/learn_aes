@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar";
 import Train from "./pages/Train";
 import LearnMore from "./pages/LearnMore";
 import StepByStep from "./pages/StepByStep";
+import Test from "./pages/Test";
 // import Incremental from './pages/Incremental';
 import "./styles/styles.css";
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path="/train" element={<Train />} />
         <Route path="/step-by-step" element={<StepByStep />} />
         <Route path="/LearnMore" element={<LearnMore />} />
+        <Route path="/test" element={<Test />} />
         {/* <Route path="/incremental" element={<Incremental />} /> */}
       </Routes>
     </Router>

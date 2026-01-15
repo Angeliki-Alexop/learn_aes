@@ -138,34 +138,7 @@ export const keyExpansion = (key, keySize) => {
   return expandedKey;
 };
 
-// Function to perform AES encryption step by step
-export const aesEncryptStepByStep = (inputText, key, keySize) => {
-  const steps = [];
-  let state = inputText.split('').map(char => char.charCodeAt(0)); // Convert input text to byte array
-  let expandedKey = keyExpansion(key.split('').map(char => char.charCodeAt(0)), keySize); // Convert key to byte array
-  const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
-
-  // Perform initial AddRoundKey
-  state = addRoundKey(state, expandedKey.slice(0, 16));
-  steps.push({ round: 0, state: state.map(b => b.toString(16).padStart(2, '0')) });
-
-  // Main rounds
-  for (let round = 1; round <= numberOfRounds; round++) {
-      state = subBytes(state);
-      steps.push({ round, step: 'SubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
-
-      state = shiftRows(state);
-      steps.push({ round, step: 'ShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
-
-      if (round !== numberOfRounds) {
-          state = mixColumns(state);
-          steps.push({ round, step: 'MixColumns', state: state.map(b => b.toString(16).padStart(2, '0')) });
-      }
-
-      state = addRoundKey(state, expandedKey.slice(round * 16, (round + 1) * 16));
-      steps.push({ round, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
-  }
-
-  console.log('AES Encryption Steps:', steps); // Log the steps for debugging
-  return steps;
-};
+// (aesEncryptStepByStep removed) Use the per-step helpers + generateStateMap in
+// `stepByStepHandlers.js` for constructing the UI state; keeping low-level
+// primitives (padPKCS7, keyExpansion, addRoundKey, subBytes, shiftRows,
+// mixColumns) here.
