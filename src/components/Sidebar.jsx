@@ -3,7 +3,7 @@ import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 import './../styles/Sidebar.css';
 const steps = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
 const finalRoundSteps = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
-function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keySize, mode, setCurrentRound, setCurrentStep }) {
+function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keySize, mode, setCurrentRound, setCurrentStep, stateMap }) {
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
   const handleStepClick = (round, step) => {
     if (round < 0) {
@@ -60,12 +60,21 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
         {/* Only show the steps list when this round is active */}
         {currentRound === 0 && (
           <List>
-            <ListItem
-              className={currentStep === 'AddRoundKey' && currentRound === 0 ? 'active-step' : ''}
-              onClick={() => { setCurrentRound(0); setCurrentStep('AddRoundKey'); }}
-            >
-              <ListItemText primary="AddRoundKey" />
-            </ListItem>
+            {/* derive steps from stateMap if available */}
+            {stateMap && stateMap.get(0) ? (
+              stateMap.get(0).map((entry, idx) => (
+                <ListItem key={idx} className={currentStep === entry.step && currentRound === 0 ? 'active-step' : ''} onClick={() => { setCurrentRound(0); setCurrentStep(entry.step); }}>
+                  <ListItemText primary={entry.step} />
+                </ListItem>
+              ))
+            ) : (
+              <ListItem
+                className={currentStep === 'AddRoundKey' && currentRound === 0 ? 'active-step' : ''}
+                onClick={() => { setCurrentRound(0); setCurrentStep('AddRoundKey'); }}
+              >
+                <ListItemText primary="AddRoundKey" />
+              </ListItem>
+            )}
           </List>
         )}
       </Box>
@@ -78,11 +87,19 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
           {/* Only show the steps list when this round is active */}
           {currentRound === round && (
             <List>
-              {(round === totalRounds ? finalRoundSteps : steps).map((step, index) => (
-                <ListItem key={index} className={currentStep === step && currentRound === round ? 'active-step' : ''} onClick={() => { setCurrentRound(round); setCurrentStep(step); }}>
-                  <ListItemText primary={step} />
-                </ListItem>
-              ))}
+              {stateMap && stateMap.get(round) ? (
+                stateMap.get(round).map((entry, idx) => (
+                  <ListItem key={idx} className={currentStep === entry.step && currentRound === round ? 'active-step' : ''} onClick={() => { setCurrentRound(round); setCurrentStep(entry.step); }}>
+                    <ListItemText primary={entry.step} />
+                  </ListItem>
+                ))
+              ) : (
+                (round === totalRounds ? finalRoundSteps : steps).map((step, index) => (
+                  <ListItem key={index} className={currentStep === step && currentRound === round ? 'active-step' : ''} onClick={() => { setCurrentRound(round); setCurrentStep(step); }}>
+                    <ListItemText primary={step} />
+                  </ListItem>
+                ))
+              )}
             </List>
           )}
         </Box>
@@ -95,11 +112,19 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
         </Typography>
         {currentRound === totalRounds && (
           <List>
-            {finalRoundSteps.map((step, index) => (
-              <ListItem key={index} className={currentStep === step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => { setCurrentRound(totalRounds); setCurrentStep(step); }}>
-                <ListItemText primary={step} />
-              </ListItem>
-            ))}
+            {stateMap && stateMap.get(totalRounds) ? (
+              stateMap.get(totalRounds).map((entry, idx) => (
+                <ListItem key={idx} className={currentStep === entry.step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => { setCurrentRound(totalRounds); setCurrentStep(entry.step); }}>
+                  <ListItemText primary={entry.step} />
+                </ListItem>
+              ))
+            ) : (
+              finalRoundSteps.map((step, index) => (
+                <ListItem key={index} className={currentStep === step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => { setCurrentRound(totalRounds); setCurrentStep(step); }}>
+                  <ListItemText primary={step} />
+                </ListItem>
+              ))
+            )}
           </List>
         )}
       </Box>

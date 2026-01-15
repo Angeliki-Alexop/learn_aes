@@ -94,6 +94,84 @@ export const addRoundKey = (state, roundKey) => {
   return state.map((byte, idx) => byte ^ roundKey[idx]);
 };
 
+// Build inverse S-box from sBox
+export const invSBox = (() => {
+  const inv = new Array(256);
+  for (let i = 0; i < 256; i++) {
+    inv[sBox[i]] = i;
+  }
+  return inv;
+})();
+
+// Function to perform InvSubBytes step
+export const invSubBytes = (state) => {
+  return state.map(byte => invSBox[byte]);
+};
+
+// Function to perform InvShiftRows step (reverse of shiftRows)
+export const invShiftRows = (state) => {
+  return [
+    state[0], state[13], state[10], state[7],
+    state[4], state[1], state[14], state[11],
+    state[8], state[5], state[2], state[15],
+    state[12], state[9], state[6], state[3]
+  ];
+};
+
+// Function to perform InvMixColumns step
+export const invMixColumns = (state) => {
+  const temp = state.slice();
+  for (let i = 0; i < 4; i++) {
+    const col = temp.slice(i * 4, i * 4 + 4);
+
+    state[i * 4]     = gMul(col[0], 0x0e) ^ gMul(col[1], 0x0b) ^ gMul(col[2], 0x0d) ^ gMul(col[3], 0x09);
+    state[i * 4 + 1] = gMul(col[0], 0x09) ^ gMul(col[1], 0x0e) ^ gMul(col[2], 0x0b) ^ gMul(col[3], 0x0d);
+    state[i * 4 + 2] = gMul(col[0], 0x0d) ^ gMul(col[1], 0x09) ^ gMul(col[2], 0x0e) ^ gMul(col[3], 0x0b);
+    state[i * 4 + 3] = gMul(col[0], 0x0b) ^ gMul(col[1], 0x0d) ^ gMul(col[2], 0x09) ^ gMul(col[3], 0x0e);
+  }
+  return state;
+};
+
+// Function to perform AES decryption step by step (mirrors aesEncryptStepByStep)
+export const aesDecryptStepByStep = (inputText, key, keySize) => {
+  const steps = [];
+  let state = inputText.split('').map(char => char.charCodeAt(0)); // Convert input text to byte array (ciphertext)
+  let expandedKey = keyExpansion(key.split('').map(char => char.charCodeAt(0)), keySize); // Convert key to byte array
+  const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
+
+  // Initial AddRoundKey with last round key
+  state = addRoundKey(state, expandedKey.slice(numberOfRounds * 16, (numberOfRounds + 1) * 16));
+  steps.push({ round: numberOfRounds, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  // Main rounds in reverse
+  for (let round = numberOfRounds - 1; round >= 1; round--) {
+      state = invShiftRows(state);
+      steps.push({ round, step: 'InvShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+      state = invSubBytes(state);
+      steps.push({ round, step: 'InvSubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+      state = addRoundKey(state, expandedKey.slice(round * 16, (round + 1) * 16));
+      steps.push({ round, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+      state = invMixColumns(state);
+      steps.push({ round, step: 'InvMixColumns', state: state.map(b => b.toString(16).padStart(2, '0')) });
+  }
+
+  // Final round (round 0): InvShiftRows -> InvSubBytes -> AddRoundKey
+  state = invShiftRows(state);
+  steps.push({ round: 0, step: 'InvShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  state = invSubBytes(state);
+  steps.push({ round: 0, step: 'InvSubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  state = addRoundKey(state, expandedKey.slice(0, 16));
+  steps.push({ round: 0, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  console.log('AES Decryption Steps:', steps); // Log the steps for debugging
+  return steps;
+};
+
 // Key Expansion Function
 export const keyExpansion = (key, keySize) => {
   const expandedKey = [];

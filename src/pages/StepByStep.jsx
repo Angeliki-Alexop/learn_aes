@@ -107,6 +107,22 @@ function StepByStep() {
     return () => window.removeEventListener("stepbystep-reset", resetHandler);
   }, []);
 
+  // After submission, set the initial displayed round/step depending on mode
+  useEffect(() => {
+    if (hasSubmitted) {
+      if (mode === "Decrypt") {
+        setCurrentRound(totalRounds);
+        // prefer stateMap-derived step if available
+        const finalSteps = stateMap.get(totalRounds) || [];
+        setCurrentStep((finalSteps[0] && finalSteps[0].step) || "AddRoundKey");
+      } else {
+        setCurrentRound(0);
+        const r0 = stateMap.get(0) || [];
+        setCurrentStep((r0[0] && r0[0].step) || "AddRoundKey");
+      }
+    }
+  }, [hasSubmitted, mode, totalRounds, setCurrentRound, setCurrentStep, stateMap]);
+
   useEffect(() => {
     // Reset MixColumns highlights when step or round changes
     setHighlightedColumnMixColumn(null);
@@ -127,12 +143,13 @@ function StepByStep() {
 
   // Update previousStepState whenever round/step/stateMap/inputText/keySize changes
   useEffect(() => {
-    const roundSteps = stateMap.get(currentRound) || [];
-    const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
-    let prevState = "";
+  const roundSteps = stateMap.get(currentRound) || [];
+  const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
+  let prevState = "";
 
-    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
-    const paddedState = padPKCS7(initialState, 16);
+  // Prefer the canonical padded input from the stateMap if available (handles decrypt inputs correctly)
+  const inputEntry = stateMap.get(-2) && stateMap.get(-2)[0] ? stateMap.get(-2)[0].state : null;
+  const paddedStateHex = inputEntry || toHex(padPKCS7(inputText.split("").map((char) => char.charCodeAt(0)), 16));
 
     if (stepIndex > 0) {
       prevState = roundSteps[stepIndex - 1]?.state || "";
@@ -143,7 +160,7 @@ function StepByStep() {
       );
       prevState = addRoundKeyStep?.state || "";
     } else if (currentRound === 0) {
-      prevState = toHex(paddedState);
+      prevState = paddedStateHex;
     }
 
     setPreviousStepState(prevState);
@@ -163,8 +180,9 @@ function StepByStep() {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
 
-    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
-    const paddedState = padPKCS7(initialState, 16);
+  const initialState = inputText.split("").map((char) => char.charCodeAt(0));
+  const paddedState = padPKCS7(initialState, 16);
+  const paddedStateHex = (stateMap.get(-2) && stateMap.get(-2)[0] && stateMap.get(-2)[0].state) || toHex(paddedState);
     // Used to reset highlights after we click a new cell
     // Remove highlight from all cells first
     const highlightedCells = document.querySelectorAll(
@@ -282,6 +300,7 @@ function StepByStep() {
 
     const initialState = inputText.split("").map((char) => char.charCodeAt(0));
     const paddedState = padPKCS7(initialState, 16);
+  const paddedStateHex = (stateMap.get(-2) && stateMap.get(-2)[0] && stateMap.get(-2)[0].state) || toHex(paddedState);
     const resultState =
       stateMap.get(totalRounds)?.find((step) => step.step === "AddRoundKey")
         ?.state || "";
@@ -453,11 +472,11 @@ function StepByStep() {
                       setSidebarVisible,
                       setRoundKeys,
                       setStateMap,
-                      setHasSubmitted
+                      setHasSubmitted,
+                      mode.toLowerCase()
                     )
                   }
                   sx={{ mt: 2 }}
-                  disabled={mode === "Decrypt"}
                 >
                   Submit
                 </Button>
@@ -570,7 +589,7 @@ function StepByStep() {
                   </LightTooltip>
                 </Box>
                 <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(paddedState)}
+                  {paddedStateHex}
                 </Typography>
               </Box>
 
@@ -584,7 +603,7 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key
+                    Secret Key
                   </Typography>
                   <LightTooltip
                     title="The secret key provided by the user for the AES encryption process"
@@ -598,8 +617,8 @@ function StepByStep() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key (Hex)
+                    <Typography sx={{ fontWeight: 700 }}>
+                    Secret Key (Hex)
                   </Typography>
                   <LightTooltip
                     title="The hexadecimal representation of the encryption key"
@@ -979,14 +998,14 @@ function StepByStep() {
                   </LightTooltip>
                 </Box>
                 <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(paddedState)}
+                  {paddedStateHex}
                 </Typography>
 
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key
+                    Secret Key
                   </Typography>
                   <LightTooltip
                     title="The secret key provided by the user"
@@ -1001,7 +1020,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key (Hex)
+                    Secret Key (Hex)
                   </Typography>
                   <LightTooltip
                     title="The hexadecimal representation of the encryption key"
@@ -1025,10 +1044,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    AES Encrypted Output (Hex)
+                    AES Output (Hex)
                   </Typography>
                   <LightTooltip
-                    title="AES Encrypted Output in hexadecimal"
+                    title={mode === 'Decrypt' ? 'AES Decrypted Output in hexadecimal' : 'AES Encrypted Output in hexadecimal'}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1042,10 +1061,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    AES Encrypted Output (Base64)
+                    AES Output (Base64)
                   </Typography>
                   <LightTooltip
-                    title="AES Encrypted Output encoded in Base64"
+                    title={mode === 'Decrypt' ? 'AES Decrypted Output encoded in Base64' : 'AES Encrypted Output encoded in Base64'}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1101,6 +1120,7 @@ function StepByStep() {
                 mode={mode}
                 setCurrentRound={setCurrentRound}
                 setCurrentStep={setCurrentStep}
+                stateMap={stateMap}
                 handleStepClick={(round, step) =>
                   handleStepClick(round, step, setCurrentRound, setCurrentStep)
                 }

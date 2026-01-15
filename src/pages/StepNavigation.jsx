@@ -161,11 +161,11 @@ export function StepNavigation({
                 setSidebarVisible,
                 setRoundKeys,
                 setStateMap,
-                setHasSubmitted
+                setHasSubmitted,
+                mode.toLowerCase()
               )
             }
             style={{ marginTop: "16px" }}
-            disabled={mode === "Decrypt"}
           >
             Submit
           </Button>
@@ -212,7 +212,8 @@ export function StepNavigation({
                     setCurrentRound,
                     setCurrentStep
                   ),
-                totalRounds
+                totalRounds,
+                mode.toLowerCase()
               )
             }
             disabled={currentRound === -2 && currentStep === "Input"}
@@ -235,7 +236,8 @@ export function StepNavigation({
                     setCurrentStep,
                     totalRounds
                   ),
-                totalRounds
+                totalRounds,
+                mode.toLowerCase()
               )
             }
             disabled={
