@@ -50,7 +50,7 @@ export function StepNavigation({
     >
       {/* Show only the submit button before submission */}
       {currentRound === -2 && !hasSubmitted && showInitialControls && (
-        <Box
+          <Box
           id="input_text_key"
           display="flex"
           flexDirection="column"
@@ -147,25 +147,19 @@ export function StepNavigation({
               maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32,
             }}
           />
+          {mode === 'Decrypt' && (
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', mt: 1 }}>
+              <Select value={decryptFormat} onChange={(e) => setDecryptFormat(e.target.value)} size="small" sx={{ minWidth: 120 }}>
+                <MenuItem value={'base64'}>Base64</MenuItem>
+                <MenuItem value={'hex'}>Hex</MenuItem>
+              </Select>
+            </Box>
+          )}
           <Button
             variant="contained"
             color="primary"
-            onClick={() =>
-              handleSubmitButtonClick(
-                tempKey,
-                tempInputText,
-                keySize,
-                setKeyError,
-                setInputText,
-                setKey,
-                setSidebarVisible,
-                setRoundKeys,
-                setStateMap,
-                setHasSubmitted
-              )
-            }
+            onClick={() => onFullSubmit ? onFullSubmit() : handleSubmitButtonClick(tempKey, tempInputText, keySize, setKeyError, setInputText, setKey, setSidebarVisible, setRoundKeys, setStateMap, setHasSubmitted)}
             style={{ marginTop: "16px" }}
-            disabled={mode === "Decrypt"}
           >
             Submit
           </Button>
@@ -210,9 +204,11 @@ export function StepNavigation({
                   handlePreviousRound(
                     currentRound,
                     setCurrentRound,
-                    setCurrentStep
+                    setCurrentStep,
+                    mode
                   ),
-                totalRounds
+                totalRounds,
+                stateMap
               )
             }
             disabled={currentRound === -2 && currentStep === "Input"}
@@ -233,9 +229,11 @@ export function StepNavigation({
                     currentRound,
                     setCurrentRound,
                     setCurrentStep,
-                    totalRounds
+                    totalRounds,
+                    mode
                   ),
-                totalRounds
+                totalRounds,
+                stateMap
               )
             }
             disabled={
@@ -254,7 +252,8 @@ export function StepNavigation({
                 currentRound,
                 setCurrentRound,
                 setCurrentStep,
-                totalRounds
+                totalRounds,
+                mode
               )
             }
             disabled={currentRound >= totalRounds}

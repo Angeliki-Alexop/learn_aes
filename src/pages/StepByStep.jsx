@@ -37,6 +37,7 @@ import {
   handleFinalRound,
   handleInput,
   generateStateMap,
+  generateDecryptStateMap,
 } from "../utils/stepByStepHandlers";
 import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
 import {
@@ -87,6 +88,7 @@ function StepByStep() {
     useState(null);
   const algorithm = "ECB";
   const [mode, setMode] = useState("Encrypt");
+  const [decryptFormat, setDecryptFormat] = useState('hex');
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
 
@@ -153,6 +155,53 @@ function StepByStep() {
     if (size === 128) return "DefaultKey123456";
     if (size === 192) return "DefaultKeyForAES192Key!!";
     return "DefaultKeyForAES256Key0123456789";
+  };
+
+  const onFullSubmit = () => {
+    handleSubmitButtonClick(
+      tempKey,
+      tempInputText,
+      keySize,
+      setKeyError,
+      setInputText,
+      setKey,
+      setSidebarVisible,
+      setRoundKeys,
+      (sm) => setStateMap(sm),
+      setHasSubmitted
+    );
+
+    const totalRoundsLocal = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
+    const expanded = keyExpansion(tempKey.split("").map((c) => c.charCodeAt(0)), keySize);
+    const rk = [];
+    for (let i = 0; i <= totalRoundsLocal; i++) rk.push(expanded.slice(i * 16, (i + 1) * 16));
+
+    if (mode === 'Decrypt') {
+      // Parse according to decryptFormat
+      let cipherBytes = [];
+      try {
+        if (decryptFormat === 'hex') {
+          const cleaned = tempInputText.replace(/\s+/g, '');
+          if (!/^[0-9a-fA-F]{32}$/.test(cleaned)) throw new Error('Hex must be 32 hex chars');
+          cipherBytes = cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16));
+        } else {
+          const bin = atob(tempInputText);
+          cipherBytes = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+          if (cipherBytes.length !== 16) throw new Error('Base64 must decode to 16 bytes');
+        }
+      } catch (e) {
+        setKeyError(e.message);
+        return;
+      }
+
+      const decryptMap = generateDecryptStateMap(cipherBytes, rk, totalRoundsLocal);
+      setStateMap(decryptMap);
+    } else {
+      const initialState = tempInputText.split("").map((char) => char.charCodeAt(0));
+      const padded = padPKCS7(initialState, 16);
+      const encryptMap = generateStateMap(padded, rk, totalRoundsLocal);
+      setStateMap(encryptMap);
+    }
   };
 
   const toHex = (arr) => {
@@ -362,7 +411,7 @@ function StepByStep() {
                 color="primary"
                 onClick={() => {
                   setMode("Decrypt");
-                  setTempInputText("AA==");
+                  setTempInputText("2aaeedcfd945964e2f4913d76b510257");
                   setTempKey(defaultKeyForSize(keySize));
                 }}
                 sx={
@@ -378,6 +427,15 @@ function StepByStep() {
                 DECRYPTION
               </Button>
             </Box>
+            {mode === 'Decrypt' && (
+              <Box sx={{ mt: 1, display: 'flex', gap: 1, alignItems: 'center' }}>
+                <Typography variant="body2">Input format:</Typography>
+                <Select value={decryptFormat} onChange={(e) => setDecryptFormat(e.target.value)} size="small" sx={{ minWidth: 120 }}>
+                  <MenuItem value={'base64'}>Base64</MenuItem>
+                  <MenuItem value={'hex'}>Hex</MenuItem>
+                </Select>
+              </Box>
+            )}
             <Typography
               variant="body1"
               color="information"
@@ -442,22 +500,8 @@ function StepByStep() {
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() =>
-                    handleSubmitButtonClick(
-                      tempKey,
-                      tempInputText,
-                      keySize,
-                      setKeyError,
-                      setInputText,
-                      setKey,
-                      setSidebarVisible,
-                      setRoundKeys,
-                      setStateMap,
-                      setHasSubmitted
-                    )
-                  }
+                  onClick={() => onFullSubmit()}
                   sx={{ mt: 2 }}
-                  disabled={mode === "Decrypt"}
                 >
                   Submit
                 </Button>
@@ -1182,6 +1226,9 @@ function StepByStep() {
           hasSubmitted={hasSubmitted}
           mode={mode}
           setMode={setMode}
+          decryptFormat={decryptFormat}
+          onFullSubmit={onFullSubmit}
+          stateMap={stateMap}
           showInitialControls={false}
         />
         <FloatingInfo

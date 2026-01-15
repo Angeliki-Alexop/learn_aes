@@ -1,8 +1,10 @@
 import React from 'react';
 import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
 import './../styles/Sidebar.css';
-const steps = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
-const finalRoundSteps = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
+const stepsEncrypt = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
+const finalRoundStepsEncrypt = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
+const stepsDecrypt = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey', 'InvMixColumns'];
+const finalRoundStepsDecrypt = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey'];
 function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keySize, mode, setCurrentRound, setCurrentStep }) {
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
   const handleStepClick = (round, step) => {
@@ -78,7 +80,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
           {/* Only show the steps list when this round is active */}
           {currentRound === round && (
             <List>
-              {(round === totalRounds ? finalRoundSteps : steps).map((step, index) => (
+            {((round === totalRounds) ? (mode === 'Decrypt' ? finalRoundStepsDecrypt : finalRoundStepsEncrypt) : (mode === 'Decrypt' ? stepsDecrypt : stepsEncrypt)).map((step, index) => (
                 <ListItem key={index} className={currentStep === step && currentRound === round ? 'active-step' : ''} onClick={() => { setCurrentRound(round); setCurrentStep(step); }}>
                   <ListItemText primary={step} />
                 </ListItem>
@@ -95,7 +97,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
         </Typography>
         {currentRound === totalRounds && (
           <List>
-            {finalRoundSteps.map((step, index) => (
+            {(mode === 'Decrypt' ? finalRoundStepsDecrypt : finalRoundStepsEncrypt).map((step, index) => (
               <ListItem key={index} className={currentStep === step && currentRound === totalRounds ? 'active-step' : ''} onClick={() => { setCurrentRound(totalRounds); setCurrentStep(step); }}>
                 <ListItemText primary={step} />
               </ListItem>
