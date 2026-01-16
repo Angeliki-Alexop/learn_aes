@@ -366,6 +366,20 @@ function StepByStep() {
       stateMap.get(totalRounds)?.find((step) => step.step === "AddRoundKey")
         ?.state || "";
 
+    // Prepare ShiftRows highlight coordinates for Next State. For InvShiftRows we
+    // mirror the column indices so the highlighted cells match the inverse
+    // (right-shift) visualization.
+    const baseShiftHighlights = [
+      [1, 3], // second row, col 3
+      [2, 2], // third row, col 2
+      [2, 3], // third row, col 3
+      [3, 1], // fourth row, col 1
+      [3, 2], // fourth row, col 2
+      [3, 3], // fourth row, col 3
+    ];
+
+    const invShiftHighlights = baseShiftHighlights.map(([r, c]) => [r, 3 - c]);
+
     // If we're on the Input screen before the user has submitted, show
     // an introductory title and short description (based on selected mode).
     if (currentRound === -2 && currentStep === "Input" && !hasSubmitted) {
@@ -926,20 +940,17 @@ function StepByStep() {
               matrixId="current"
               title="Next State"
               highlightRows={false}
-              highlightColumns={currentStep === "ShiftRows"}
+              // Highlight columns for both ShiftRows and InvShiftRows so the
+              // visual column markers remain consistent in either direction.
+              highlightColumns={currentStep === "ShiftRows" || currentStep === "InvShiftRows"}
               highlightedCell={highlightedCell}
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
               shiftHighlights={
                 currentStep === "ShiftRows"
-                  ? [
-                      [1, 3], // second row, col 3
-                      [2, 2], // third row, col 2
-                      [2, 3], // third row, col 3
-                      [3, 1], // fourth row, col 1
-                      [3, 2], // fourth row, col 2
-                      [3, 3], // fourth row, col 3
-                    ]
+                  ? baseShiftHighlights
+                  : currentStep === "InvShiftRows"
+                  ? invShiftHighlights
                   : []
               }
             />
