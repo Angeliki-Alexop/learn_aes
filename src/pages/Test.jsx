@@ -38,6 +38,17 @@ export default function Test() {
   const [encInput, setEncInput] = useState(hardcodedTests[0].inputText);
   const [decInput, setDecInput] = useState('');
   const [generatedDecrypts, setGeneratedDecrypts] = useState([]);
+  const invMixMatrix = [
+    ['0e','0b','0d','09'],
+    ['09','0e','0b','0d'],
+    ['0d','09','0e','0b'],
+    ['0b','0d','09','0e'],
+  ];
+
+  const bytesToSpacedHex = (bytes) => {
+    if (!Array.isArray(bytes)) return String(bytes);
+    return bytes.map(b => b.toString(16).padStart(2, '0')).join(' ');
+  };
 
   const runTestCase = (tc) => {
     // Shared validation
@@ -89,9 +100,9 @@ export default function Test() {
         if (inputBytes.length !== 16) return { name: tc.name, pass: false, message: 'Decoded base64 must be 16 bytes.' };
       }
 
-      const steps = aesDecryptStepByStep(inputBytes, tc.key, tc.keySize);
-      const expectedCount = 4 * estimateRounds(tc.keySize);
-      const lastStep = steps[steps.length - 1] || null;
+  const steps = aesDecryptStepByStep(inputBytes, tc.key, tc.keySize);
+  const expectedCount = 4 * estimateRounds(tc.keySize);
+  const lastStep = steps[steps.length - 1] || null;
 
       // Convert last step state to byte array
       let decryptedBytes = [];
@@ -118,9 +129,11 @@ export default function Test() {
         }
       }
 
-      const pass = Array.isArray(steps) && steps.length === expectedCount && contentMatches;
-      const message = pass ? `Decrypt OK, steps: ${steps.length}` : `Decrypt failed (steps ${steps.length}, expected ${expectedCount})${tc.originalBytes ? ', content mismatch' : ''}`;
-      return { name: tc.name, pass, message, details: { stepsCount: steps.length, expectedCount, lastStep, key: tc.key, decryptedBytes, unpadded, plaintext } };
+  const pass = Array.isArray(steps) && steps.length === expectedCount && contentMatches;
+  const message = pass ? `Decrypt OK, steps: ${steps.length}` : `Decrypt failed (steps ${steps.length}, expected ${expectedCount})${tc.originalBytes ? ', content mismatch' : ''}`;
+  // include the original ciphertext as spaced hex for display (before state for step 0)
+  const cipherHex = bytesToSpacedHex(inputBytes);
+  return { name: tc.name, pass, message, details: { stepsCount: steps.length, expectedCount, lastStep, key: tc.key, decryptedBytes, unpadded, plaintext, steps, cipherHex } };
     } catch (err) {
       return { name: tc.name, pass: false, message: `Exception: ${err.message}` };
     }
@@ -268,6 +281,34 @@ export default function Test() {
               {r.details && r.details.lastStep && (
                 <Box sx={{ mt: 1 }}>
                   <Typography variant="caption">Last step state (hex): {Array.isArray(r.details.lastStep.state) ? r.details.lastStep.state.join(' ') : JSON.stringify(r.details.lastStep)}</Typography>
+                </Box>
+              )}
+              {r.details && r.details.steps && (
+                <Box sx={{ mt: 1, maxHeight: 240, overflow: 'auto', bgcolor: '#fafafa', p: 1, borderRadius: 1 }}>
+                  <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, mb: 0.5 }}>All steps (decrypt):</Typography>
+                  {r.details.steps.map((s, idx) => {
+                    const afterState = Array.isArray(s.state) ? s.state.join(' ') : (typeof s.state === 'string' ? s.state : JSON.stringify(s.state));
+                    const beforeState = idx === 0 ? (r.details.cipherHex || '') : (
+                      Array.isArray(r.details.steps[idx - 1].state) ? r.details.steps[idx - 1].state.join(' ') : (typeof r.details.steps[idx - 1].state === 'string' ? r.details.steps[idx - 1].state : JSON.stringify(r.details.steps[idx - 1].state))
+                    );
+                    return (
+                      <div key={idx} style={{ marginBottom: 6 }}>
+                        <Typography variant="caption" sx={{ display: 'block', fontWeight: 700 }}>Round {s.round} — {s.step}</Typography>
+                        <Typography variant="caption" sx={{ display: 'block' }}>Before: {beforeState}</Typography>
+                        <Typography variant="caption" sx={{ display: 'block', mb: 0.5 }}>After: {afterState}</Typography>
+                        {s.step === 'InvMixColumns' && (
+                          <Box sx={{ mt: 0.5, mb: 1, pl: 1 }}>
+                            <Typography variant="caption" sx={{ display: 'block', fontWeight: 700 }}>InvMixColumns fixed matrix:</Typography>
+                            <Box component="pre" sx={{ m: 0, fontSize: '12px', fontFamily: 'monospace' }}>
+                              {invMixMatrix.map((row, ridx) => (
+                                <div key={ridx}>{row.join('  ')}</div>
+                              ))}
+                            </Box>
+                          </Box>
+                        )}
+                      </div>
+                    );
+                  })}
                 </Box>
               )}
               {r.details && typeof r.details.plaintext !== 'undefined' && (

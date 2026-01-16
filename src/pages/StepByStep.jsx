@@ -710,7 +710,7 @@ function StepByStep() {
           </Typography>
           {/* StepInfo removed. Floating info button available at bottom-right. */}
           <div className="key-expansion" style={{ marginTop: "24px" }}>
-            <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} />
+              <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} keySize={keySize} mode={mode} />
           </div>
         </Box>
       );
