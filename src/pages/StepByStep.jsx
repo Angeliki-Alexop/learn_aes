@@ -26,6 +26,7 @@ const LightTooltip = styled(({ className, ...props }) => (
     fontSize: 15,
   },
 }));
+export const highlightColor = "rgba(128, 0, 128, "; // Purplish color (used by MatrixDisplay)
 import Sidebar from "../components/Sidebar";
 import {
   handleSubmitButtonClick,
@@ -53,12 +54,6 @@ import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
 import MixColumnsExplanations from "./MixColumnsExplanations";
 import FloatingInfo from "../components/FloatingInfo";
-
-export const highlightColor = "rgba(128, 0, 128, "; // Purplish color
-
-const steps = ["SubBytes", "ShiftRows", "MixColumns", "AddRoundKey"];
-const finalRoundSteps = ["SubBytes", "ShiftRows", "AddRoundKey"];
-
 function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
   const [currentStep, setCurrentStep] = useState("Input");
@@ -110,32 +105,11 @@ function StepByStep() {
   }, []);
 
   useEffect(() => {
-    // Reset MixColumns highlights when step or round changes
-    setHighlightedColumnMixColumn(null);
-    setHighlightedRowFixedMatrix(null);
-    setHighlightedColumnValuesMixColumn([]);
-  }, [currentStep, currentRound]);
-
-  // Set default key when keySize changes
-  useEffect(() => {
-    let defaultKey = "";
-    if (keySize === 128) defaultKey = "DefaultKey123456"; // 16 chars
-    else if (keySize === 192)
-      defaultKey = "DefaultKeyForAES192Key!!"; // 24 chars
-    else if (keySize === 256) defaultKey = "DefaultKeyForAES256Key0123456789"; // 32 chars
-    setKey(defaultKey);
-    setTempKey(defaultKey);
-  }, [keySize]);
-
-  // Update previousStepState whenever round/step/stateMap/inputText/keySize changes
-  useEffect(() => {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
     let prevState = "";
 
-    // Interpret input differently depending on mode:
-    // - Encrypt: inputText is plaintext and needs PKCS#7 padding
-    // - Decrypt: inputText is ciphertext (hex or base64) and is already a single block (16 bytes)
+    // Compute initialState and paddedState for input summary logic
     let initialState;
     let paddedState;
     if (mode === 'Decrypt') {
@@ -148,10 +122,8 @@ function StepByStep() {
           initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
         }
       } catch (e) {
-        // fallback: treat as empty
         initialState = [];
       }
-      // ciphertext is already a single block; do not apply PKCS#7 padding
       paddedState = initialState.slice();
     } else {
       initialState = inputText.split("").map((char) => char.charCodeAt(0));
@@ -826,12 +798,13 @@ function StepByStep() {
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
             />
-            {/* ShiftRows Table in the middle */}
-            {currentStep === "ShiftRows" && (
+            {/* ShiftRows / InvShiftRows Table in the middle */}
+            {(currentStep === "ShiftRows" || currentStep === "InvShiftRows") && (
               <div className="matrix shiftrows-table">
                 <table className="matrix-table">
                   <tbody>
                     {(() => {
+                      const isInv = currentStep === 'InvShiftRows';
                       // Convert previousStepState to 4x4 column-major matrix
                       const flat = previousStepState.split(" ").filter(Boolean);
                       // AES state is column-major: state[col][row]
@@ -843,21 +816,18 @@ function StepByStep() {
                         <tr key={rowIdx}>
                           {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
                             let cellValue = "";
+                            // For inverse, mirror the column index horizontally so we can reuse the same placement logic
+                            const colCheck = isInv ? 6 - colIdx : colIdx;
                             // Place the 4 values in shifted positions (visual sliding window)
-                            if (colIdx === 3 - rowIdx)
-                              cellValue = matrix[rowIdx][0];
-                            else if (colIdx === 4 - rowIdx)
-                              cellValue = matrix[rowIdx][1];
-                            else if (colIdx === 5 - rowIdx)
-                              cellValue = matrix[rowIdx][2];
-                            else if (colIdx === 6 - rowIdx)
-                              cellValue = matrix[rowIdx][3];
+                            if (colCheck === 3 - rowIdx) cellValue = matrix[rowIdx][0];
+                            else if (colCheck === 4 - rowIdx) cellValue = matrix[rowIdx][1];
+                            else if (colCheck === 5 - rowIdx) cellValue = matrix[rowIdx][2];
+                            else if (colCheck === 6 - rowIdx) cellValue = matrix[rowIdx][3];
 
-                            // Determine regions
-                            const isOutlineRegion = colIdx >= 3 && colIdx <= 6; // rightmost 4x4 outlined
-                            const isShiftedOut = colIdx < 3 && !!cellValue; // values shifted outside the outline
-                            const isEmptyInsideOutline =
-                              isOutlineRegion && !cellValue; // gap left inside outline
+                            // Determine regions (outline is mirrored when inv)
+                            const isOutlineRegion = colCheck >= 3 && colCheck <= 6; // rightmost 4x4 in the checked coord system
+                            const isShiftedOut = colCheck < 3 && !!cellValue; // values shifted outside the outline
+                            const isEmptyInsideOutline = isOutlineRegion && !cellValue; // gap left inside the outline
 
                             // Keep sizing in CSS; minimal inline style only
                             const baseStyle = {
@@ -868,27 +838,16 @@ function StepByStep() {
                             // Outline cell: draw only the outer border of the 4x4 block
                             if (isOutlineRegion) {
                               const borderColor = "rgba(100,63,220,0.9)"; // purpleish outline
-                              const top =
-                                rowIdx === 0
-                                  ? `2px solid ${borderColor}`
-                                  : "1px solid transparent";
-                              const bottom =
-                                rowIdx === 3
-                                  ? `2px solid ${borderColor}`
-                                  : "1px solid transparent";
-                              const left =
-                                colIdx === 3
-                                  ? `2px solid ${borderColor}`
-                                  : "1px solid transparent";
-                              const right =
-                                colIdx === 6
-                                  ? `2px solid ${borderColor}`
-                                  : "1px solid transparent";
+                              // Map back the edge checks to the displayed column indices
+                              const displayLeft = isInv ? 0 : 3;
+                              const displayRight = isInv ? 3 : 6;
+                              const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const left = colIdx === displayLeft ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const right = colIdx === displayRight ? `2px solid ${borderColor}` : "1px solid transparent";
 
                               // purpleish background for EMPTY slots inside the outlined 4x4 (only these)
-                              const emptyBg = isEmptyInsideOutline
-                                ? "rgba(100,63,220,0.12)"
-                                : "transparent";
+                              const emptyBg = isEmptyInsideOutline ? "rgba(100,63,220,0.12)" : "transparent";
 
                               return (
                                 <td
@@ -900,7 +859,7 @@ function StepByStep() {
                                     borderBottom: bottom,
                                     borderLeft: left,
                                     borderRight: right,
-                                    backgroundColor: emptyBg, // purpleish bg only for empty inside outline
+                                    backgroundColor: emptyBg,
                                   }}
                                 >
                                   {cellValue || ""}
@@ -909,9 +868,7 @@ function StepByStep() {
                             }
 
                             // Outside area: DO NOT change background, only color the text for shifted-out values
-                            const shiftedTextColor = isShiftedOut
-                              ? "rgba(100,63,220,0.9)"
-                              : undefined;
+                            const shiftedTextColor = isShiftedOut ? "rgba(100,63,220,0.9)" : undefined;
 
                             return (
                               <td
@@ -919,8 +876,8 @@ function StepByStep() {
                                 className="shiftrows-cell"
                                 style={{
                                   ...baseStyle,
-                                  color: shiftedTextColor, // purple text for shifted-out bytes
-                                  backgroundColor: "transparent", // ensure no bg change
+                                  color: shiftedTextColor,
+                                  backgroundColor: "transparent",
                                 }}
                               >
                                 {cellValue || ""}
@@ -932,11 +889,7 @@ function StepByStep() {
                     })()}
                   </tbody>
                 </table>
-                <Typography
-                  variant="caption"
-                  align="center"
-                  style={{ marginTop: 4 }}
-                >
+                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
                   ShiftRows Table
                 </Typography>
               </div>
