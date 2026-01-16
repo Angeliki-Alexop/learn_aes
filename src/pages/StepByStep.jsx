@@ -39,7 +39,7 @@ import {
   generateStateMap,
   generateDecryptStateMap,
 } from "../utils/stepByStepHandlers";
-import { padPKCS7, sBox } from "../utils/aes_manual_v2.js";
+import { padPKCS7, sBox, keyExpansion, unpadPKCS7 } from "../utils/aes_manual_v2.js";
 import {
   formatAsMatrix,
   toHex,
@@ -133,8 +133,30 @@ function StepByStep() {
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
     let prevState = "";
 
-    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
-    const paddedState = padPKCS7(initialState, 16);
+    // Interpret input differently depending on mode:
+    // - Encrypt: inputText is plaintext and needs PKCS#7 padding
+    // - Decrypt: inputText is ciphertext (hex or base64) and is already a single block (16 bytes)
+    let initialState;
+    let paddedState;
+    if (mode === 'Decrypt') {
+      try {
+        if (decryptFormat === 'hex') {
+          const cleaned = inputText.replace(/\s+/g, '');
+          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        } else {
+          const bin = atob(inputText || '');
+          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+        }
+      } catch (e) {
+        // fallback: treat as empty
+        initialState = [];
+      }
+      // ciphertext is already a single block; do not apply PKCS#7 padding
+      paddedState = initialState.slice();
+    } else {
+      initialState = inputText.split("").map((char) => char.charCodeAt(0));
+      paddedState = padPKCS7(initialState, 16);
+    }
 
     if (stepIndex > 0) {
       prevState = roundSteps[stepIndex - 1]?.state || "";
@@ -212,8 +234,27 @@ function StepByStep() {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
 
-    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
-    const paddedState = padPKCS7(initialState, 16);
+    // Interpret input differently depending on mode for the Input Summary
+    let initialState;
+    let paddedState;
+    if (mode === 'Decrypt') {
+      try {
+        if (decryptFormat === 'hex') {
+          const cleaned = inputText.replace(/\s+/g, '');
+          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        } else {
+          const bin = atob(inputText || '');
+          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+        }
+      } catch (e) {
+        initialState = [];
+      }
+      // ciphertext is already a single block; do not apply padding or show padded bytes
+      paddedState = initialState.slice();
+    } else {
+      initialState = inputText.split("").map((char) => char.charCodeAt(0));
+      paddedState = padPKCS7(initialState, 16);
+    }
     // Used to reset highlights after we click a new cell
     // Remove highlight from all cells first
     const highlightedCells = document.querySelectorAll(
@@ -329,8 +370,26 @@ function StepByStep() {
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
     const stepState = roundSteps[stepIndex]?.state || "";
 
-    const initialState = inputText.split("").map((char) => char.charCodeAt(0));
-    const paddedState = padPKCS7(initialState, 16);
+    // Interpret input differently depending on mode for the Input Summary
+    let initialState;
+    let paddedState;
+    if (mode === 'Decrypt') {
+      try {
+        if (decryptFormat === 'hex') {
+          const cleaned = inputText.replace(/\s+/g, '');
+          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        } else {
+          const bin = atob(inputText || '');
+          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+        }
+      } catch (e) {
+        initialState = [];
+      }
+      paddedState = initialState.slice();
+    } else {
+      initialState = inputText.split("").map((char) => char.charCodeAt(0));
+      paddedState = padPKCS7(initialState, 16);
+    }
     const resultState =
       stateMap.get(totalRounds)?.find((step) => step.step === "AddRoundKey")
         ?.state || "";
@@ -583,39 +642,50 @@ function StepByStep() {
                 </Box>
                 <Typography>{inputText || "(empty)"}</Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Input Text (Hex)
-                  </Typography>
-                  <LightTooltip
-                    title="The hexadecimal representation of the input text"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(initialState)}
-                </Typography>
+                {mode === 'Decrypt' ? (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Input Text (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The ciphertext in hexadecimal (single AES block)"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(initialState)}</Typography>
+                  </>
+                ) : (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Input Text (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The hexadecimal representation of the input text"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(initialState)}</Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Padded Input Text (Hex)
-                  </Typography>
-                  <LightTooltip
-                    title="The input text after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
-                    placement="top-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(paddedState)}
-                </Typography>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Padded Input Text (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The input text after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
+                        placement="top-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(paddedState)}</Typography>
+                  </>
+                )}
               </Box>
 
               <Box
@@ -1084,22 +1154,49 @@ function StepByStep() {
                   {resultState}
                 </Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    AES Encrypted Output (Base64)
-                  </Typography>
-                  <LightTooltip
-                    title="AES Encrypted Output encoded in Base64"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {hexToBase64(resultState)}
-                </Typography>
+                {mode === 'Decrypt' ? (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Decrypted Plaintext
+                      </Typography>
+                      <LightTooltip
+                        title="Plaintext recovered after decryption and PKCS#7 unpadding"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {(() => {
+                        try {
+                          const hexArr = resultState.split(' ').filter(Boolean).map(h => parseInt(h, 16));
+                          const unp = unpadPKCS7(hexArr, 16);
+                          return unp.map(b => String.fromCharCode(b)).join('');
+                        } catch (e) {
+                          return '(unable to decode)';
+                        }
+                      })()}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        AES Encrypted Output (Base64)
+                      </Typography>
+                      <LightTooltip
+                        title="AES Encrypted Output encoded in Base64"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {hexToBase64(resultState)}
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Box>
           </Box>
