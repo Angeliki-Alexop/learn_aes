@@ -787,6 +787,8 @@ function StepByStep() {
     } else if (currentRound >= 0 && currentRound <= totalRounds) {
       // compute a display-friendly round label: in Decrypt mode we show totalRounds..0
       const displayRound = mode === 'Decrypt' ? totalRounds - currentRound : currentRound;
+      // select the correct round key index for display/use
+      const roundKeyIndex = mode === 'Decrypt' ? totalRounds - currentRound : currentRound;
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
@@ -955,7 +957,7 @@ function StepByStep() {
             {/* For AddRoundKey: show Round Key between Current State and Next State */}
             {currentStep === "AddRoundKey" && (
               <RenderMatrix
-                hexString={toHex(roundKeys[currentRound])}
+                hexString={toHex(roundKeys[roundKeyIndex] || [])}
                 matrixId="roundKey"
                 title="Round Key"
                 highlightRows={false}
@@ -1012,6 +1014,7 @@ function StepByStep() {
                 previousStepState={previousStepState}
                 roundKeys={roundKeys}
                 currentRound={currentRound}
+                roundKeyIndex={roundKeyIndex}
                 toHex={toHex}
               />
             )}
