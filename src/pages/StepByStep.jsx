@@ -715,10 +715,12 @@ function StepByStep() {
         </Box>
       );
     } else if (currentRound >= 0 && currentRound <= totalRounds) {
+      // compute a display-friendly round label: in Decrypt mode we show totalRounds..0
+      const displayRound = mode === 'Decrypt' ? totalRounds - currentRound : currentRound;
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
-            Round {currentRound} - Step: {currentStep}
+            Round {displayRound} - Step: {currentStep}
           </Typography>
           {/* Step-specific information and interaction hints (StepInfo removed) */}
           <div
