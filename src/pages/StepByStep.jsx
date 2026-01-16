@@ -909,11 +909,13 @@ function StepByStep() {
               </div>
             )}
             {/* Show S-Box between matrices only for SubBytes step */}
-            {currentStep === "SubBytes" && (
+            {(currentStep === "SubBytes" || currentStep === "InvSubBytes") && (
               <div className="matrix sbox-matrix">
                 <RenderSBox
                   sBox={sBox}
                   highlightedCellValue={highlightedCellValue}
+                  title={currentStep === 'InvSubBytes' ? 'Inverse S-Box' : 'S-Box'}
+                  inverseLookup={currentStep === 'InvSubBytes'}
                 />
               </div>
             )}
