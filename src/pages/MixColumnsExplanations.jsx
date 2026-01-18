@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { MoveLeft, Equal, CirclePlus } from "lucide-react";
-import { getMixColumnsTableData, getMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
+import { getMixColumnsTableData, getMixColumnsResultTable, getInvMixColumnsTableData, getInvMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
 
 // color mapping for operators
 const OP_COLORS = {
@@ -50,14 +50,15 @@ export default function MixColumnsExplanations({
   selectedCellValue,
   highlightedFixedMatrixRow,
   highlightedPrevStateColumn,
+  invMode = false,
 }) {
   const mappedValues = highlightedFixedMatrixRow.map((fixedVal, idx) => ({
     fixed: fixedVal,
     prev: highlightedPrevStateColumn[idx],
   }));
 
-  const tables = getMixColumnsTableData(mappedValues);
-  const resultTable = getMixColumnsResultTable(mappedValues, selectedCellValue);
+  const tables = invMode ? getInvMixColumnsTableData(mappedValues) : getMixColumnsTableData(mappedValues);
+  const resultTable = invMode ? getInvMixColumnsResultTable(mappedValues, selectedCellValue) : getMixColumnsResultTable(mappedValues, selectedCellValue);
 
   const isBinary = (val) => typeof val === "string" && /^[01]{4} [01]{4}$/.test(val);
 

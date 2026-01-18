@@ -265,11 +265,11 @@ function StepByStep() {
         return;
       }
     }
-    if (currentStep === "MixColumns" && matrixId === "previous") {
-      // Do nothing if the clicked cell is from the previous state matrix during MixColumns step
+    if ((currentStep === "MixColumns" || currentStep === "InvMixColumns") && matrixId === "previous") {
+      // Do nothing if the clicked cell is from the previous state matrix during MixColumns/InvMixColumns step
       return;
     }
-    if (currentStep === "MixColumns") {
+    if (currentStep === "MixColumns" || currentStep === "InvMixColumns") {
       if (matrixId === "previous") {
         return;
       }
@@ -282,7 +282,12 @@ function StepByStep() {
         setHighlightedRowFixedMatrix(rowIdx);
 
         // Log the values of the highlighted row in the fixed matrix
-        const fixedMatrix = [
+        const fixedMatrix = currentStep === 'InvMixColumns' ? [
+          ["0e","0b","0d","09"],
+          ["09","0e","0b","0d"],
+          ["0d","09","0e","0b"],
+          ["0b","0d","09","0e"],
+        ] : [
           ["02", "03", "01", "01"],
           ["01", "02", "03", "01"],
           ["01", "01", "02", "03"],
@@ -922,6 +927,18 @@ function StepByStep() {
             {currentStep === "MixColumns" && (
               <RenderFixedMatrix highlightedRow={highlightedRowFixedMatrix} />
             )}
+            {currentStep === "InvMixColumns" && (
+              <RenderFixedMatrix
+                highlightedRow={highlightedRowFixedMatrix}
+                matrix={[
+                  ["0e","0b","0d","09"],
+                  ["09","0e","0b","0d"],
+                  ["0d","09","0e","0b"],
+                  ["0b","0d","09","0e"],
+                ]}
+                title="Inverse Fixed Matrix"
+              />
+            )}
 
             {/* For AddRoundKey: show Round Key between Current State and Next State */}
             {currentStep === "AddRoundKey" && (
@@ -998,6 +1015,23 @@ function StepByStep() {
                     : []
                 }
                 highlightedPrevStateColumn={highlightedColumnValuesMixColumn}
+              />
+            )}
+            {currentStep === "InvMixColumns" && (
+              <MixColumnsExplanations
+                selectedCellValue={highlightedCellValue}
+                highlightedFixedMatrixRow={
+                  highlightedRowFixedMatrix !== null
+                    ? [
+                        ["0e","0b","0d","09"],
+                        ["09","0e","0b","0d"],
+                        ["0d","09","0e","0b"],
+                        ["0b","0d","09","0e"],
+                      ][highlightedRowFixedMatrix]
+                    : []
+                }
+                highlightedPrevStateColumn={highlightedColumnValuesMixColumn}
+                invMode={true}
               />
             )}
           </Box>

@@ -114,12 +114,13 @@ export function RenderMatrix({
 }
 
 export function RenderFixedMatrix({ highlightedRow = null }) {
-  const fixedMatrix = [
+  const fixedMatrix = arguments[0].matrix || [
     ["02", "03", "01", "01"],
     ["01", "02", "03", "01"],
     ["01", "01", "02", "03"],
     ["03", "01", "01", "02"],
   ];
+  const title = arguments[0].title || 'Fixed Matrix';
   return (
     <Box className="matrix fixed-matrix">
       <table className="matrix-table">
@@ -147,7 +148,7 @@ export function RenderFixedMatrix({ highlightedRow = null }) {
         align="left"
         className="matrix-title"
       >
-        Fixed Matrix
+        {title}
       </Typography>
     </Box>
   );
