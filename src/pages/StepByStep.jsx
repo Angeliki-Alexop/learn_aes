@@ -40,7 +40,12 @@ import {
   generateStateMap,
   generateDecryptStateMap,
 } from "../utils/stepByStepHandlers";
-import { padPKCS7, sBox, keyExpansion, unpadPKCS7 } from "../utils/aes_manual_v2.js";
+import {
+  padPKCS7,
+  sBox,
+  keyExpansion,
+  unpadPKCS7,
+} from "../utils/aes_manual_v2.js";
 import {
   formatAsMatrix,
   toHex,
@@ -83,7 +88,7 @@ function StepByStep() {
     useState(null);
   const algorithm = "ECB";
   const [mode, setMode] = useState("Encrypt");
-  const [decryptFormat, setDecryptFormat] = useState('hex');
+  const [decryptFormat, setDecryptFormat] = useState("hex");
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
 
@@ -112,14 +117,18 @@ function StepByStep() {
     // Compute initialState and paddedState for input summary logic
     let initialState;
     let paddedState;
-    if (mode === 'Decrypt') {
+    if (mode === "Decrypt") {
       try {
-        if (decryptFormat === 'hex') {
-          const cleaned = inputText.replace(/\s+/g, '');
-          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        if (decryptFormat === "hex") {
+          const cleaned = inputText.replace(/\s+/g, "");
+          initialState = cleaned.length
+            ? cleaned.match(/.{1,2}/g).map((h) => parseInt(h, 16))
+            : [];
         } else {
-          const bin = atob(inputText || '');
-          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+          const bin = atob(inputText || "");
+          initialState = Array.from({ length: bin.length }, (_, i) =>
+            bin.charCodeAt(i),
+          );
         }
       } catch (e) {
         initialState = [];
@@ -135,7 +144,7 @@ function StepByStep() {
     } else if (currentRound > 0) {
       const previousRoundSteps = stateMap.get(currentRound - 1) || [];
       const addRoundKeyStep = previousRoundSteps.find(
-        (step) => step.step === "AddRoundKey"
+        (step) => step.step === "AddRoundKey",
       );
       prevState = addRoundKeyStep?.state || "";
     } else if (currentRound === 0) {
@@ -162,36 +171,50 @@ function StepByStep() {
       setSidebarVisible,
       setRoundKeys,
       (sm) => setStateMap(sm),
-      setHasSubmitted
+      setHasSubmitted,
     );
 
     const totalRoundsLocal = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
-    const expanded = keyExpansion(tempKey.split("").map((c) => c.charCodeAt(0)), keySize);
+    const expanded = keyExpansion(
+      tempKey.split("").map((c) => c.charCodeAt(0)),
+      keySize,
+    );
     const rk = [];
-    for (let i = 0; i <= totalRoundsLocal; i++) rk.push(expanded.slice(i * 16, (i + 1) * 16));
+    for (let i = 0; i <= totalRoundsLocal; i++)
+      rk.push(expanded.slice(i * 16, (i + 1) * 16));
 
-    if (mode === 'Decrypt') {
+    if (mode === "Decrypt") {
       // Parse according to decryptFormat
       let cipherBytes = [];
       try {
-        if (decryptFormat === 'hex') {
-          const cleaned = tempInputText.replace(/\s+/g, '');
-          if (!/^[0-9a-fA-F]{32}$/.test(cleaned)) throw new Error('Hex must be 32 hex chars');
-          cipherBytes = cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16));
+        if (decryptFormat === "hex") {
+          const cleaned = tempInputText.replace(/\s+/g, "");
+          if (!/^[0-9a-fA-F]{32}$/.test(cleaned))
+            throw new Error("Hex must be 32 hex chars");
+          cipherBytes = cleaned.match(/.{1,2}/g).map((h) => parseInt(h, 16));
         } else {
           const bin = atob(tempInputText);
-          cipherBytes = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
-          if (cipherBytes.length !== 16) throw new Error('Base64 must decode to 16 bytes');
+          cipherBytes = Array.from({ length: bin.length }, (_, i) =>
+            bin.charCodeAt(i),
+          );
+          if (cipherBytes.length !== 16)
+            throw new Error("Base64 must decode to 16 bytes");
         }
       } catch (e) {
         setKeyError(e.message);
         return;
       }
 
-      const decryptMap = generateDecryptStateMap(cipherBytes, rk, totalRoundsLocal);
+      const decryptMap = generateDecryptStateMap(
+        cipherBytes,
+        rk,
+        totalRoundsLocal,
+      );
       setStateMap(decryptMap);
     } else {
-      const initialState = tempInputText.split("").map((char) => char.charCodeAt(0));
+      const initialState = tempInputText
+        .split("")
+        .map((char) => char.charCodeAt(0));
       const padded = padPKCS7(initialState, 16);
       const encryptMap = generateStateMap(padded, rk, totalRoundsLocal);
       setStateMap(encryptMap);
@@ -209,14 +232,18 @@ function StepByStep() {
     // Interpret input differently depending on mode for the Input Summary
     let initialState;
     let paddedState;
-    if (mode === 'Decrypt') {
+    if (mode === "Decrypt") {
       try {
-        if (decryptFormat === 'hex') {
-          const cleaned = inputText.replace(/\s+/g, '');
-          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        if (decryptFormat === "hex") {
+          const cleaned = inputText.replace(/\s+/g, "");
+          initialState = cleaned.length
+            ? cleaned.match(/.{1,2}/g).map((h) => parseInt(h, 16))
+            : [];
         } else {
-          const bin = atob(inputText || '');
-          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+          const bin = atob(inputText || "");
+          initialState = Array.from({ length: bin.length }, (_, i) =>
+            bin.charCodeAt(i),
+          );
         }
       } catch (e) {
         initialState = [];
@@ -230,7 +257,7 @@ function StepByStep() {
     // Used to reset highlights after we click a new cell
     // Remove highlight from all cells first
     const highlightedCells = document.querySelectorAll(
-      ".highlighted, .highlighted_new"
+      ".highlighted, .highlighted_new",
     );
     highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
@@ -265,7 +292,10 @@ function StepByStep() {
         return;
       }
     }
-    if ((currentStep === "MixColumns" || currentStep === "InvMixColumns") && matrixId === "previous") {
+    if (
+      (currentStep === "MixColumns" || currentStep === "InvMixColumns") &&
+      matrixId === "previous"
+    ) {
       // Do nothing if the clicked cell is from the previous state matrix during MixColumns/InvMixColumns step
       return;
     }
@@ -282,17 +312,20 @@ function StepByStep() {
         setHighlightedRowFixedMatrix(rowIdx);
 
         // Log the values of the highlighted row in the fixed matrix
-        const fixedMatrix = currentStep === 'InvMixColumns' ? [
-          ["0e","0b","0d","09"],
-          ["09","0e","0b","0d"],
-          ["0d","09","0e","0b"],
-          ["0b","0d","09","0e"],
-        ] : [
-          ["02", "03", "01", "01"],
-          ["01", "02", "03", "01"],
-          ["01", "01", "02", "03"],
-          ["03", "01", "01", "02"],
-        ];
+        const fixedMatrix =
+          currentStep === "InvMixColumns"
+            ? [
+                ["0e", "0b", "0d", "09"],
+                ["09", "0e", "0b", "0d"],
+                ["0d", "09", "0e", "0b"],
+                ["0b", "0d", "09", "0e"],
+              ]
+            : [
+                ["02", "03", "01", "01"],
+                ["01", "02", "03", "01"],
+                ["01", "01", "02", "03"],
+                ["03", "01", "01", "02"],
+              ];
         const rowValues = fixedMatrix[rowIdx];
         console.log("Highlighted fixed matrix row values:", rowValues);
 
@@ -334,7 +367,7 @@ function StepByStep() {
     currentRound,
     currentStep,
     highlightedCell,
-    highlightedCellValue
+    highlightedCellValue,
   ) => {
     if (highlightedCell && highlightedCell.startsWith("current")) {
       return `Round ${currentRound}, Step ${currentStep}: Selected Cell Value: ${highlightedCellValue}`;
@@ -350,14 +383,18 @@ function StepByStep() {
     // Interpret input differently depending on mode for the Input Summary
     let initialState;
     let paddedState;
-    if (mode === 'Decrypt') {
+    if (mode === "Decrypt") {
       try {
-        if (decryptFormat === 'hex') {
-          const cleaned = inputText.replace(/\s+/g, '');
-          initialState = cleaned.length ? cleaned.match(/.{1,2}/g).map(h => parseInt(h, 16)) : [];
+        if (decryptFormat === "hex") {
+          const cleaned = inputText.replace(/\s+/g, "");
+          initialState = cleaned.length
+            ? cleaned.match(/.{1,2}/g).map((h) => parseInt(h, 16))
+            : [];
         } else {
-          const bin = atob(inputText || '');
-          initialState = Array.from({ length: bin.length }, (_, i) => bin.charCodeAt(i));
+          const bin = atob(inputText || "");
+          initialState = Array.from({ length: bin.length }, (_, i) =>
+            bin.charCodeAt(i),
+          );
         }
       } catch (e) {
         initialState = [];
@@ -477,12 +514,19 @@ function StepByStep() {
                 DECRYPTION
               </Button>
             </Box>
-            {mode === 'Decrypt' && (
-              <Box sx={{ mt: 1, display: 'flex', gap: 1, alignItems: 'center' }}>
+            {mode === "Decrypt" && (
+              <Box
+                sx={{ mt: 1, display: "flex", gap: 1, alignItems: "center" }}
+              >
                 <Typography variant="body2">Input format:</Typography>
-                <Select value={decryptFormat} onChange={(e) => setDecryptFormat(e.target.value)} size="small" sx={{ minWidth: 120 }}>
-                  <MenuItem value={'base64'}>Base64</MenuItem>
-                  <MenuItem value={'hex'}>Hex</MenuItem>
+                <Select
+                  value={decryptFormat}
+                  onChange={(e) => setDecryptFormat(e.target.value)}
+                  size="small"
+                  sx={{ minWidth: 120 }}
+                >
+                  <MenuItem value={"base64"}>Base64</MenuItem>
+                  <MenuItem value={"hex"}>Hex</MenuItem>
                 </Select>
               </Box>
             )}
@@ -519,8 +563,8 @@ function StepByStep() {
               <TextField
                 label={
                   mode === "Encrypt"
-                    ? "Enter Plain Text to Encrypt"
-                    : "AES Encrypted Text"
+                    ? "Plaintext (English)"
+                    : "Ciphertext (Hex)"
                 }
                 value={tempInputText}
                 onChange={(e) => setTempInputText(e.target.value)}
@@ -532,8 +576,8 @@ function StepByStep() {
               <TextField
                 label={
                   mode === "Encrypt"
-                    ? "Enter Secret Key"
-                    : "Enter Secret Key used for Encryption"
+                    ? "Key for AES (English)"
+                    : "Key for AES (English)"
                 }
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
@@ -574,7 +618,7 @@ function StepByStep() {
         hex
           .split(" ")
           .map((byte) => String.fromCharCode(parseInt(byte, 16)))
-          .join("")
+          .join(""),
       );
     };
 
@@ -622,7 +666,7 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Original Input Text
+                    Plaintext (English)
                   </Typography>
                   <LightTooltip
                     title="The original plaintext message entered by the user"
@@ -633,50 +677,39 @@ function StepByStep() {
                 </Box>
                 <Typography>{inputText || "(empty)"}</Typography>
 
-                {mode === 'Decrypt' ? (
-                  <>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Input Text (Hex)
-                      </Typography>
-                      <LightTooltip
-                        title="The ciphertext in hexadecimal (single AES block)"
-                        placement="right-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(initialState)}</Typography>
-                  </>
-                ) : (
-                  <>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Input Text (Hex)
-                      </Typography>
-                      <LightTooltip
-                        title="The hexadecimal representation of the input text"
-                        placement="right-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(initialState)}</Typography>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Plaintext (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The hexadecimal representation of the plaintext"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(initialState)}
+                </Typography>
 
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Padded Input Text (Hex)
-                      </Typography>
-                      <LightTooltip
-                        title="The input text after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
-                        placement="top-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>{toHex(paddedState)}</Typography>
-                  </>
-                )}
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Padded plaintext (Hex)
+                  </Typography>
+                  <LightTooltip
+                    title="The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
+                    placement="top-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {toHex(paddedState)}
+                </Typography>
               </Box>
 
               <Box
@@ -689,10 +722,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key
+                    Key for AES (English)
                   </Typography>
                   <LightTooltip
-                    title="The secret key provided by the user for the AES encryption process"
+                    title="The encryption key provided by the user for the AES encryption process"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -704,7 +737,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key (Hex)
+                    Key for AES (Hex)
                   </Typography>
                   <LightTooltip
                     title="The hexadecimal representation of the encryption key"
@@ -735,7 +768,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Operation Mode
+                    Operation mode
                   </Typography>
                   <LightTooltip
                     title="Encrypt or Decrypt mode selected by the user"
@@ -749,7 +782,7 @@ function StepByStep() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
-                  <Typography sx={{ fontWeight: 700 }}>Key Size</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>Key size</Typography>
                   <LightTooltip
                     title="Selected key size in bits)"
                     placement="right-start"
@@ -771,43 +804,60 @@ function StepByStep() {
           </Typography>
           {/* StepInfo removed. Floating info button available at bottom-right. */}
           <div className="key-expansion" style={{ marginTop: "24px" }}>
-              <KeyExpansionMatrices roundKeys={roundKeys} toHex={toHex} keySize={keySize} mode={mode} />
+            <KeyExpansionMatrices
+              roundKeys={roundKeys}
+              toHex={toHex}
+              keySize={keySize}
+              mode={mode}
+            />
           </div>
         </Box>
       );
     } else if (currentRound >= 0 && currentRound <= totalRounds) {
       // compute a display-friendly round label: in Decrypt mode we show totalRounds..0
-      const displayRound = mode === 'Decrypt' ? totalRounds - currentRound : currentRound;
+      const displayRound =
+        mode === "Decrypt" ? totalRounds - currentRound : currentRound;
       // select the correct round key index for display/use
-      const roundKeyIndex = mode === 'Decrypt' ? totalRounds - currentRound : currentRound;
+      const roundKeyIndex =
+        mode === "Decrypt" ? totalRounds - currentRound : currentRound;
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
             Round {displayRound} - Step: {currentStep}
           </Typography>
           {/* Show plaintext (for Encrypt) or ciphertext (for Decrypt) under the heading */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1, mb: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}>
             <Box
               sx={{
-                textAlign: 'left',
-                border: '2px solid rgba(129, 18, 180, 0.06)',
+                textAlign: "left",
+                border: "2px solid rgba(129, 18, 180, 0.06)",
                 borderRadius: 2,
                 p: 1,
                 minWidth: 420,
-                maxWidth: '90%'
+                maxWidth: "90%",
               }}
             >
-              {mode === 'Encrypt' ? (
+              {mode === "Encrypt" ? (
                 <>
                   <Typography sx={{ fontWeight: 700 }}>Plaintext</Typography>
-                  <Typography sx={{ wordBreak: 'break-word' }}>{inputText || '(empty)'}</Typography>
-                  <Typography sx={{ fontWeight: 700, mt: 1 }}>Plaintext (Hex)</Typography>
-                  <Typography sx={{ wordBreak: 'break-word' }}>{toHex(paddedState)}</Typography>
+                  <Typography sx={{ wordBreak: "break-word" }}>
+                    {inputText || "(empty)"}
+                  </Typography>
+                  <Typography sx={{ fontWeight: 700, mt: 1 }}>
+                    Plaintext (Hex)
+                  </Typography>
+                  <Typography sx={{ wordBreak: "break-word" }}>
+                    {toHex(paddedState)}
+                  </Typography>
                 </>
               ) : (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>Ciphertext (Hex)</Typography>
-                  <Typography sx={{ wordBreak: 'break-word' }}>{toHex(initialState)}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Ciphertext (Hex)
+                  </Typography>
+                  <Typography sx={{ wordBreak: "break-word" }}>
+                    {toHex(initialState)}
+                  </Typography>
                 </>
               )}
             </Box>
@@ -845,17 +895,18 @@ function StepByStep() {
               highlightedCellValue={highlightedCellValue}
             />
             {/* ShiftRows / InvShiftRows Table in the middle */}
-            {(currentStep === "ShiftRows" || currentStep === "InvShiftRows") && (
+            {(currentStep === "ShiftRows" ||
+              currentStep === "InvShiftRows") && (
               <div className="matrix shiftrows-table">
                 <table className="matrix-table">
                   <tbody>
                     {(() => {
-                      const isInv = currentStep === 'InvShiftRows';
+                      const isInv = currentStep === "InvShiftRows";
                       // Convert previousStepState to 4x4 column-major matrix
                       const flat = previousStepState.split(" ").filter(Boolean);
                       // AES state is column-major: state[col][row]
                       const matrix = [0, 1, 2, 3].map((row) =>
-                        [0, 1, 2, 3].map((col) => flat[col * 4 + row] || "")
+                        [0, 1, 2, 3].map((col) => flat[col * 4 + row] || ""),
                       );
                       // Build the ShiftRows visualization (4x7)
                       return [0, 1, 2, 3].map((rowIdx) => (
@@ -865,15 +916,21 @@ function StepByStep() {
                             // For inverse, mirror the column index horizontally so we can reuse the same placement logic
                             const colCheck = isInv ? 6 - colIdx : colIdx;
                             // Place the 4 values in shifted positions (visual sliding window)
-                            if (colCheck === 3 - rowIdx) cellValue = matrix[rowIdx][0];
-                            else if (colCheck === 4 - rowIdx) cellValue = matrix[rowIdx][1];
-                            else if (colCheck === 5 - rowIdx) cellValue = matrix[rowIdx][2];
-                            else if (colCheck === 6 - rowIdx) cellValue = matrix[rowIdx][3];
+                            if (colCheck === 3 - rowIdx)
+                              cellValue = matrix[rowIdx][0];
+                            else if (colCheck === 4 - rowIdx)
+                              cellValue = matrix[rowIdx][1];
+                            else if (colCheck === 5 - rowIdx)
+                              cellValue = matrix[rowIdx][2];
+                            else if (colCheck === 6 - rowIdx)
+                              cellValue = matrix[rowIdx][3];
 
                             // Determine regions (outline is mirrored when inv)
-                            const isOutlineRegion = colCheck >= 3 && colCheck <= 6; // rightmost 4x4 in the checked coord system
+                            const isOutlineRegion =
+                              colCheck >= 3 && colCheck <= 6; // rightmost 4x4 in the checked coord system
                             const isShiftedOut = colCheck < 3 && !!cellValue; // values shifted outside the outline
-                            const isEmptyInsideOutline = isOutlineRegion && !cellValue; // gap left inside the outline
+                            const isEmptyInsideOutline =
+                              isOutlineRegion && !cellValue; // gap left inside the outline
 
                             // Keep sizing in CSS; minimal inline style only
                             const baseStyle = {
@@ -887,13 +944,27 @@ function StepByStep() {
                               // Map back the edge checks to the displayed column indices
                               const displayLeft = isInv ? 0 : 3;
                               const displayRight = isInv ? 3 : 6;
-                              const top = rowIdx === 0 ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const bottom = rowIdx === 3 ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const left = colIdx === displayLeft ? `2px solid ${borderColor}` : "1px solid transparent";
-                              const right = colIdx === displayRight ? `2px solid ${borderColor}` : "1px solid transparent";
+                              const top =
+                                rowIdx === 0
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const bottom =
+                                rowIdx === 3
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const left =
+                                colIdx === displayLeft
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
+                              const right =
+                                colIdx === displayRight
+                                  ? `2px solid ${borderColor}`
+                                  : "1px solid transparent";
 
                               // purpleish background for EMPTY slots inside the outlined 4x4 (only these)
-                              const emptyBg = isEmptyInsideOutline ? "rgba(100,63,220,0.12)" : "transparent";
+                              const emptyBg = isEmptyInsideOutline
+                                ? "rgba(100,63,220,0.12)"
+                                : "transparent";
 
                               return (
                                 <td
@@ -914,7 +985,9 @@ function StepByStep() {
                             }
 
                             // Outside area: DO NOT change background, only color the text for shifted-out values
-                            const shiftedTextColor = isShiftedOut ? "rgba(100,63,220,0.9)" : undefined;
+                            const shiftedTextColor = isShiftedOut
+                              ? "rgba(100,63,220,0.9)"
+                              : undefined;
 
                             return (
                               <td
@@ -935,7 +1008,11 @@ function StepByStep() {
                     })()}
                   </tbody>
                 </table>
-                <Typography variant="caption" align="center" style={{ marginTop: 4 }}>
+                <Typography
+                  variant="caption"
+                  align="center"
+                  style={{ marginTop: 4 }}
+                >
                   ShiftRows Table
                 </Typography>
               </div>
@@ -946,8 +1023,10 @@ function StepByStep() {
                 <RenderSBox
                   sBox={sBox}
                   highlightedCellValue={highlightedCellValue}
-                  title={currentStep === 'InvSubBytes' ? 'Inverse S-Box' : 'S-Box'}
-                  inverseLookup={currentStep === 'InvSubBytes'}
+                  title={
+                    currentStep === "InvSubBytes" ? "Inverse S-Box" : "S-Box"
+                  }
+                  inverseLookup={currentStep === "InvSubBytes"}
                 />
               </div>
             )}
@@ -958,10 +1037,10 @@ function StepByStep() {
               <RenderFixedMatrix
                 highlightedRow={highlightedRowFixedMatrix}
                 matrix={[
-                  ["0e","0b","0d","09"],
-                  ["09","0e","0b","0d"],
-                  ["0d","09","0e","0b"],
-                  ["0b","0d","09","0e"],
+                  ["0e", "0b", "0d", "09"],
+                  ["09", "0e", "0b", "0d"],
+                  ["0d", "09", "0e", "0b"],
+                  ["0b", "0d", "09", "0e"],
                 ]}
                 title="Inverse Fixed Matrix"
               />
@@ -988,7 +1067,9 @@ function StepByStep() {
               highlightRows={false}
               // Highlight columns for both ShiftRows and InvShiftRows so the
               // visual column markers remain consistent in either direction.
-              highlightColumns={currentStep === "ShiftRows" || currentStep === "InvShiftRows"}
+              highlightColumns={
+                currentStep === "ShiftRows" || currentStep === "InvShiftRows"
+              }
               highlightedCell={highlightedCell}
               handleCellClick={handleCellClick}
               highlightedCellValue={highlightedCellValue}
@@ -996,8 +1077,8 @@ function StepByStep() {
                 currentStep === "ShiftRows"
                   ? baseShiftHighlights
                   : currentStep === "InvShiftRows"
-                  ? invShiftHighlights
-                  : []
+                    ? invShiftHighlights
+                    : []
               }
             />
           </div>
@@ -1050,10 +1131,10 @@ function StepByStep() {
                 highlightedFixedMatrixRow={
                   highlightedRowFixedMatrix !== null
                     ? [
-                        ["0e","0b","0d","09"],
-                        ["09","0e","0b","0d"],
-                        ["0d","09","0e","0b"],
-                        ["0b","0d","09","0e"],
+                        ["0e", "0b", "0d", "09"],
+                        ["09", "0e", "0b", "0d"],
+                        ["0d", "09", "0e", "0b"],
+                        ["0b", "0d", "09", "0e"],
                       ][highlightedRowFixedMatrix]
                     : []
                 }
@@ -1098,10 +1179,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Original Input Text
+                    Plaintext (English)
                   </Typography>
                   <LightTooltip
-                    title="The original plaintext entered by the user"
+                    title="The original plaintext message entered by the user"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1115,10 +1196,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Padded Input (Hex)
+                    Padded Plaintext (Hex)
                   </Typography>
                   <LightTooltip
-                    title="Input after PKCS#7 padding, in hexadecimal format"
+                    title="Plaintext after PKCS#7 padding, in hexadecimal format"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1132,10 +1213,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key
+                    Key for AES (English)
                   </Typography>
                   <LightTooltip
-                    title="The secret key provided by the user"
+                    title="The encryption key provided by the user"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1147,7 +1228,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Encryption Key (Hex)
+                    Key for AES (Hex)
                   </Typography>
                   <LightTooltip
                     title="The hexadecimal representation of the encryption key"
@@ -1171,10 +1252,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    AES Encrypted Output (Hex)
+                    Ciphertext (Hex)
                   </Typography>
                   <LightTooltip
-                    title="AES Encrypted Output in hexadecimal"
+                    title="AES encrypted output in hexadecimal"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1184,49 +1265,22 @@ function StepByStep() {
                   {resultState}
                 </Typography>
 
-                {mode === 'Decrypt' ? (
-                  <>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Decrypted Plaintext
-                      </Typography>
-                      <LightTooltip
-                        title="Plaintext recovered after decryption and PKCS#7 unpadding"
-                        placement="right-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>
-                      {(() => {
-                        try {
-                          const hexArr = resultState.split(' ').filter(Boolean).map(h => parseInt(h, 16));
-                          const unp = unpadPKCS7(hexArr, 16);
-                          return unp.map(b => String.fromCharCode(b)).join('');
-                        } catch (e) {
-                          return '(unable to decode)';
-                        }
-                      })()}
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}>
-                      <Typography sx={{ fontWeight: 700 }}>
-                        AES Encrypted Output (Base64)
-                      </Typography>
-                      <LightTooltip
-                        title="AES Encrypted Output encoded in Base64"
-                        placement="right-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>
-                      {hexToBase64(resultState)}
-                    </Typography>
-                  </>
-                )}
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                >
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Ciphertext (Base64)
+                  </Typography>
+                  <LightTooltip
+                    title="AES encrypted output encoded in Base64"
+                    placement="right-start"
+                  >
+                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                  </LightTooltip>
+                </Box>
+                <Typography sx={{ wordBreak: "break-word" }}>
+                  {hexToBase64(resultState)}
+                </Typography>
               </Box>
             </Box>
           </Box>
@@ -1238,7 +1292,7 @@ function StepByStep() {
   useEffect(() => {
     // Reset highlighted cell when step or round changes
     const highlightedCells = document.querySelectorAll(
-      ".highlighted, .highlighted_new"
+      ".highlighted, .highlighted_new",
     );
     highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
