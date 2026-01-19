@@ -137,8 +137,10 @@ export default function MixColumnsExplanations({
               </TableRow>
             </TableHead>
             <TableBody>
-              {table.rows.map((row, idx) => (
-                <TableRow key={idx}>
+              {table.rows.map((row, idx) => {
+                const meta = row[2] || {};
+                return (
+                <TableRow key={idx} sx={meta.highlight ? { backgroundColor: "rgba(0,0,0,0.03)" } : {}}>
                   <TableCell
                     align="center"
                     sx={{
@@ -147,6 +149,7 @@ export default function MixColumnsExplanations({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontWeight: meta.highlight ? 600 : 400,
                     }}
                   >
                     {renderLabel(row[0])}
@@ -162,12 +165,14 @@ export default function MixColumnsExplanations({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontWeight: meta.highlight ? 700 : 400,
                     }}
                   >
                     {row[1]}
                   </TableCell>
                 </TableRow>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
         </Box>

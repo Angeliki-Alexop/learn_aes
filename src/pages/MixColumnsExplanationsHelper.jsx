@@ -244,20 +244,23 @@ export function getInvMixColumnsTableData(mappedValues) {
     rows.push(["Value", a]);
     rows.push(["Binary", compA]);
 
-    // 2*a sequence
-    rows.push(["Shifted", compShift2]);
-    if (step2.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
-    rows.push([`= 2*${a}`, comp2]);
+  // 2*a sequence
+  rows.push(["Shifted", compShift2]);
+  if (step2.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
+  // mark the completed 2* value for slight highlight
+  rows.push([`= 2*${a}`, comp2, { highlight: true }]);
 
-    // 4*a sequence (shift of previous result)
-    rows.push(["Shifted", compShift4]);
-    if (step4.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
-    rows.push([`= 4*${a}`, comp4]);
+  // 4*a sequence (shift of previous result)
+  rows.push(["Shifted", compShift4]);
+  if (step4.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
+  // mark the completed 4* value for slight highlight
+  rows.push([`= 4*${a}`, comp4, { highlight: true }]);
 
-    // 8*a sequence
-    rows.push(["Shifted", compShift8]);
-    if (step8.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
-    rows.push([`= 8*${a}`, comp8]);
+  // 8*a sequence
+  rows.push(["Shifted", compShift8]);
+  if (step8.overflowFlag) rows.push(["1B", groupBinary(toBinary('1b'))]);
+  // mark the completed 8* value for slight highlight
+  rows.push([`= 8*${a}`, comp8, { highlight: true }]);
 
     // blank separator row
     rows.push(["", ""]);
