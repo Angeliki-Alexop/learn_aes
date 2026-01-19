@@ -187,7 +187,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
   return (
     <>
       <Typography variant="subtitle1" align="center">
-        All Round Keys (Matrix Format)
+        All round keys (Matrix format)
       </Typography>
       <div
         className="key-expansion-matrix-grid"

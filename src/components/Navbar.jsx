@@ -69,7 +69,7 @@ function Navbar() {
                       : "inherit",
                 }}
               >
-                StepByStep
+                Step-By-Step
               </Button>
               <Button
                 component={Link}
@@ -86,7 +86,7 @@ function Navbar() {
                     location.pathname === "/train" ? "#7c5fe6" : "inherit",
                 }}
               >
-                Train
+                Training
               </Button>
               <Button
                 component={Link}
