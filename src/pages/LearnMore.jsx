@@ -60,6 +60,18 @@ function LearnMore() {
     return () => window.removeEventListener('keydown', onKey);
   }, []);
 
+  // prevent the outer page from scrolling while inside this full-height view
+  useEffect(() => {
+    const prevHtmlOverflow = document.documentElement.style.overflow;
+    const prevBodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.documentElement.style.overflow = prevHtmlOverflow;
+      document.body.style.overflow = prevBodyOverflow;
+    };
+  }, []);
+
   const scrollToIndex = (i) => {
     const container = containerRef.current;
     const el = refs.current[i];
