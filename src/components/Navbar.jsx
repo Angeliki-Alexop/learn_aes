@@ -174,29 +174,31 @@ function Navbar() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
               >
-                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
-                  Home
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/decode"
-                  onClick={handleMenuClose}
-                >
-                  Decode
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/encode"
-                  onClick={handleMenuClose}
-                >
-                  Encode
-                </MenuItem>
                 <MenuItem
                   component={Link}
                   to="/step-by-step"
                   onClick={handleMenuClose}
                 >
                   StepByStep
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/train"
+                  onClick={() => {
+                    if (location.pathname === "/train") {
+                      window.dispatchEvent(new CustomEvent("train-reset"));
+                    }
+                    handleMenuClose();
+                  }}
+                >
+                  Train
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/LearnMore"
+                  onClick={handleMenuClose}
+                >
+                  Learn More
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
