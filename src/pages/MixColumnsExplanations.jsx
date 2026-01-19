@@ -1,13 +1,23 @@
 import React from "react";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { MoveLeft, Equal, CirclePlus } from "lucide-react";
-import { getMixColumnsTableData, getMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
+import { getMixColumnsTableData, getMixColumnsResultTable, getInvMixColumnsTableData, getInvMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
 
-// color mapping for operators
-const OP_COLORS = {
+// color palette used across the site (avoid repeating hex literals)
+const PALETTE = {
   "01": "#6b7280", // neutral gray
   "02": "#2563eb", // blue (shift)
   "03": "#7c3aed", // purple (shift + xor)
+};
+
+// color mapping for operators - reuse palette and add one new color for inverse
+const OP_COLORS = {
+  ...PALETTE,
+  // inverse coefficients: reuse the three palette colors and add one extra
+  "0e": PALETTE["02"],
+  "0b": PALETTE["03"],
+  "0d": PALETTE["01"],
+  "09": "#059669", // the single additional color
 };
 
 function renderLabel(label) {
@@ -50,14 +60,15 @@ export default function MixColumnsExplanations({
   selectedCellValue,
   highlightedFixedMatrixRow,
   highlightedPrevStateColumn,
+  invMode = false,
 }) {
   const mappedValues = highlightedFixedMatrixRow.map((fixedVal, idx) => ({
     fixed: fixedVal,
     prev: highlightedPrevStateColumn[idx],
   }));
 
-  const tables = getMixColumnsTableData(mappedValues);
-  const resultTable = getMixColumnsResultTable(mappedValues, selectedCellValue);
+  const tables = invMode ? getInvMixColumnsTableData(mappedValues) : getMixColumnsTableData(mappedValues);
+  const resultTable = invMode ? getInvMixColumnsResultTable(mappedValues, selectedCellValue) : getMixColumnsResultTable(mappedValues, selectedCellValue);
 
   const isBinary = (val) => typeof val === "string" && /^[01]{4} [01]{4}$/.test(val);
 
@@ -126,8 +137,10 @@ export default function MixColumnsExplanations({
               </TableRow>
             </TableHead>
             <TableBody>
-              {table.rows.map((row, idx) => (
-                <TableRow key={idx}>
+              {table.rows.map((row, idx) => {
+                const meta = row[2] || {};
+                return (
+                <TableRow key={idx} sx={meta.highlight ? { backgroundColor: "rgba(0,0,0,0.03)" } : {}}>
                   <TableCell
                     align="center"
                     sx={{
@@ -136,6 +149,7 @@ export default function MixColumnsExplanations({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontWeight: meta.highlight ? 600 : 400,
                     }}
                   >
                     {renderLabel(row[0])}
@@ -151,12 +165,14 @@ export default function MixColumnsExplanations({
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      fontWeight: meta.highlight ? 700 : 400,
                     }}
                   >
                     {row[1]}
                   </TableCell>
                 </TableRow>
-              ))}
+                )
+              })}
             </TableBody>
           </Table>
         </Box>

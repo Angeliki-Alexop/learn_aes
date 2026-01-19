@@ -19,7 +19,7 @@ import {
 import { CirclePlus, RotateCcw, Wand2, Equal } from "lucide-react";
 import { sBox, rCon } from "../utils/aes_manual_v2";
 
-function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
+function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = 'Encrypt' }) {
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState({});
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState(
@@ -204,7 +204,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
           justifyContent: "center",
         }}
       >
-        {roundKeys.map((roundKey, idx) => {
+  {roundKeys.map((roundKey, idx) => {
           // compute disabled columns (words) that belong to the original key
           const initialBytes = (keySize || userKeySize) / 8; // e.g., 16,24,32
           const matrixStartByte = idx * 16;
@@ -216,10 +216,13 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize }) {
             }
           }
 
+          const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
+          const displayLabel = mode === 'Decrypt' ? numberOfRounds - idx : idx;
+
           return (
             <div key={idx} style={{ width: "100%" }}>
               <Typography variant="caption" align="center">
-                Round {idx}
+                Round {displayLabel}
               </Typography>
               <RenderMatrix
                 hexString={toHex(roundKey)}

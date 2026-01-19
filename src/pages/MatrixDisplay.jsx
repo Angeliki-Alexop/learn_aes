@@ -114,12 +114,13 @@ export function RenderMatrix({
 }
 
 export function RenderFixedMatrix({ highlightedRow = null }) {
-  const fixedMatrix = [
+  const fixedMatrix = arguments[0].matrix || [
     ["02", "03", "01", "01"],
     ["01", "02", "03", "01"],
     ["01", "01", "02", "03"],
     ["03", "01", "01", "02"],
   ];
+  const title = arguments[0].title || 'Fixed Matrix';
   return (
     <Box className="matrix fixed-matrix">
       <table className="matrix-table">
@@ -147,23 +148,37 @@ export function RenderFixedMatrix({ highlightedRow = null }) {
         align="left"
         className="matrix-title"
       >
-        Fixed Matrix
+        {title}
       </Typography>
     </Box>
   );
 }
 
-export function RenderSBox({ sBox, highlightedCellValue }) {
+export function RenderSBox({ sBox, highlightedCellValue, title = 'S-Box', inverseLookup = false }) {
   const sBoxMatrix = [];
   for (let i = 0; i < 16; i++) {
     sBoxMatrix.push(sBox.slice(i * 16, (i + 1) * 16));
   }
-  const highlightRow = highlightedCellValue
-    ? parseInt(highlightedCellValue[0], 16)
-    : -1;
-  const highlightCol = highlightedCellValue
-    ? parseInt(highlightedCellValue[1], 16)
-    : -1;
+  // Determine highlight row/col. If inverseLookup is true, the
+  // highlightedCellValue represents the output byte and we must find the
+  // input index in the provided sBox whose value equals that byte; the
+  // index then determines the row/col to highlight.
+  let highlightRow = -1;
+  let highlightCol = -1;
+  if (highlightedCellValue) {
+    const norm = String(highlightedCellValue).toLowerCase().replace(/^0x/, "").padStart(2, "0");
+    if (inverseLookup) {
+      const searchVal = parseInt(norm, 16);
+      const index = sBox.findIndex((v) => v === searchVal);
+      if (index >= 0) {
+        highlightRow = Math.floor(index / 16);
+        highlightCol = index % 16;
+      }
+    } else {
+      highlightRow = parseInt(norm[0], 16);
+      highlightCol = parseInt(norm[1], 16);
+    }
+  }
   return (
     <Box
       className="matrix sbox-matrix"
@@ -183,7 +198,7 @@ export function RenderSBox({ sBox, highlightedCellValue }) {
         className="matrix-title"
         sx={{ display: "block", mb: -1 }}
       >
-        S-Box
+        {title}
       </Typography>
       <table
         className="matrix-table small"

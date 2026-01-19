@@ -24,7 +24,7 @@ Each round key is 4 words, so the total number of expanded words is:
   - AES-128: 44 words
   - AES-192: 52 words
   - AES-256: 60 words`,
-    how: ``,
+  how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. The view is interactive and shows the relationships between previous words and the new word that is being produced. For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle; the tool will annotate these special cases for clarity.`,
   },
   SubBytes: {
     title: "SubBytes",
@@ -39,6 +39,21 @@ The SubBytes step is the only non-linear transformation of the cipher.`,
 The first row is not shifted, the second row is shifted by one byte, the third by two bytes, and the fourth by three bytes.`,
     how: `The stair-step shading indicates how far each row is shifted. 
     The purple cells in the Next State show the bytes after rotation, and the corresponding source bytes in the ShiftRows Table are also highlighted in purple, showing exactly which values were moved to produce the result.`,
+  },
+  InvSubBytes: {
+    title: "Inverse SubBytes",
+    what: `InvSubBytes reverses the SubBytes step by substituting each byte using the inverse S-box. This returns each substituted byte back to its original value before the forward S-box was applied. It is the non-linear inverse operation used during AES decryption.`,
+    how: `Click any byte in the Current State (during InvSubBytes) to see which byte value in the S-box maps back to it. The tool will highlight the byte’s two hexadecimal indices (row and column) and show the inverse lookup result. This is useful to follow how the non-linear substitution is undone during decryption.`,
+  },
+  InvShiftRows: {
+    title: "Inverse ShiftRows",
+    what: `InvShiftRows is the reverse of ShiftRows: each row of the AES state is cyclically shifted to the right instead of the left (first row: 0, second: right by 1, third: right by 2, fourth: right by 3). This operation restores the rows to their pre-ShiftRows positions during decryption.`,
+    how: `The ShiftRows table shows the bytes that move and their source positions; for InvShiftRows the table is mirrored to indicate right-shifts. The purple cells in the Next State indicate the bytes after the inverse rotation. Hovering or clicking a highlighted cell will show which source byte moved into that position. Use the Previous / Next Step buttons to compare the Current and Next states before and after the inverse rotation.`,
+  },
+  InvMixColumns: {
+    title: "Inverse MixColumns",
+    what: `InvMixColumns reverses the MixColumns transformation by multiplying each column by the inverse MixColumns matrix in GF(2^8). Where MixColumns mixes bytes within a column using fixed coefficients (02, 03, 01, 01), InvMixColumns uses the inverse coefficients (0e, 0b, 0d, 09) to recover the original column values during decryption.`,
+    how: `Click any byte in the Next State (during InvMixColumns) to highlight the source column in the Current State that was used to compute it. The tool will show the inverse coefficients applied to each source byte and the intermediate GF(2^8) multiplications and XORs that produce the recovered byte. This makes it easy to verify and follow the inverse column arithmetic step by step.`,
   },
   MixColumns: {
     what: `In MixColumns, each column of the AES state matrix (4 bytes) is treated as a vector and multiplied by a fixed 4×4 matrix using arithmetic in a special finite field called GF(2⁸).

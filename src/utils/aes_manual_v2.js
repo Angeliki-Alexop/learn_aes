@@ -108,7 +108,7 @@ export const addRoundKey = (state, roundKey) => {
 };
 
 // Build inverse S-box from sBox
-const invSBox = (() => {
+export const invSBox = (() => {
   const inv = new Array(256);
   for (let i = 0; i < sBox.length; i++) inv[sBox[i]] = i;
   return inv;

@@ -9,6 +9,7 @@ export function RenderExplanation({
   previousStepState,
   roundKeys,
   currentRound,
+  roundKeyIndex,
   toHex,
 }) {
   if (currentStep === "AddRoundKey" && highlightedCell) {
@@ -16,7 +17,8 @@ export function RenderExplanation({
     const rowIndex = Number(parts[1]);
     const colIndex = Number(parts[2]);
     const previousStateArray = previousStepState.split(" ");
-    const roundKeyArray = toHex(roundKeys[currentRound]).split(" ");
+    const rkIdx = typeof roundKeyIndex === 'number' ? roundKeyIndex : currentRound;
+    const roundKeyArray = toHex(roundKeys[rkIdx] || []).split(" ");
 
     const previousValueHex =
       previousStateArray[colIndex * 4 + rowIndex] || "00";

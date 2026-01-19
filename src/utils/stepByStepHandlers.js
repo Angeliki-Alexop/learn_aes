@@ -1,7 +1,10 @@
-import { keyExpansion, padPKCS7, addRoundKey, subBytes, shiftRows, mixColumns } from './aes_manual_v2.js';
+import { keyExpansion, padPKCS7, addRoundKey, subBytes, shiftRows, mixColumns, invSubBytes, invShiftRows, invMixColumns } from './aes_manual_v2.js';
 
-const steps = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
-const finalRoundSteps = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
+const encryptSteps = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
+const encryptFinalRoundSteps = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
+
+const decryptSteps = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey', 'InvMixColumns'];
+const decryptFinalRoundSteps = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey'];
 
 export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => {
   const newStateMap = new Map();
@@ -15,7 +18,7 @@ export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => 
       currentState = addRoundKey(currentState, roundKeys[i]);
       newStateMap.set(i, [{ step: 'AddRoundKey', state: toHex(currentState) }]);
     } else if (i === totalRounds) { // Final Round
-      const roundSteps = finalRoundSteps.map(step => {
+      const roundSteps = encryptFinalRoundSteps.map((step) => {
         if (step === 'SubBytes') {
           currentState = subBytes(currentState);
         } else if (step === 'ShiftRows') {
@@ -27,7 +30,7 @@ export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => 
       });
       newStateMap.set(i, roundSteps);
     } else { // Other Rounds
-      const roundSteps = steps.map(step => {
+      const roundSteps = encryptSteps.map((step) => {
         if (step === 'SubBytes') {
           currentState = subBytes(currentState);
         } else if (step === 'ShiftRows') {
@@ -44,6 +47,58 @@ export const generateStateMap = (initialPaddedState, roundKeys, totalRounds) => 
   }
 
   console.log('newStateMap:', JSON.stringify(Array.from(newStateMap.entries()), null, 2));
+  return newStateMap;
+};
+
+// Build a state map for decryption that advances from ciphertext -> plaintext
+export const generateDecryptStateMap = (initialCipherState, roundKeys, totalRounds) => {
+  const newStateMap = new Map();
+  newStateMap.set(-2, [{ step: 'Input', state: toHex(initialCipherState) }]);
+  newStateMap.set(-1, [{ step: 'Key Expansion', state: toHex(initialCipherState) }]);
+
+  let currentState = initialCipherState.slice();
+
+  // Initial AddRoundKey with last round key (start of decryption)
+  currentState = addRoundKey(currentState, roundKeys[totalRounds]);
+  newStateMap.set(0, [{ step: 'AddRoundKey', state: toHex(currentState) }]);
+
+  // Main decryption rounds: create entries for rounds 1 .. totalRounds-1
+  for (let i = 1; i <= totalRounds; i++) {
+    const roundIndex = i; // visible round index increasing as we decrypt
+    const stepsArr = [];
+
+    if (i < totalRounds) {
+      // Corresponds to decryption work for rounds Nr-1 .. 1
+      currentState = invShiftRows(currentState);
+      stepsArr.push({ step: 'InvShiftRows', state: toHex(currentState) });
+
+      currentState = invSubBytes(currentState);
+      stepsArr.push({ step: 'InvSubBytes', state: toHex(currentState) });
+
+      // AddRoundKey uses the round key counting down: roundKeys[totalRounds - i]
+      const rk = roundKeys[totalRounds - i];
+      currentState = addRoundKey(currentState, rk);
+      stepsArr.push({ step: 'AddRoundKey', state: toHex(currentState) });
+
+      // InvMixColumns
+      currentState = invMixColumns(currentState);
+      stepsArr.push({ step: 'InvMixColumns', state: toHex(currentState) });
+    } else {
+      // Final decryption round (i === totalRounds)
+      currentState = invShiftRows(currentState);
+      stepsArr.push({ step: 'InvShiftRows', state: toHex(currentState) });
+
+      currentState = invSubBytes(currentState);
+      stepsArr.push({ step: 'InvSubBytes', state: toHex(currentState) });
+
+      // Final AddRoundKey with roundKeys[0]
+      currentState = addRoundKey(currentState, roundKeys[0]);
+      stepsArr.push({ step: 'AddRoundKey', state: toHex(currentState) });
+    }
+
+    newStateMap.set(roundIndex, stepsArr);
+  }
+
   return newStateMap;
 };
 
@@ -76,7 +131,7 @@ export const handleSubmitButtonClick = (tempKey, tempInputText, keySize, setKeyE
   setStateMap(newStateMap);
 };
 
-export const handleNextRound = (currentRound, setCurrentRound, setCurrentStep, totalRounds) => {
+export const handleNextRound = (currentRound, setCurrentRound, setCurrentStep, totalRounds, mode = 'Encrypt') => {
   if (currentRound === -2) {
     setCurrentRound(-1);
     setCurrentStep('Key Expansion');
@@ -84,12 +139,16 @@ export const handleNextRound = (currentRound, setCurrentRound, setCurrentStep, t
     setCurrentRound(0);
     setCurrentStep('AddRoundKey');
   } else {
-    setCurrentRound((prev) => Math.min(prev + 1, totalRounds));
-    setCurrentStep('SubBytes');
+    const next = Math.min(currentRound + 1, totalRounds);
+    setCurrentRound(next);
+    // determine default first step for next round based on mode
+    if (next === 0) setCurrentStep('AddRoundKey');
+    else if (next === totalRounds) setCurrentStep(mode === 'Encrypt' ? 'SubBytes' : 'InvShiftRows');
+    else setCurrentStep(mode === 'Encrypt' ? 'SubBytes' : 'InvShiftRows');
   }
 };
 
-export const handlePreviousRound = (currentRound, setCurrentRound, setCurrentStep) => {
+export const handlePreviousRound = (currentRound, setCurrentRound, setCurrentStep, mode = 'Encrypt') => {
   if (currentRound === -1) {
     setCurrentRound(-2);
     setCurrentStep('Input');
@@ -97,40 +156,52 @@ export const handlePreviousRound = (currentRound, setCurrentRound, setCurrentSte
     setCurrentRound(-1);
     setCurrentStep('Key Expansion');
   } else {
-    setCurrentRound((prev) => Math.max(prev - 1, 0));
-    setCurrentStep('AddRoundKey');
+    const prev = Math.max(currentRound - 1, 0);
+    setCurrentRound(prev);
+    // set default step for previous round
+    if (prev === 0) setCurrentStep('AddRoundKey');
+    else setCurrentStep(mode === 'Encrypt' ? 'SubBytes' : 'InvShiftRows');
   }
 };
 
-export const handleNextStep = (currentRound, currentStep, setCurrentStep, handleNextRound, totalRounds) => {
-  if (currentRound === -2) {
+export const handleNextStep = (currentRound, currentStep, setCurrentStep, handleNextRound, totalRounds, stateMap) => {
+  if (currentRound === -2 || currentRound === -1) {
     handleNextRound();
-  } else if (currentRound === -1) {
+    return;
+  }
+  const roundSteps = (stateMap.get(currentRound) || []).map(s => s.step);
+  if (roundSteps.length === 0) {
+    // fallback
     handleNextRound();
-  } else {
-    const currentSteps = currentRound === 0 ? ['AddRoundKey'] : currentRound === totalRounds ? finalRoundSteps : steps;
-    const currentIndex = currentSteps.indexOf(currentStep);
-    if (currentIndex < currentSteps.length - 1) {
-      setCurrentStep(currentSteps[currentIndex + 1]);
-    } else if (currentRound < totalRounds) {
-      handleNextRound();
-    }
+    return;
+  }
+  const currentIndex = roundSteps.indexOf(currentStep);
+  if (currentIndex < roundSteps.length - 1) {
+    setCurrentStep(roundSteps[currentIndex + 1]);
+  } else if (currentRound < totalRounds) {
+    handleNextRound();
   }
 };
 
-export const handlePreviousStep = (currentRound, currentStep, setCurrentStep, handlePreviousRound, totalRounds) => {
+export const handlePreviousStep = (currentRound, currentStep, setCurrentStep, handlePreviousRound, totalRounds, stateMap) => {
   if (currentRound === -1 && currentStep === 'Key Expansion') {
     handlePreviousRound();
-  } else if (currentRound === 0 && currentStep === 'AddRoundKey') {
+    return;
+  }
+  if (currentRound === 0 && currentStep === 'AddRoundKey') {
     handlePreviousRound();
-  } else {
-    const currentSteps = currentRound === 0 ? ['AddRoundKey'] : currentRound === totalRounds ? finalRoundSteps : steps;
-    const currentIndex = currentSteps.indexOf(currentStep);
-    if (currentIndex > 0) {
-      setCurrentStep(currentSteps[currentIndex - 1]);
-    } else if (currentRound > -2) {
-      handlePreviousRound();
-    }
+    return;
+  }
+  const roundSteps = (stateMap.get(currentRound) || []).map(s => s.step);
+  if (roundSteps.length === 0) {
+    handlePreviousRound();
+    return;
+  }
+  const currentIndex = roundSteps.indexOf(currentStep);
+  if (currentIndex > 0) {
+    setCurrentStep(roundSteps[currentIndex - 1]);
+  } else if (currentRound > -2) {
+    handlePreviousRound();
   }
 };
 
