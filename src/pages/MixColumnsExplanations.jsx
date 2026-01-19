@@ -3,11 +3,21 @@ import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/mate
 import { MoveLeft, Equal, CirclePlus } from "lucide-react";
 import { getMixColumnsTableData, getMixColumnsResultTable, getInvMixColumnsTableData, getInvMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
 
-// color mapping for operators
-const OP_COLORS = {
+// color palette used across the site (avoid repeating hex literals)
+const PALETTE = {
   "01": "#6b7280", // neutral gray
   "02": "#2563eb", // blue (shift)
   "03": "#7c3aed", // purple (shift + xor)
+};
+
+// color mapping for operators - reuse palette and add one new color for inverse
+const OP_COLORS = {
+  ...PALETTE,
+  // inverse coefficients: reuse the three palette colors and add one extra
+  "0e": PALETTE["02"],
+  "0b": PALETTE["03"],
+  "0d": PALETTE["01"],
+  "09": "#059669", // the single additional color
 };
 
 function renderLabel(label) {

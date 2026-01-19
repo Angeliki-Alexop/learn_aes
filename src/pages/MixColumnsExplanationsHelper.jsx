@@ -264,11 +264,11 @@ export function getInvMixColumnsTableData(mappedValues) {
 
     // show components that are used for this coefficient (in descending order)
     const f = parseInt(c, 16);
-    const comps = [];
-    if (f & 0x08) comps.push({ label: '8*a', value: comp8 });
-    if (f & 0x04) comps.push({ label: '4*a', value: comp4 });
-    if (f & 0x02) comps.push({ label: '2*a', value: comp2 });
-    if (f & 0x01) comps.push({ label: '1*a', value: compA });
+  const comps = [];
+  if (f & 0x08) comps.push({ label: `8*${a}`, value: comp8 });
+  if (f & 0x04) comps.push({ label: `4*${a}`, value: comp4 });
+  if (f & 0x02) comps.push({ label: `2*${a}`, value: comp2 });
+  if (f & 0x01) comps.push({ label: `1*${a}`, value: compA });
 
     comps.forEach(cmp => rows.push([cmp.label, cmp.value]));
 
