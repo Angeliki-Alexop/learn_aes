@@ -785,6 +785,33 @@ function StepByStep() {
           <Typography variant="h6" component="h2" align="center">
             Round {displayRound} - Step: {currentStep}
           </Typography>
+          {/* Show plaintext (for Encrypt) or ciphertext (for Decrypt) under the heading */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1, mb: 2 }}>
+            <Box
+              sx={{
+                textAlign: 'left',
+                border: '2px solid rgba(129, 18, 180, 0.06)',
+                borderRadius: 2,
+                p: 1,
+                minWidth: 420,
+                maxWidth: '90%'
+              }}
+            >
+              {mode === 'Encrypt' ? (
+                <>
+                  <Typography sx={{ fontWeight: 700 }}>Plaintext</Typography>
+                  <Typography sx={{ wordBreak: 'break-word' }}>{inputText || '(empty)'}</Typography>
+                  <Typography sx={{ fontWeight: 700, mt: 1 }}>Plaintext (Hex)</Typography>
+                  <Typography sx={{ wordBreak: 'break-word' }}>{toHex(paddedState)}</Typography>
+                </>
+              ) : (
+                <>
+                  <Typography sx={{ fontWeight: 700 }}>Ciphertext (Hex)</Typography>
+                  <Typography sx={{ wordBreak: 'break-word' }}>{toHex(initialState)}</Typography>
+                </>
+              )}
+            </Box>
+          </Box>
           {/* Step-specific information and interaction hints (StepInfo removed) */}
           <div
             className={`matrix-container ${
