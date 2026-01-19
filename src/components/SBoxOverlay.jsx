@@ -40,26 +40,17 @@ function SBoxOverlay({ open, onClose }) {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              align="left"
-              gutterBottom
-              sx={{ marginTop: -2 }}
-            >
-              AES S-box
-            </Typography>
             <Tabs
               value={mode}
               onChange={(e, val) => { setMode(val); setSelected(null); }}
               aria-label="S-box pages"
-              sx={{ ml: 2 }}
+              sx={{ ml: 0 }}
               textColor="primary"
               indicatorColor="primary"
-              size="small"
+              size="medium"
             >
-              <Tab label="S-Box" value="sbox" />
-              <Tab label="Inverse S-Box" value="invsbox" />
+              <Tab label="Forward S-box (encryption)" value="sbox" />
+              <Tab label="Inverse S-box (decryption)" value="invsbox" />
             </Tabs>
           </Box>
           <IconButton
