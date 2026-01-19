@@ -829,33 +829,30 @@ function StepByStep() {
           <Box sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}>
             <Box
               sx={{
-                textAlign: "left",
-                border: "2px solid rgba(129, 18, 180, 0.06)",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                border: "1px solid rgba(129, 18, 180, 0.06)",
                 borderRadius: 2,
-                p: 1,
-                minWidth: 420,
+                p: 2,
+                minWidth: 320,
                 maxWidth: "90%",
+                background: "rgba(245, 246, 250, 0.6)",
               }}
             >
               {mode === "Encrypt" ? (
                 <>
                   <Typography sx={{ fontWeight: 700 }}>Plaintext</Typography>
-                  <Typography sx={{ wordBreak: "break-word" }}>
+                  <Typography sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "1rem" }}>
                     {inputText || "(empty)"}
-                  </Typography>
-                  <Typography sx={{ fontWeight: 700, mt: 1 }}>
-                    Plaintext (Hex)
-                  </Typography>
-                  <Typography sx={{ wordBreak: "break-word" }}>
-                    {toHex(paddedState)}
                   </Typography>
                 </>
               ) : (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Ciphertext (Hex)
-                  </Typography>
-                  <Typography sx={{ wordBreak: "break-word" }}>
+                  <Typography sx={{ fontWeight: 700 }}>Ciphertext (Hex)</Typography>
+                  <Typography sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "0.95rem" }}>
                     {toHex(initialState)}
                   </Typography>
                 </>
