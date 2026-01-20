@@ -290,13 +290,14 @@ function StepByStep() {
       paddedState = padPKCS7(initialState, 16);
     }
     // Used to reset highlights after we click a new cell
-    // Remove highlight from all cells first
+    // Remove highlight from all cells first (include purple markers)
     const highlightedCells = document.querySelectorAll(
-      ".highlighted, .highlighted_new",
+      ".highlighted, .highlighted_new, .highlighted_purple",
     );
     highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
       cell.classList.remove("highlighted_new");
+      cell.classList.remove("highlighted_purple");
     });
 
     // Disable clicking during InvShiftRows (match encryption behavior)
@@ -431,6 +432,9 @@ function StepByStep() {
       if (cell) {
         cell.classList.remove("highlighted");
       }
+      // also clear any purple markers that showed corresponding cells
+      const purple = document.querySelectorAll(".highlighted_purple");
+      purple.forEach((c) => c.classList.remove("highlighted_purple"));
       setHighlightedCell(null);
       setHighlightedCellValue("");
     } else {
@@ -439,13 +443,36 @@ function StepByStep() {
         highlightedCells.forEach((cell) => {
           cell.classList.remove("highlighted");
         });
+        const highlightedNew = document.querySelectorAll(".highlighted_new");
+        highlightedNew.forEach((c) => c.classList.remove("highlighted_new"));
+        const highlightedPurple = document.querySelectorAll(".highlighted_purple");
+        highlightedPurple.forEach((c) => c.classList.remove("highlighted_purple"));
       }
-      // Highlight the clicked cell
-      if (cell) {
-        cell.classList.add("highlighted");
+
+      // If user clicked a cell in the Next State (current) matrix, highlight
+      // the corresponding cells in Previous State and Round Key for clarity.
+      if (matrixId === "current") {
+        const prevId = `previous-${rowIdx}-${colIdx}`;
+        const rkId = `roundKey-${rowIdx}-${colIdx}`;
+
+        // mark previous and round key with a purplish highlight
+        const prevCell = document.getElementById(prevId);
+        const rkCell = document.getElementById(rkId);
+        if (prevCell) prevCell.classList.add("highlighted_purple");
+        if (rkCell) rkCell.classList.add("highlighted_purple");
+
+        // set clicked current cell as the primary highlighted (red)
+        if (cell) cell.classList.add("highlighted");
+        setHighlightedCell(id);
+        setHighlightedCellValue(value);
+      } else {
+        // Highlight the clicked cell (non-current matrices)
+        if (cell) {
+          cell.classList.add("highlighted");
+        }
+        setHighlightedCell(id);
+        setHighlightedCellValue(value);
       }
-      setHighlightedCell(id);
-      setHighlightedCellValue(value);
     }
   };
 
@@ -1469,11 +1496,12 @@ function StepByStep() {
   useEffect(() => {
     // Reset highlighted cell when step or round changes
     const highlightedCells = document.querySelectorAll(
-      ".highlighted, .highlighted_new",
+      ".highlighted, .highlighted_new, .highlighted_purple",
     );
     highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
       cell.classList.remove("highlighted_new");
+      cell.classList.remove("highlighted_purple");
     });
     setHighlightedCell(null);
     setHighlightedCellValue("");

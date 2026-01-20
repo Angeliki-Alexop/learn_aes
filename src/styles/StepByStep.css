@@ -150,7 +150,13 @@
   background-color: red; /* used in  SubBytes */
 }
 .matrix-table td.highlighted_new {
-  background-color: yellow; /* used in  SubBytes */
+  background-color: yellow; /* legacy: used in SubBytes for new value */
+}
+/* Purplish highlight used for showing corresponding cells (previous / round key) */
+.matrix-table td.highlighted_purple {
+  /* Deeper purple fill, no border as requested */
+  background-color: rgba(128, 0, 128, 0.28);
+  color: #000000; /* keep numbers readable/black as requested */
 }
 
 .matrix-title {
