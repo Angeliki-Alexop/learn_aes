@@ -125,6 +125,10 @@ function StepByStep() {
       setStateMap(new Map());
       setHighlightedCell(null);
       setHighlightedCellValue("");
+      // clear MixColumns-related highlights
+      setHighlightedColumnMixColumn(null);
+      setHighlightedRowFixedMatrix(null);
+      setHighlightedColumnValuesMixColumn([]);
     };
 
     window.addEventListener("stepbystep-reset", resetHandler);
@@ -290,14 +294,13 @@ function StepByStep() {
       paddedState = padPKCS7(initialState, 16);
     }
     // Used to reset highlights after we click a new cell
-    // Remove highlight from all cells first (include purple markers)
+    // Remove highlight from all cells first
     const highlightedCells = document.querySelectorAll(
-      ".highlighted, .highlighted_new, .highlighted_purple",
+      ".highlighted, .highlighted_new",
     );
     highlightedCells.forEach((cell) => {
       cell.classList.remove("highlighted");
       cell.classList.remove("highlighted_new");
-      cell.classList.remove("highlighted_purple");
     });
 
     // Disable clicking during InvShiftRows (match encryption behavior)
@@ -432,9 +435,6 @@ function StepByStep() {
       if (cell) {
         cell.classList.remove("highlighted");
       }
-      // also clear any purple markers that showed corresponding cells
-      const purple = document.querySelectorAll(".highlighted_purple");
-      purple.forEach((c) => c.classList.remove("highlighted_purple"));
       setHighlightedCell(null);
       setHighlightedCellValue("");
     } else {
@@ -447,6 +447,10 @@ function StepByStep() {
         highlightedNew.forEach((c) => c.classList.remove("highlighted_new"));
         const highlightedPurple = document.querySelectorAll(".highlighted_purple");
         highlightedPurple.forEach((c) => c.classList.remove("highlighted_purple"));
+        // also clear any MixColumns highlights/state
+        setHighlightedColumnMixColumn(null);
+        setHighlightedRowFixedMatrix(null);
+        setHighlightedColumnValuesMixColumn([]);
       }
 
       // If user clicked a cell in the Next State (current) matrix, highlight
@@ -1505,6 +1509,10 @@ function StepByStep() {
     });
     setHighlightedCell(null);
     setHighlightedCellValue("");
+    // clear MixColumns-related highlights when changing step/round
+    setHighlightedColumnMixColumn(null);
+    setHighlightedRowFixedMatrix(null);
+    setHighlightedColumnValuesMixColumn([]);
   }, [currentRound, currentStep, stateMap, inputText, keySize]);
 
   return (
