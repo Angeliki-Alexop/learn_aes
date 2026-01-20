@@ -33,6 +33,7 @@ export function StepNavigation({
   setMode,
   setHasSubmitted,
   hasSubmitted,
+  stateMap,
   showInitialControls = true,
 }) {
   const defaultKeyForSize = (size) => {
@@ -219,27 +220,52 @@ export function StepNavigation({
             variant="contained"
             color="primary"
             style={{ margin: "8px" }}
-            onClick={() =>
-              handleNextStep(
-                currentRound,
-                currentStep,
-                setCurrentStep,
-                () =>
+            onClick={() => {
+              // Local next-step logic so we can advance to Result for the
+              // final round (useful for decryption flows where Next should
+              // move past the last AddRoundKey into the Result screen).
+              try {
+                const roundSteps = (stateMap?.get(currentRound) || []).map(
+                  (s) => s.step,
+                );
+                console.log('[StepNavigation] onNextStep', { currentRound, currentStep, roundSteps });
+                const currentIndex = roundSteps.indexOf(currentStep);
+                if (currentIndex < roundSteps.length - 1) {
+                  setCurrentStep(roundSteps[currentIndex + 1]);
+                } else if (currentRound < totalRounds) {
                   handleNextRound(
                     currentRound,
                     setCurrentRound,
                     setCurrentStep,
                     totalRounds,
-                    mode
-                  ),
-                totalRounds,
-                stateMap
-              )
-            }
-            disabled={
-              currentRound >= totalRounds &&
-              (currentStep === "AddRoundKey" || currentStep === "Result")
-            }
+                    mode,
+                  );
+                } else if (currentRound === totalRounds) {
+                  // move to Result screen
+                  setCurrentRound(totalRounds + 1);
+                  setCurrentStep('Result');
+                }
+              } catch (err) {
+                console.error('[StepNavigation] onNextStep error', err);
+                // Fallback to existing handler
+                handleNextStep(
+                  currentRound,
+                  currentStep,
+                  setCurrentStep,
+                  () =>
+                    handleNextRound(
+                      currentRound,
+                      setCurrentRound,
+                      setCurrentStep,
+                      totalRounds,
+                      mode,
+                    ),
+                  totalRounds,
+                  stateMap,
+                );
+              }
+            }}
+            disabled={currentRound > totalRounds || currentStep === 'Result'}
           >
             Next Step
           </Button>
