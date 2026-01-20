@@ -72,6 +72,7 @@ function StepByStep() {
   const [keyError, setKeyError] = useState("");
   const [tempInputText, setTempInputText] = useState(inputText);
   const [tempKey, setTempKey] = useState(key);
+  const [tempInputError, setTempInputError] = useState("");
 
   const [keySize, setKeySize] = useState(128); // Now keySize is state
   const [stateMap, setStateMap] = useState(new Map());
@@ -161,6 +162,18 @@ function StepByStep() {
   };
 
   const onFullSubmit = () => {
+    // Do not submit if there's a validation error
+    if (tempInputError) {
+      setKeyError(tempInputError);
+      return;
+    }
+
+    // For encryption ensure plaintext <= 16 chars
+    if (mode === 'Encrypt' && tempInputText.length > 16) {
+      setKeyError('Plaintext must be at most 16 characters');
+      return;
+    }
+
     handleSubmitButtonClick(
       tempKey,
       tempInputText,
@@ -567,11 +580,55 @@ function StepByStep() {
                     : "Ciphertext (Hex)"
                 }
                 value={tempInputText}
-                onChange={(e) => setTempInputText(e.target.value)}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (mode === 'Encrypt') {
+                    // limit plaintext to 16 characters
+                    if (val.length > 16) {
+                      setTempInputText(val.slice(0, 16));
+                      setTempInputError('Plaintext must be at most 16 characters');
+                    } else {
+                      setTempInputText(val);
+                      setTempInputError('');
+                    }
+                  } else {
+                    // Decrypt mode: validate according to selected format
+                    if (decryptFormat === 'hex') {
+                      // allow only hex digits and optionally spaces; validate cleaned length
+                      const cleaned = val.replace(/\s+/g, '');
+                      if (/[^0-9a-fA-F\s]/.test(val)) {
+                        setTempInputError('Only hexadecimal characters (0-9, A-F) are allowed');
+                      } else if (cleaned.length > 32) {
+                        setTempInputError('Hex input must be exactly 32 hex characters (16 bytes)');
+                      } else if (cleaned.length !== 32) {
+                        setTempInputError('Hex input must be exactly 32 hex characters (16 bytes)');
+                      } else {
+                        setTempInputError('');
+                      }
+                      // store as entered (spaces allowed)
+                      setTempInputText(val);
+                    } else {
+                      // base64
+                      setTempInputText(val);
+                      try {
+                        const bin = atob(val || '');
+                        if (bin.length !== 16) {
+                          setTempInputError('Base64 must decode to exactly 16 bytes');
+                        } else {
+                          setTempInputError('');
+                        }
+                      } catch (err) {
+                        setTempInputError('Invalid Base64 string');
+                      }
+                    }
+                  }
+                }}
                 variant="outlined"
                 fullWidth
                 margin="normal"
-                inputProps={{ maxLength: 256 }}
+                error={Boolean(tempInputError)}
+                helperText={tempInputError}
+                inputProps={{ maxLength: mode === 'Encrypt' ? 16 : (decryptFormat === 'hex' ? 32 : 24) }}
               />
               <TextField
                 label={
