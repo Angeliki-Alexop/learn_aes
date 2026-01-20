@@ -6,6 +6,7 @@ import "./../styles/Train.css";
 import SubBytesPractice from "../components/practice/SubBytesPractice";
 import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
 import MixColumnsPractice from "../components/practice/MixColumnsPractice";
+import InvShiftRowsPractice from "../components/practice/InvShiftRowsPractice";
 import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
 import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 import InvSubBytesPractice from "../components/practice/InvSubBytesPractice";
@@ -35,6 +36,11 @@ function Train() {
       key: "shiftrows",
       label: "ShiftRows Practice",
       component: <ShiftRowsPractice />,
+    },
+    {
+      key: "invshiftrows",
+      label: "InvShiftRows Practice",
+      component: <InvShiftRowsPractice />,
     },
     {
       key: "mixcolumns",
