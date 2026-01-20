@@ -72,6 +72,20 @@ export default function MixColumnsExplanations({
 
   const isBinary = (val) => typeof val === "string" && /^[01]{4} [01]{4}$/.test(val);
 
+  // Determine where the final calculation block starts for each table so we can
+  // pad shorter ones so the final XOR/equals rows begin at the same height.
+  const finalStartIndexFor = (table) => {
+    const rows = table.rows || [];
+    const blankIdx = rows.findIndex((r) => r[0] === "");
+    if (blankIdx !== -1) return blankIdx + 1;
+    const xorIdx = rows.findIndex((r) => typeof r[0] === "string" && r[0].startsWith("XOR"));
+    if (xorIdx !== -1) return xorIdx;
+    return rows.length;
+  };
+
+  const finalStarts = tables.map(finalStartIndexFor);
+  const maxFinalStart = finalStarts.length ? Math.max(...finalStarts) : 0;
+
   return (
     <Box
       className="mixcolumns-explanation-container"
@@ -102,81 +116,138 @@ export default function MixColumnsExplanations({
           )}
         </span>
       </Box>
-      {tables.map(table => {
+      {tables.map((table) => {
         const fixed = table.fixed || (table.name || "").split("*")[0].trim();
         const color = OP_COLORS[fixed] || "#374151";
         return (
-        <Box
-          key={table.key}
-          className={`mixcolumns-table-${table.key}`}
-          sx={{
-            minWidth: 180,
-            flex: "0 0 180px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            borderLeft: `4px solid ${color}`,
-            pl: 1.25,
-            borderRadius: 1,
-          }}
-        >
-          <Table
-            size="small"
+          <Box
+            key={table.key}
+            className={`mixcolumns-table-${table.key}`}
             sx={{
-              minWidth: 60,
-              width: "auto",
-              flex: "0 0 auto",
-              tableLayout: "fixed",
+              minWidth: 180,
+              flex: "0 0 180px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              borderLeft: `4px solid ${color}`,
+              pl: 1.25,
+              borderRadius: 1,
             }}
           >
-            <TableHead>
-              <TableRow>
+            <Table
+              size="small"
+              sx={{
+                minWidth: 60,
+                width: "auto",
+                flex: "0 0 auto",
+                tableLayout: "fixed",
+              }}
+            >
+              <TableHead>
+                <TableRow>
                   <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14, color }}>
-                  {table.name}
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {table.rows.map((row, idx) => {
-                const meta = row[2] || {};
-                return (
-                <TableRow key={idx} sx={meta.highlight ? { backgroundColor: "rgba(0,0,0,0.03)" } : {}}>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontSize: 14,
-                      minWidth: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      fontWeight: meta.highlight ? 600 : 400,
-                    }}
-                  >
-                    {renderLabel(row[0])}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontSize: isBinary(row[1]) ? 12 : 14,
-                      fontFamily: isBinary(row[1])
-                        ? "ui-monospace, SFMono-Regular, Menlo, monospace"
-                        : "inherit",
-                      minWidth: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      fontWeight: meta.highlight ? 700 : 400,
-                    }}
-                  >
-                    {row[1]}
+                    {table.name}
                   </TableCell>
                 </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </Box>
-        )
+              </TableHead>
+              <TableBody>
+                {(() => {
+                  const rows = table.rows || [];
+                  const finalStart = finalStartIndexFor(table);
+                  const padCount = Math.max(0, maxFinalStart - finalStart);
+                  const rendered = [];
+
+                  for (let i = 0; i < finalStart; i++) {
+                    const row = rows[i];
+                    const meta = (row && row[2]) || {};
+                    rendered.push(
+                      <TableRow key={`r-${i}`} sx={meta.highlight ? { backgroundColor: "rgba(0,0,0,0.03)" } : {}}>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: 14,
+                            minWidth: "80px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontWeight: meta.highlight ? 600 : 400,
+                          }}
+                        >
+                          {renderLabel(row[0])}
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: isBinary(row[1]) ? 12 : 14,
+                            fontFamily: isBinary(row[1])
+                              ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+                              : "inherit",
+                            minWidth: "80px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontWeight: meta.highlight ? 700 : 400,
+                          }}
+                        >
+                          {row[1]}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  for (let p = 0; p < padCount; p++) {
+                    rendered.push(
+                      <TableRow key={`pad-${p}`} sx={{ height: 36 }}>
+                        <TableCell sx={{ fontSize: 14 }} align="center">{"\u00A0"}</TableCell>
+                        <TableCell sx={{ fontSize: 14 }} align="center">{"\u00A0"}</TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  for (let i = finalStart; i < rows.length; i++) {
+                    const row = rows[i];
+                    const meta = (row && row[2]) || {};
+                    rendered.push(
+                      <TableRow key={`r-${i}`} sx={meta.highlight ? { backgroundColor: "rgba(0,0,0,0.03)" } : {}}>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: 14,
+                            minWidth: "80px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontWeight: meta.highlight ? 600 : 400,
+                          }}
+                        >
+                          {renderLabel(row[0])}
+                        </TableCell>
+                        <TableCell
+                          align="center"
+                          sx={{
+                            fontSize: isBinary(row[1]) ? 12 : 14,
+                            fontFamily: isBinary(row[1])
+                              ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+                              : "inherit",
+                            minWidth: "80px",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            fontWeight: meta.highlight ? 700 : 400,
+                          }}
+                        >
+                          {row[1]}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+
+                  return rendered;
+                })()}
+              </TableBody>
+            </Table>
+          </Box>
+        );
       })}
 
       {/* Result Table */}
@@ -216,41 +287,41 @@ export default function MixColumnsExplanations({
                 const maybeFixed = (row[0] || "").split("*")[0]?.trim();
                 const rowColor = OP_COLORS[maybeFixed];
                 return (
-                <TableRow
-                  key={idx}
-                  sx={{
-                    ...(rowColor ? { "& td:first-of-type": { color: rowColor, fontWeight: 600 } } : {}),
-                  }}
-                >
-                  <TableCell
-                    align="center"
+                  <TableRow
+                    key={idx}
                     sx={{
-                      fontSize: 14,
-                      minWidth: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      ...(rowColor ? { "& td:first-of-type": { color: rowColor, fontWeight: 600 } } : {}),
                     }}
                   >
-                    {renderLabel(row[0])}
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      fontSize: isBinary(row[1]) ? 12 : 14,
-                      fontFamily: isBinary(row[1])
-                        ? "ui-monospace, SFMono-Regular, Menlo, monospace"
-                        : "inherit",
-                      minWidth: "80px",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {row[1]}
-                  </TableCell>
-                </TableRow>
-                )
+                    <TableCell
+                      align="center"
+                      sx={{
+                        fontSize: 14,
+                        minWidth: "80px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {renderLabel(row[0])}
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        fontSize: isBinary(row[1]) ? 12 : 14,
+                        fontFamily: isBinary(row[1])
+                          ? "ui-monospace, SFMono-Regular, Menlo, monospace"
+                          : "inherit",
+                        minWidth: "80px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {row[1]}
+                    </TableCell>
+                  </TableRow>
+                );
               })}
             </TableBody>
           </Table>
