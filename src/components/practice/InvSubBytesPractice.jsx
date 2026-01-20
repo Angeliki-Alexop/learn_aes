@@ -170,74 +170,33 @@ const InvSubBytesPractice = () => {
             )}
           </Box>
         </Box>
-        {/* User Output Matrix */}
-        <Box
-          sx={{
-            width: 318,
-          }}
-        >
+        {/* User Output Matrix with headers and labels */}
+        <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
             Enter InvSubBytes output (hex):
           </Typography>
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: 1,
-            }}
-          >
-            {userAnswers.map((row, r) =>
-              row.map((val, c) => (
-                <Box
-                  key={`ans-${r}-${c}`}
-                  sx={{
-                    border: incorrectCells[r][c]
-                      ? "2px solid #d32f2f"
-                      : showSolution
-                      ? "2px solid #1976d2"
-                      : "1px solid #ccc",
-                    borderRadius: 1,
-                    p: 1,
-                    textAlign: "center",
-                    bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: 48,
-                  }}
-                >
-                  <TextField
-                    value={
-                      showSolution
-                        ? solution[r][c]
-                            .toString(16)
-                            .padStart(2, "0")
-                            .toUpperCase()
-                        : val
-                    }
-                    onChange={(e) => handleInputChange(r, c, e.target.value)}
-                    inputProps={{
-                      maxLength: 2,
-                      style: {
-                        textAlign: "center",
-                        textTransform: "uppercase",
-                        fontWeight: "bold",
-                      },
-                    }}
-                    disabled={showSolution}
-                    size="small"
-                    sx={{
-                      width: 56,
-                      bgcolor: showSolution ? "#e3f2fd" : undefined,
-                      "& .MuiInputBase-input": {
-                        color: showSolution ? "#1976d2" : undefined,
-                        fontWeight: showSolution ? "bold" : undefined,
-                      },
-                    }}
-                  />
+
+          <Box sx={{ display: "grid", gridTemplateColumns: "48px repeat(4, 1fr)", gap: 1, alignItems: "stretch" }}>
+            <Box />
+            {[0, 1, 2, 3].map((ci) => (
+              <Box key={`col-head-${ci}`} sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}>
+                c{ci + 1}
+              </Box>
+            ))}
+
+            {userAnswers.map((rowVals, r) => (
+              <React.Fragment key={`row-${r}`}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid transparent", fontWeight: "bold", bgcolor: "transparent", p: 1 }}>
+                  b{r}
                 </Box>
-              ))
-            )}
+
+                {rowVals.map((val, c) => (
+                  <Box key={`ans-${r}-${c}`} sx={{ border: incorrectCells[r][c] ? "2px solid #d32f2f" : showSolution ? "2px solid #1976d2" : "1px solid #ccc", borderRadius: 1, p: 1, textAlign: "center", bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48 }}>
+                    <TextField value={ showSolution ? solution[r][c].toString(16).padStart(2, "0").toUpperCase() : val } onChange={(e) => handleInputChange(r, c, e.target.value)} inputProps={{ maxLength: 2, style: { textAlign: "center", textTransform: "uppercase", fontWeight: "bold" } }} disabled={showSolution} size="small" sx={{ width: 56, bgcolor: showSolution ? "#e3f2fd" : undefined, "& .MuiInputBase-input": { color: showSolution ? "#1976d2" : undefined, fontWeight: showSolution ? "bold" : undefined } }} />
+                  </Box>
+                ))}
+              </React.Fragment>
+            ))}
           </Box>
         </Box>
       </Box>
