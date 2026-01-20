@@ -8,6 +8,7 @@ import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
 import MixColumnsPractice from "../components/practice/MixColumnsPractice";
 import AddRoundKeyPractice from "../components/practice/AddRoundKeyPractice";
 import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
+import InvSubBytesPractice from "../components/practice/InvSubBytesPractice";
 
 function Train() {
   const [activePage, setActivePage] = useState("practice"); // default to practice landing
@@ -39,6 +40,11 @@ function Train() {
       key: "mixcolumns",
       label: "MixColumns Practice",
       component: <MixColumnsPractice />,
+    },
+    {
+      key: "invsubbytes",
+      label: "InvSubBytes Practice",
+      component: <InvSubBytesPractice />,
     },
     {
       key: "addroundkey",
