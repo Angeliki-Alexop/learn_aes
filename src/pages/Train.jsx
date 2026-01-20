@@ -15,6 +15,7 @@ import InvSubBytesPractice from "../components/practice/InvSubBytesPractice";
 function Train() {
   const [activePage, setActivePage] = useState("practice"); // default to practice landing
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [flags, setFlags] = useState({ enable_train_inverse_steps: true });
 
   // Listen for header-triggered reset events (clicking Train in header)
   useEffect(() => {
@@ -27,7 +28,23 @@ function Train() {
     return () => window.removeEventListener("train-reset", resetHandler);
   }, []);
 
-  const exercises = [
+  // Load feature flags (fall back to defaults above if file missing)
+  useEffect(() => {
+    let mounted = true;
+    import("../feature_flags.js")
+      .then((mod) => {
+        if (mounted && mod && mod.default) setFlags((f) => ({ ...f, ...mod.default }));
+      })
+      .catch(() => {
+        // ignore and keep defaults
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const allExercises = [
     {
       key: "subbytes",
       label: "SubBytes Practice",
@@ -69,6 +86,13 @@ function Train() {
       component: <KeyExpansionPractice />,
     },
   ];
+
+  const exercises = allExercises.filter((ex) => {
+    if (flags.enable_train_inverse_steps === false) {
+      return !["invshiftrows", "invsubbytes", "invmixcolumns"].includes(ex.key);
+    }
+    return true;
+  });
 
   return (
     <div className="train-content">
