@@ -43,6 +43,7 @@ import {
 import {
   padPKCS7,
   sBox,
+  invSBox,
   keyExpansion,
   unpadPKCS7,
 } from "../utils/aes_manual_v2.js";
@@ -79,6 +80,7 @@ function StepByStep() {
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
+  const [highlightedSBoxOutputValue, setHighlightedSBoxOutputValue] = useState(""); // value to highlight as the S-box output cell
   const [highlightedColumnMixColumn, setHighlightedColumnMixColumn] =
     useState(null); // Track highlighted column index
   const [
@@ -260,6 +262,7 @@ function StepByStep() {
   const handleCellClick = (id, value, matrixId, rowIdx, colIdx) => {
     const roundSteps = stateMap.get(currentRound) || [];
     const stepIndex = roundSteps.findIndex((step) => step.step === currentStep);
+    const stepState = roundSteps[stepIndex]?.state || "";
 
     // Interpret input differently depending on mode for the Input Summary
     let initialState;
@@ -300,6 +303,14 @@ function StepByStep() {
       if (matrixId === "previous") {
         setHighlightedCell(id);
         setHighlightedCellValue(value);
+        // highlight the corresponding NEXT state value in the S-box
+        try {
+          const nextMatrix = formatAsMatrix(stepState);
+          const nextVal = nextMatrix[rowIdx][colIdx];
+          setHighlightedSBoxOutputValue(nextVal);
+        } catch (e) {
+          setHighlightedSBoxOutputValue("");
+        }
         const cellId = `current-${rowIdx}-${colIdx}`;
         const cell = document.getElementById(cellId);
         if (cell) {
@@ -315,6 +326,44 @@ function StepByStep() {
         const prevValue = prevMatrix[rowIdx][colIdx];
         setHighlightedCell(prevId);
         setHighlightedCellValue(prevValue);
+        setHighlightedSBoxOutputValue(value);
+        const cellId = `current-${rowIdx}-${colIdx}`;
+        const cell = document.getElementById(cellId);
+        if (cell) {
+          cell.classList.add("highlighted_new");
+        }
+
+        return;
+      }
+    }
+    // Mirror the SubBytes interaction for InvSubBytes: allow clicking in both
+    // matrices and show previous (red) and new (yellow) highlights.
+    if (currentStep === "InvSubBytes") {
+      if (matrixId === "previous") {
+        setHighlightedCell(id);
+        setHighlightedCellValue(value);
+        // set S-box output highlight to the corresponding next state value
+        try {
+          const nextMatrix = formatAsMatrix(stepState);
+          const nextVal = nextMatrix[rowIdx][colIdx];
+          setHighlightedSBoxOutputValue(nextVal);
+        } catch (e) {
+          setHighlightedSBoxOutputValue("");
+        }
+        const cellId = `current-${rowIdx}-${colIdx}`;
+        const cell = document.getElementById(cellId);
+        if (cell) {
+          cell.classList.add("highlighted_new");
+        }
+
+        return;
+      } else {
+        const prevId = `previous-${rowIdx}-${colIdx}`;
+        const prevMatrix = formatAsMatrix(previousStepState);
+        const prevValue = prevMatrix[rowIdx][colIdx];
+        setHighlightedCell(prevId);
+        setHighlightedCellValue(prevValue);
+        setHighlightedSBoxOutputValue(value);
         const cellId = `current-${rowIdx}-${colIdx}`;
         const cell = document.getElementById(cellId);
         if (cell) {
@@ -1096,12 +1145,12 @@ function StepByStep() {
             {(currentStep === "SubBytes" || currentStep === "InvSubBytes") && (
               <div className="matrix sbox-matrix">
                 <RenderSBox
-                  sBox={sBox}
-                  highlightedCellValue={highlightedCellValue}
+                  sBox={currentStep === "InvSubBytes" ? invSBox : sBox}
+                  highlightedInputValue={highlightedCellValue}
+                  highlightedOutputValue={highlightedSBoxOutputValue}
                   title={
                     currentStep === "InvSubBytes" ? "Inverse S-Box" : "S-Box"
                   }
-                  inverseLookup={currentStep === "InvSubBytes"}
                 />
               </div>
             )}

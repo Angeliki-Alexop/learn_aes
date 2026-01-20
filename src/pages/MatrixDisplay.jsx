@@ -154,29 +154,28 @@ export function RenderFixedMatrix({ highlightedRow = null }) {
   );
 }
 
-export function RenderSBox({ sBox, highlightedCellValue, title = 'S-Box', inverseLookup = false }) {
+export function RenderSBox({ sBox, highlightedInputValue, highlightedOutputValue, title = 'S-Box' }) {
   const sBoxMatrix = [];
   for (let i = 0; i < 16; i++) {
     sBoxMatrix.push(sBox.slice(i * 16, (i + 1) * 16));
   }
-  // Determine highlight row/col. If inverseLookup is true, the
-  // highlightedCellValue represents the output byte and we must find the
-  // input index in the provided sBox whose value equals that byte; the
-  // index then determines the row/col to highlight.
-  let highlightRow = -1;
-  let highlightCol = -1;
-  if (highlightedCellValue) {
-    const norm = String(highlightedCellValue).toLowerCase().replace(/^0x/, "").padStart(2, "0");
-    if (inverseLookup) {
-      const searchVal = parseInt(norm, 16);
-      const index = sBox.findIndex((v) => v === searchVal);
-      if (index >= 0) {
-        highlightRow = Math.floor(index / 16);
-        highlightCol = index % 16;
-      }
-    } else {
-      highlightRow = parseInt(norm[0], 16);
-      highlightCol = parseInt(norm[1], 16);
+  // Determine highlight row/col for input value (high nibble = row, low = col)
+  let inputRow = -1;
+  let inputCol = -1;
+  if (highlightedInputValue) {
+    const norm = String(highlightedInputValue).toLowerCase().replace(/^0x/, "").padStart(2, "0");
+    inputRow = parseInt(norm[0], 16);
+    inputCol = parseInt(norm[1], 16);
+  }
+  // Determine which cell contains the output value (search table for value)
+  let outputRow = -1;
+  let outputCol = -1;
+  if (highlightedOutputValue) {
+    const searchVal = parseInt(String(highlightedOutputValue).toLowerCase().replace(/^0x/, "").padStart(2, "0"), 16);
+    const index = sBox.findIndex((v) => v === searchVal);
+    if (index >= 0) {
+      outputRow = Math.floor(index / 16);
+      outputCol = index % 16;
     }
   }
   return (
@@ -217,7 +216,7 @@ export function RenderSBox({ sBox, highlightedCellValue, title = 'S-Box', invers
               <th
                 key={i}
                 style={{
-                  ...(highlightCol === i
+                  ...(inputCol === i
                     ? { backgroundColor: "rgba(255, 0, 0, 0.32)" }
                     : { backgroundColor: "rgba(190, 2, 134, 0.16)" }),
                   padding: "2px 4px",
@@ -237,14 +236,14 @@ export function RenderSBox({ sBox, highlightedCellValue, title = 'S-Box', invers
             <tr
               key={rowIndex}
               style={
-                highlightRow === rowIndex
-                  ? { backgroundColor: "rgba(255, 0, 0, 0.09)" }
+                inputRow === rowIndex || outputRow === rowIndex
+                  ? { backgroundColor: "rgba(255, 0, 0, 0.04)" }
                   : {}
               }
             >
               <th
                 style={{
-                  ...(highlightRow === rowIndex
+                  ...(inputRow === rowIndex
                     ? { backgroundColor: "rgba(255,0,0,0.32)" }
                     : { backgroundColor: "rgba(190, 2, 134, 0.16)" }),
                   padding: "2px 4px",
@@ -259,9 +258,9 @@ export function RenderSBox({ sBox, highlightedCellValue, title = 'S-Box', invers
                 <td
                   key={colIndex}
                   style={{
-                    ...(highlightRow === rowIndex && highlightCol === colIndex
+                    ...(outputRow === rowIndex && outputCol === colIndex
                       ? { backgroundColor: "rgb(255, 255, 0)" }
-                      : highlightRow === rowIndex || highlightCol === colIndex
+                      : inputRow === rowIndex || inputCol === colIndex
                       ? { backgroundColor: "rgba(255, 0, 0, 0.09)" }
                       : { backgroundColor: "#ffffff" }),
                     padding: "4px 6px",
