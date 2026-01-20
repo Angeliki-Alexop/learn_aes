@@ -59,6 +59,7 @@ import KeyExpansionMatrices from "./KeyExpansionMatrices";
 import "./../styles/StepByStep.css";
 import MixColumnsExplanations from "./MixColumnsExplanations";
 import FloatingInfo from "../components/FloatingInfo";
+// Feature flags will be dynamically loaded to avoid crashing if the file is missing.
 function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
   const [currentStep, setCurrentStep] = useState("Input");
@@ -90,10 +91,28 @@ function StepByStep() {
   const algorithm = "ECB";
   const [mode, setMode] = useState("Encrypt");
   const [decryptFormat, setDecryptFormat] = useState("hex");
+  const [flags, setFlags] = useState({ enable_stepbystep_decryption: true });
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
 
   // Listen for header-triggered reset events (clicking StepByStep in header)
+  useEffect(() => {
+    // Try to dynamically import feature flags. If the file is missing or import fails,
+    // fall back to default flags defined above.
+    let mounted = true;
+    import("../feature_flags.js")
+      .then((mod) => {
+        if (mounted && mod && mod.default) setFlags((f) => ({ ...f, ...mod.default }));
+      })
+      .catch(() => {
+        // ignore and keep defaults
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   useEffect(() => {
     const resetHandler = () => {
       setCurrentRound(-2);
@@ -652,7 +671,9 @@ function StepByStep() {
                   variant="contained"
                   color="primary"
                   onClick={() => onFullSubmit()}
+                  disabled={mode === 'Decrypt' && !flags.enable_stepbystep_decryption}
                   sx={{ mt: 2 }}
+                  title={mode === 'Decrypt' && !flags.enable_stepbystep_decryption ? 'Step-by-step decryption is currently disabled' : ''}
                 >
                   Submit
                 </Button>
