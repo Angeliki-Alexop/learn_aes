@@ -738,11 +738,19 @@ function StepByStep() {
       );
     }
 
-    const hexToText = (hex) => {
-      return hex
-        .split(" ")
-        .map((byte) => String.fromCharCode(parseInt(byte, 16)))
-        .join("");
+    const hexToText = (hex, stripPkcs7 = true) => {
+      const parts = hex.split(" ").filter(Boolean);
+      const bytes = parts.map((byte) => parseInt(byte, 16));
+      if (stripPkcs7 && bytes.length > 0) {
+        const pad = bytes[bytes.length - 1];
+        if (pad >= 1 && pad <= 16) {
+          const tail = bytes.slice(-pad);
+          if (tail.length === pad && tail.every((b) => b === pad)) {
+            bytes.splice(-pad, pad);
+          }
+        }
+      }
+      return bytes.map((b) => String.fromCharCode(b)).join("");
     };
 
     const hexToBase64 = (hex) => {
@@ -1275,6 +1283,7 @@ function StepByStep() {
         </Box>
       );
     } else {
+      const isDecrypt = mode === "Decrypt";
       return (
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Box sx={{ width: "100%", maxWidth: 920 }}>
@@ -1306,37 +1315,58 @@ function StepByStep() {
                   p: 2,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Plaintext (English)
-                  </Typography>
-                  <LightTooltip
-                    title="The original plaintext message entered by the user"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {inputText || "(empty)"}
-                </Typography>
+                {isDecrypt ? (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Ciphertext (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The ciphertext provided as input to the decryption process"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {toHex(initialState)}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Plaintext (English)
+                      </Typography>
+                      <LightTooltip
+                        title="The original plaintext message entered by the user"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {inputText || "(empty)"}
+                    </Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Padded Plaintext (Hex)
-                  </Typography>
-                  <LightTooltip
-                    title="Plaintext after PKCS#7 padding, in hexadecimal format"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(paddedState)}
-                </Typography>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Padded Plaintext (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="Plaintext after PKCS#7 padding, in hexadecimal format"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {toHex(paddedState)}
+                    </Typography>
+                  </>
+                )}
 
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
@@ -1379,29 +1409,47 @@ function StepByStep() {
                   p: 2,
                 }}
               >
+                {isDecrypt && (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Plaintext (English)
+                      </Typography>
+                      <LightTooltip
+                        title="Decrypted plaintext (interpreted as text)"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {hexToText(resultState) || "(empty)"}
+                    </Typography>
+                  </>
+                )}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Ciphertext (Hex)
+                    {isDecrypt ? "Plaintext (Hex)" : "Ciphertext (Hex)"}
                   </Typography>
                   <LightTooltip
-                    title="AES encrypted output in hexadecimal"
+                    title={isDecrypt ? "Decrypted output in hexadecimal" : "AES encrypted output in hexadecimal"}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
                   </LightTooltip>
                 </Box>
                 <Typography sx={{ wordBreak: "break-word" }}>
-                  {resultState}
+                  {isDecrypt ? resultState : resultState}
                 </Typography>
 
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Ciphertext (Base64)
+                    {isDecrypt ? "Plaintext (Base64)" : "Ciphertext (Base64)"}
                   </Typography>
                   <LightTooltip
-                    title="AES encrypted output encoded in Base64"
+                    title={isDecrypt ? "Decrypted output encoded in Base64" : "AES encrypted output encoded in Base64"}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
