@@ -36,6 +36,7 @@ export function StepNavigation({
   stateMap,
   showInitialControls = true,
 }) {
+  const inResultView = currentRound > totalRounds || currentStep === "Result";
   const defaultKeyForSize = (size) => {
     if (size === 128) return "DefaultKey123456";
     if (size === 192) return "DefaultKeyForAES192Key!!";
@@ -188,7 +189,7 @@ export function StepNavigation({
             onClick={() =>
               handlePreviousRound(currentRound, setCurrentRound, setCurrentStep)
             }
-            disabled={currentRound <= 0}
+            disabled={inResultView ? false : currentRound <= 0}
           >
             Previous Round
           </Button>
@@ -212,7 +213,7 @@ export function StepNavigation({
                 stateMap
               )
             }
-            disabled={currentRound === -2 && currentStep === "Input"}
+            disabled={inResultView ? false : (currentRound === -2 && currentStep === "Input")}
           >
             Previous Step
           </Button>
@@ -265,7 +266,7 @@ export function StepNavigation({
                 );
               }
             }}
-            disabled={currentRound > totalRounds || currentStep === 'Result'}
+            disabled={inResultView ? true : (currentRound > totalRounds || currentStep === 'Result')}
           >
             Next Step
           </Button>
@@ -282,7 +283,7 @@ export function StepNavigation({
                 mode
               )
             }
-            disabled={currentRound >= totalRounds}
+            disabled={inResultView ? true : currentRound >= totalRounds}
           >
             Next Round
           </Button>
@@ -293,7 +294,7 @@ export function StepNavigation({
             onClick={() =>
               handleFinalRound(setCurrentRound, setCurrentStep, totalRounds)
             }
-            disabled={currentRound >= totalRounds}
+            disabled={inResultView ? true : currentRound >= totalRounds}
           >
             Final Round
           </Button>
