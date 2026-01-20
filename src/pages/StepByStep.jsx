@@ -299,6 +299,11 @@ function StepByStep() {
       cell.classList.remove("highlighted_new");
     });
 
+    // Disable clicking during InvShiftRows (match encryption behavior)
+    if (currentStep === "InvShiftRows") {
+      return;
+    }
+
     if (currentStep === "SubBytes") {
       if (matrixId === "previous") {
         setHighlightedCell(id);
