@@ -632,20 +632,7 @@ function StepByStep() {
               </Button>
             </Box>
             {mode === "Decrypt" && (
-              <Box
-                sx={{ mt: 1, display: "flex", gap: 1, alignItems: "center" }}
-              >
-                <Typography variant="body2">Input format:</Typography>
-                <Select
-                  value={decryptFormat}
-                  onChange={(e) => setDecryptFormat(e.target.value)}
-                  size="small"
-                  sx={{ minWidth: 120 }}
-                >
-                  <MenuItem value={"base64"}>Base64</MenuItem>
-                  <MenuItem value={"hex"}>Hex</MenuItem>
-                </Select>
-              </Box>
+              <></>
             )}
             <Typography
               variant="body1"
@@ -732,7 +719,7 @@ function StepByStep() {
                 margin="normal"
                 error={Boolean(tempInputError)}
                 helperText={tempInputError}
-                inputProps={{ maxLength: mode === 'Encrypt' ? 16 : (decryptFormat === 'hex' ? 32 : 24) }}
+                inputProps={{ maxLength: mode === 'Encrypt' ? 16 : 32 }}
               />
               <TextField
                 label={
