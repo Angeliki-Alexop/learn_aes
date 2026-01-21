@@ -191,7 +191,7 @@ function Navbar() {
                     handleMenuClose();
                   }}
                 >
-                  Train
+                  Training
                 </MenuItem>
                 <MenuItem
                   component={Link}
