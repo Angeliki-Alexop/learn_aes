@@ -5,7 +5,9 @@ import "./StepInfo.css";
 export const STEP_INFO = {
   "Key Expansion": {
     title: "What is Key Expansion?",
-    what: `AES uses a different key for each encryption round. Key Expansion is the process that generates all these round keys from the original key.
+    what: `AES uses a different key for each encryption round.
+    The Key Schedule is the overall process AES uses to manage and generate all the round keys needed during encryption. 
+    Key Expansion is the specific algorithm within the key schedule that computes these round keys from the original cipher key.
 
 The original key is split into words (1 word = 4 bytes). New words are created one by one by combining previous words and, 
 at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
@@ -24,7 +26,7 @@ Each round key is 4 words, so the total number of expanded words is:
   - AES-128: 44 words
   - AES-192: 52 words
   - AES-256: 60 words`,
-  how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. The view is interactive and shows the relationships between previous words and the new word that is being produced. For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle; the tool will annotate these special cases for clarity.`,
+    how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. The view is interactive and shows the relationships between previous words and the new word that is being produced. For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle; the tool will annotate these special cases for clarity.`,
   },
   SubBytes: {
     title: "SubBytes",
