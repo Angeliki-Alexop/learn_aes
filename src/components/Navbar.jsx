@@ -179,7 +179,7 @@ function Navbar() {
                   to="/step-by-step"
                   onClick={handleMenuClose}
                 >
-                  StepByStep
+                  Step-by-step
                 </MenuItem>
                 <MenuItem
                   component={Link}
