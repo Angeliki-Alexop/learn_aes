@@ -26,7 +26,10 @@ Each round key is 4 words, so the total number of expanded words is:
   - AES-128: 44 words
   - AES-192: 52 words
   - AES-256: 60 words`,
-    how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. The view is interactive and shows the relationships between previous words and the new word that is being produced. For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle; the tool will annotate these special cases for clarity.`,
+    how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. 
+    • Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. 
+    • The view is interactive and shows the relationships between previous words and the new word that is being produced. 
+    • For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle, the tool will annotate these special cases for clarity.\n`,
   },
   SubBytes: {
     title: "SubBytes",
