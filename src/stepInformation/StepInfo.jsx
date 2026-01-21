@@ -26,10 +26,7 @@ Each round key is 4 words, so the total number of expanded words is:
   - AES-128: 44 words
   - AES-192: 52 words
   - AES-256: 60 words`,
-    how: `Use the Key Expansion view to inspect how each round key is derived from the original secret key. 
-    • Click any word (a 4-byte column) to highlight the bytes that contributed to it and reveal the sequence of transformations used. 
-    • The view is interactive and shows the relationships between previous words and the new word that is being produced. 
-    • For AES-256 the expansion includes an additional SubWord step halfway through each 8-word cycle, the tool will annotate these special cases for clarity.\n`,
+    how: `Use the Key Expansion view to inspect how each round key is derived from the original key.\n `,
   },
   SubBytes: {
     title: "SubBytes",
@@ -89,7 +86,7 @@ AES multiplication uses a special finite field, but for learning, you can follow
 • 02 × X = Shift X left by 1 bit. If the he original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
 • 03 × X = (02 × X) ⊕ X
 Note: All XOR operations are bitwise addition without carry.`,
-    how: `1. Click any byte in the 'Next State' matrix (the output of the MixColumns step).\n
+    how: `Click any byte in the 'Next State' matrix (the output of the MixColumns step).\n
     • This selects one output byte S′ and highlights the entire source column from the 'Current State' that was used to compute it.
     At the same time, the corresponding row of the 'Fixed Matrix' is highlighted to show the coefficients applied to each source byte.
 
@@ -103,7 +100,7 @@ Note: All XOR operations are bitwise addition without carry.`,
     The Round Key is a 128-bit key derived from the original cipher key through the key expansion process, and a different round key is used in each round. 
     
     Note: AddRoundKey is applied once before the first round and at the end of every encryption round.`,
-    how: `1. Click any byte in the Next State matrix (the output of AddRoundKey step).
+    how: `Click any byte in the Next State matrix (the output of AddRoundKey step).
      • The corresponding byte in the 'Current State' and the matching byte in the active 'Round Key' are highlighted. 
      • The explanation panel displays the two input bytes (Current State and Round Key bytes) in hexadecimal and binary, the XOR operation used to combine them (for example, 3C ⊕ A7 = 9B), and the final result in both hexadecimal and binary.`,
   },
