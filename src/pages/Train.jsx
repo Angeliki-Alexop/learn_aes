@@ -33,7 +33,8 @@ function Train() {
     let mounted = true;
     import("../feature_flags.js")
       .then((mod) => {
-        if (mounted && mod && mod.default) setFlags((f) => ({ ...f, ...mod.default }));
+        if (mounted && mod && mod.default)
+          setFlags((f) => ({ ...f, ...mod.default }));
       })
       .catch(() => {
         // ignore and keep defaults
@@ -47,42 +48,42 @@ function Train() {
   const allExercises = [
     {
       key: "subbytes",
-      label: "SubBytes Practice",
+      label: "SubBytes",
       component: <SubBytesPractice />,
     },
     {
       key: "shiftrows",
-      label: "ShiftRows Practice",
+      label: "ShiftRows",
       component: <ShiftRowsPractice />,
     },
     {
       key: "invshiftrows",
-      label: "InvShiftRows Practice",
+      label: "InvShiftRows",
       component: <InvShiftRowsPractice />,
     },
     {
       key: "mixcolumns",
-      label: "MixColumns Practice",
+      label: "MixColumns",
       component: <MixColumnsPractice />,
     },
     {
       key: "invmixcolumns",
-      label: "InvMixColumns Practice",
+      label: "InvMixColumns",
       component: <InvMixColumnsPractice />,
     },
     {
       key: "invsubbytes",
-      label: "InvSubBytes Practice",
+      label: "InvSubBytes",
       component: <InvSubBytesPractice />,
     },
     {
       key: "addroundkey",
-      label: "AddRoundKey Practice",
+      label: "AddRoundKey",
       component: <AddRoundKeyPractice />,
     },
     {
       key: "keyexpansion",
-      label: "Key Expansion Practice",
+      label: "Key Expansion",
       component: <KeyExpansionPractice />,
     },
   ];
@@ -131,32 +132,78 @@ function Train() {
                 >
                   Select a step to train on:
                 </Typography>
+                {/* First row: main steps */}
                 <Box
                   sx={{
                     display: "flex",
                     gap: 2,
                     flexWrap: "wrap",
                     justifyContent: "center",
+                    mb: 2,
                   }}
                 >
-                  {exercises.map((ex) => (
-                    <Button
-                      key={ex.key}
-                      variant="contained"
-                      size="large"
-                      color="secondary"
-                      onClick={() => setSelectedExercise(ex.key)}
-                    >
-                      {ex.label}
-                    </Button>
-                  ))}
+                  {[
+                    "subbytes",
+                    "shiftrows",
+                    "mixcolumns",
+                    "addroundkey",
+                    "keyexpansion",
+                  ].map((k) => {
+                    const ex = exercises.find((e) => e.key === k);
+                    return (
+                      ex && (
+                        <Button
+                          key={ex.key}
+                          variant="contained"
+                          size="large"
+                          color="secondary"
+                          onClick={() => setSelectedExercise(ex.key)}
+                          sx={{ textTransform: "none" }}
+                        >
+                          {ex.label}
+                        </Button>
+                      )
+                    );
+                  })}
                 </Box>
+
+                {/* Second row: inverse steps (hidden when feature flag disables inverse steps) */}
+                {flags.enable_train_inverse_steps !== false && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 2,
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {["invshiftrows", "invmixcolumns", "invsubbytes"].map(
+                      (k) => {
+                        const ex = exercises.find((e) => e.key === k);
+                        return (
+                          ex && (
+                            <Button
+                              key={ex.key}
+                              variant="contained"
+                              size="large"
+                              color="secondary"
+                              onClick={() => setSelectedExercise(ex.key)}
+                              sx={{ textTransform: "none" }}
+                            >
+                              {ex.label}
+                            </Button>
+                          )
+                        );
+                      },
+                    )}
+                  </Box>
+                )}
               </Box>
             ) : (
               <Box>
                 <Button
                   onClick={() => setSelectedExercise(null)}
-                  sx={{ mt: 3, mb: 1 }}
+                  sx={{ mt: 3, mb: 1, textTransform: "none" }}
                   variant="contained"
                 >
                   &larr; Back to Exercise List

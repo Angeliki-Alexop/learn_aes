@@ -80,7 +80,8 @@ function StepByStep() {
   const [stateMap, setStateMap] = useState(new Map());
   const [highlightedCell, setHighlightedCell] = useState(null); // State to track the highlighted cell
   const [highlightedCellValue, setHighlightedCellValue] = useState(""); // State to track the value of the highlighted cell
-  const [highlightedSBoxOutputValue, setHighlightedSBoxOutputValue] = useState(""); // value to highlight as the S-box output cell
+  const [highlightedSBoxOutputValue, setHighlightedSBoxOutputValue] =
+    useState(""); // value to highlight as the S-box output cell
   const [highlightedColumnMixColumn, setHighlightedColumnMixColumn] =
     useState(null); // Track highlighted column index
   const [
@@ -104,7 +105,8 @@ function StepByStep() {
     let mounted = true;
     import("../feature_flags.js")
       .then((mod) => {
-        if (mounted && mod && mod.default) setFlags((f) => ({ ...f, ...mod.default }));
+        if (mounted && mod && mod.default)
+          setFlags((f) => ({ ...f, ...mod.default }));
       })
       .catch(() => {
         // ignore and keep defaults
@@ -194,8 +196,8 @@ function StepByStep() {
     }
 
     // For encryption ensure plaintext <= 16 chars
-    if (mode === 'Encrypt' && tempInputText.length > 16) {
-      setKeyError('Plaintext must be at most 16 characters');
+    if (mode === "Encrypt" && tempInputText.length > 16) {
+      setKeyError("Plaintext must be at most 16 characters");
       return;
     }
 
@@ -445,8 +447,12 @@ function StepByStep() {
         });
         const highlightedNew = document.querySelectorAll(".highlighted_new");
         highlightedNew.forEach((c) => c.classList.remove("highlighted_new"));
-        const highlightedPurple = document.querySelectorAll(".highlighted_purple");
-        highlightedPurple.forEach((c) => c.classList.remove("highlighted_purple"));
+        const highlightedPurple = document.querySelectorAll(
+          ".highlighted_purple",
+        );
+        highlightedPurple.forEach((c) =>
+          c.classList.remove("highlighted_purple"),
+        );
         // also clear any MixColumns highlights/state
         setHighlightedColumnMixColumn(null);
         setHighlightedRowFixedMatrix(null);
@@ -631,9 +637,7 @@ function StepByStep() {
                 DECRYPTION
               </Button>
             </Box>
-            {mode === "Decrypt" && (
-              <></>
-            )}
+            {mode === "Decrypt" && <></>}
             <Typography
               variant="body1"
               color="information"
@@ -667,34 +671,42 @@ function StepByStep() {
               <TextField
                 label={
                   mode === "Encrypt"
-                    ? "Plaintext (English)"
+                    ? "Plaintext (english)"
                     : "Ciphertext (Hex)"
                 }
                 value={tempInputText}
                 onChange={(e) => {
                   const val = e.target.value;
-                  if (mode === 'Encrypt') {
+                  if (mode === "Encrypt") {
                     // limit plaintext to 16 characters
                     if (val.length > 16) {
                       setTempInputText(val.slice(0, 16));
-                      setTempInputError('Plaintext must be at most 16 characters');
+                      setTempInputError(
+                        "Plaintext must be at most 16 characters",
+                      );
                     } else {
                       setTempInputText(val);
-                      setTempInputError('');
+                      setTempInputError("");
                     }
                   } else {
                     // Decrypt mode: validate according to selected format
-                    if (decryptFormat === 'hex') {
+                    if (decryptFormat === "hex") {
                       // allow only hex digits and optionally spaces; validate cleaned length
-                      const cleaned = val.replace(/\s+/g, '');
+                      const cleaned = val.replace(/\s+/g, "");
                       if (/[^0-9a-fA-F\s]/.test(val)) {
-                        setTempInputError('Only hexadecimal characters (0-9, A-F) are allowed');
+                        setTempInputError(
+                          "Only hexadecimal characters (0-9, A-F) are allowed",
+                        );
                       } else if (cleaned.length > 32) {
-                        setTempInputError('Hex input must be exactly 32 hex characters (16 bytes)');
+                        setTempInputError(
+                          "Hex input must be exactly 32 hex characters (16 bytes)",
+                        );
                       } else if (cleaned.length !== 32) {
-                        setTempInputError('Hex input must be exactly 32 hex characters (16 bytes)');
+                        setTempInputError(
+                          "Hex input must be exactly 32 hex characters (16 bytes)",
+                        );
                       } else {
-                        setTempInputError('');
+                        setTempInputError("");
                       }
                       // store as entered (spaces allowed)
                       setTempInputText(val);
@@ -702,14 +714,16 @@ function StepByStep() {
                       // base64
                       setTempInputText(val);
                       try {
-                        const bin = atob(val || '');
+                        const bin = atob(val || "");
                         if (bin.length !== 16) {
-                          setTempInputError('Base64 must decode to exactly 16 bytes');
+                          setTempInputError(
+                            "Base64 must decode to exactly 16 bytes",
+                          );
                         } else {
-                          setTempInputError('');
+                          setTempInputError("");
                         }
                       } catch (err) {
-                        setTempInputError('Invalid Base64 string');
+                        setTempInputError("Invalid Base64 string");
                       }
                     }
                   }
@@ -719,13 +733,13 @@ function StepByStep() {
                 margin="normal"
                 error={Boolean(tempInputError)}
                 helperText={tempInputError}
-                inputProps={{ maxLength: mode === 'Encrypt' ? 16 : 32 }}
+                inputProps={{ maxLength: mode === "Encrypt" ? 16 : 32 }}
               />
               <TextField
                 label={
                   mode === "Encrypt"
-                    ? "Key for AES (English)"
-                    : "Key for AES (English)"
+                    ? "Key for AES (english)"
+                    : "Key for AES (english)"
                 }
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
@@ -743,9 +757,15 @@ function StepByStep() {
                   variant="contained"
                   color="primary"
                   onClick={() => onFullSubmit()}
-                  disabled={mode === 'Decrypt' && !flags.enable_stepbystep_decryption}
+                  disabled={
+                    mode === "Decrypt" && !flags.enable_stepbystep_decryption
+                  }
                   sx={{ mt: 2 }}
-                  title={mode === 'Decrypt' && !flags.enable_stepbystep_decryption ? 'Step-by-step decryption is currently disabled' : ''}
+                  title={
+                    mode === "Decrypt" && !flags.enable_stepbystep_decryption
+                      ? "Step-by-step decryption is currently disabled"
+                      : ""
+                  }
                 >
                   Submit
                 </Button>
@@ -824,7 +844,7 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Plaintext (English)
+                    Plaintext (english)
                   </Typography>
                   <LightTooltip
                     title="The original plaintext message entered by the user"
@@ -880,7 +900,7 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (English)
+                    Key for AES (english)
                   </Typography>
                   <LightTooltip
                     title="The encryption key provided by the user for the AES encryption process"
@@ -1003,14 +1023,24 @@ function StepByStep() {
               {mode === "Encrypt" ? (
                 <>
                   <Typography sx={{ fontWeight: 700 }}>Plaintext</Typography>
-                  <Typography sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "1rem" }}>
+                  <Typography
+                    sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "1rem" }}
+                  >
                     {inputText || "(empty)"}
                   </Typography>
                 </>
               ) : (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>Ciphertext (Hex)</Typography>
-                  <Typography sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "0.95rem" }}>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    Ciphertext (Hex)
+                  </Typography>
+                  <Typography
+                    sx={{
+                      wordBreak: "break-word",
+                      mt: 0.5,
+                      fontSize: "0.95rem",
+                    }}
+                  >
                     {toHex(initialState)}
                   </Typography>
                 </>
@@ -1312,7 +1342,7 @@ function StepByStep() {
               gutterBottom
               sx={{ fontWeight: 700, mb: 3 }}
             >
-              Result Summary
+              {isDecrypt ? "Decryption overview" : "Encryption overview"}
             </Typography>
 
             <Box
@@ -1354,7 +1384,7 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (English)
+                        Plaintext (english)
                       </Typography>
                       <LightTooltip
                         title="The original plaintext message entered by the user"
@@ -1368,7 +1398,12 @@ function StepByStep() {
                     </Typography>
 
                     <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: 1,
+                      }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
                         Padded Plaintext (Hex)
@@ -1390,7 +1425,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (English)
+                    Key for AES (english)
                   </Typography>
                   <LightTooltip
                     title="The encryption key provided by the user"
@@ -1431,7 +1466,7 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (English)
+                        Plaintext (english)
                       </Typography>
                       <LightTooltip
                         title="Decrypted plaintext (interpreted as text)"
@@ -1450,7 +1485,11 @@ function StepByStep() {
                     {isDecrypt ? "Plaintext (Hex)" : "Ciphertext (Hex)"}
                   </Typography>
                   <LightTooltip
-                    title={isDecrypt ? "Decrypted output in hexadecimal" : "AES encrypted output in hexadecimal"}
+                    title={
+                      isDecrypt
+                        ? "Decrypted output in hexadecimal"
+                        : "AES encrypted output in hexadecimal"
+                    }
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1467,7 +1506,11 @@ function StepByStep() {
                     {isDecrypt ? "Plaintext (Base64)" : "Ciphertext (Base64)"}
                   </Typography>
                   <LightTooltip
-                    title={isDecrypt ? "Decrypted output encoded in Base64" : "AES encrypted output encoded in Base64"}
+                    title={
+                      isDecrypt
+                        ? "Decrypted output encoded in Base64"
+                        : "AES encrypted output encoded in Base64"
+                    }
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
