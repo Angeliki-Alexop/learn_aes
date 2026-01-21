@@ -25,7 +25,13 @@ AES always needs one round key per round plus one initial key.
 Each round key is 4 words, so the total number of expanded words is:
   - AES-128: 44 words
   - AES-192: 52 words
-  - AES-256: 60 words`,
+  - AES-256: 60 words
+  
+What happens during decryption?
+
+Decryption uses the same expanded round keys, but they are applied in reverse order.
+The key expansion process itself does not change, the keys are generated once and reused.
+During decryption, AES applies the round keys from the last round key to the first, ensuring that each encryption step is correctly reversed.`,
     how: `Use the Key Expansion view to inspect how each round key is derived from the original key.\n `,
   },
   SubBytes: {
