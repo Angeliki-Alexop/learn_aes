@@ -40,14 +40,14 @@ function gfMul(a, b) {
 // Generate random 4x4 matrix
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
 // MixColumns transformation for one column
 function mixColumn(col) {
   return MIX_MATRIX.map((row) =>
-    row.reduce((acc, coef, i) => acc ^ gfMul(coef, col[i]), 0)
+    row.reduce((acc, coef, i) => acc ^ gfMul(coef, col[i]), 0),
   );
 }
 
@@ -98,7 +98,7 @@ function MixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            MixColumns Matrix
+            Fixed Matrix:
           </Typography>
           <Box
             sx={{
@@ -123,7 +123,7 @@ function MixColumnsCalculator({
                 >
                   {n.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -133,7 +133,7 @@ function MixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            Selected Column
+            Selected Column:
           </Typography>
           <Box
             sx={{
@@ -200,10 +200,10 @@ function MixColumnsCalculator({
                         calcStatus[r][c] === "correct"
                           ? "#e6f4ea"
                           : calcStatus &&
-                            calcStatus[r] &&
-                            calcStatus[r][c] === "incorrect"
-                          ? "#fdecea"
-                          : undefined,
+                              calcStatus[r] &&
+                              calcStatus[r][c] === "incorrect"
+                            ? "#fdecea"
+                            : undefined,
                     }}
                     inputProps={{
                       maxLength: 4,
@@ -234,8 +234,8 @@ function MixColumnsCalculator({
                     outputStatus && outputStatus[r] === "correct"
                       ? "#e6f4ea"
                       : outputStatus && outputStatus[r] === "incorrect"
-                      ? "#fdecea"
-                      : undefined,
+                        ? "#fdecea"
+                        : undefined,
                 }}
                 inputProps={{
                   maxLength: 4,
@@ -380,34 +380,34 @@ const MixColumnsPractice = () => {
   const [userMatrix, setUserMatrix] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(false))
+      .map(() => Array(4).fill(false)),
   );
   const [showHelp, setShowHelp] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState(0);
   const [calcValues, setCalcValues] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [outputCalc, setOutputCalc] = useState(Array(4).fill(""));
   const [rowFeedback, setRowFeedback] = useState(Array(4).fill(null));
   const [calcStatus, setCalcStatus] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(null))
+      .map(() => Array(4).fill(null)),
   );
   const [outputStatus, setOutputStatus] = useState(Array(4).fill(null));
   const [cellStatus, setCellStatus] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(null))
+      .map(() => Array(4).fill(null)),
   );
 
   // Ref for dialog content to move focus when opened (accessibility)
@@ -429,14 +429,14 @@ const MixColumnsPractice = () => {
     setCalcValues(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setOutputCalc(Array(4).fill(""));
     setRowFeedback(Array(4).fill(null));
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
   }, [selectedColumn]);
@@ -475,7 +475,7 @@ const MixColumnsPractice = () => {
     setFeedback(
       correct
         ? "Correct!"
-        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
+        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!",
     );
   };
 
@@ -484,23 +484,23 @@ const MixColumnsPractice = () => {
     setShowSolution(true);
     setUserMatrix(
       solution.map((row) =>
-        row.map((val) => val.toString(16).padStart(2, "0").toUpperCase())
-      )
+        row.map((val) => val.toString(16).padStart(2, "0").toUpperCase()),
+      ),
     );
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
     setCellStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
     setFeedback(null);
@@ -513,32 +513,32 @@ const MixColumnsPractice = () => {
     setUserMatrix(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
     // Clear calculator intermediate and output fields when moving to next example
     setCalcValues(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setOutputCalc(Array(4).fill(""));
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
     setCellStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
   };
 
@@ -560,7 +560,7 @@ const MixColumnsPractice = () => {
     setCalcValues((prev) => {
       const u = prev.map((row) => [...row]);
       u[r] = expectedMuls.map((n) =>
-        n.toString(16).padStart(2, "0").toUpperCase()
+        n.toString(16).padStart(2, "0").toUpperCase(),
       );
       return u;
     });
@@ -706,10 +706,10 @@ const MixColumnsPractice = () => {
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        MixColumns transforms each column of the state matrix using matrix
-        multiplication in GF(2⁸). Enter the result for each cell after
-        MixColumns. You can use the helper below to see how each output is
-        calculated.
+        In MixColumns, each column of the original matrix (4 bytes) is
+        multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the
+        resulting byte values for each cell after the MixColumns step. Note: You
+        can use the helper below to see how each output is calculated.
       </Typography>
       {/* Quick instructions moved into dialog (use the Help icon to open) */}
       <Box
@@ -752,11 +752,11 @@ const MixColumnsPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
-        {/* MixColumns Matrix Display */}
+        {/* Fixed Matrix Display */}
         <Box
           sx={{
             minWidth: "auto",
@@ -771,7 +771,7 @@ const MixColumnsPractice = () => {
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-            MixColumns Transformation Matrix:
+            Fixed Matrix:
           </Typography>
           <Box
             sx={{
@@ -896,12 +896,12 @@ const MixColumnsPractice = () => {
                         cellStatus[r][c] === "incorrect"
                           ? "2px solid #d32f2f"
                           : cellStatus &&
-                            cellStatus[r] &&
-                            cellStatus[r][c] === "correct"
-                          ? "2px solid #2e7d32"
-                          : showSolution
-                          ? "2px solid #1976d2"
-                          : "1px solid #ccc",
+                              cellStatus[r] &&
+                              cellStatus[r][c] === "correct"
+                            ? "2px solid #2e7d32"
+                            : showSolution
+                              ? "2px solid #1976d2"
+                              : "1px solid #ccc",
                       borderRadius: 1,
                       p: 1,
                       textAlign: "center",
@@ -911,14 +911,14 @@ const MixColumnsPractice = () => {
                         cellStatus[r][c] === "correct"
                           ? "#e6f4ea"
                           : cellStatus &&
-                            cellStatus[r] &&
-                            cellStatus[r][c] === "incorrect"
-                          ? "#fdecea"
-                          : feedback === "Correct!"
-                          ? "#c8e6c9"
-                          : showSolution
-                          ? "#e3f2fd"
-                          : "#f5f5f5",
+                              cellStatus[r] &&
+                              cellStatus[r][c] === "incorrect"
+                            ? "#fdecea"
+                            : feedback === "Correct!"
+                              ? "#c8e6c9"
+                              : showSolution
+                                ? "#e3f2fd"
+                                : "#f5f5f5",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -940,28 +940,28 @@ const MixColumnsPractice = () => {
                             cellStatus[r][c] === "correct"
                               ? "#2e7d32"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#d32f2f"
-                              : feedback === "Correct!"
-                              ? "#2e7d32"
-                              : showSolution
-                              ? "#1976d2"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
                           background:
                             cellStatus &&
                             cellStatus[r] &&
                             cellStatus[r][c] === "correct"
                               ? "#e6f4ea"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#fdecea"
-                              : feedback === "Correct!"
-                              ? "#c8e6c9"
-                              : showSolution
-                              ? "#e3f2fd"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#fdecea"
+                                : feedback === "Correct!"
+                                  ? "#c8e6c9"
+                                  : showSolution
+                                    ? "#e3f2fd"
+                                    : undefined,
                           opacity: 1,
                           WebkitTextFillColor:
                             cellStatus &&
@@ -969,14 +969,14 @@ const MixColumnsPractice = () => {
                             cellStatus[r][c] === "correct"
                               ? "#2e7d32"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#d32f2f"
-                              : feedback === "Correct!"
-                              ? "#2e7d32"
-                              : showSolution
-                              ? "#1976d2"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
                         },
                       }}
                       disabled={
@@ -994,14 +994,14 @@ const MixColumnsPractice = () => {
                           cellStatus[r][c] === "correct"
                             ? "#e6f4ea"
                             : cellStatus &&
-                              cellStatus[r] &&
-                              cellStatus[r][c] === "incorrect"
-                            ? "#fdecea"
-                            : feedback === "Correct!"
-                            ? "#c8e6c9"
-                            : showSolution
-                            ? "#e3f2fd"
-                            : undefined,
+                                cellStatus[r] &&
+                                cellStatus[r][c] === "incorrect"
+                              ? "#fdecea"
+                              : feedback === "Correct!"
+                                ? "#c8e6c9"
+                                : showSolution
+                                  ? "#e3f2fd"
+                                  : undefined,
                         "& .MuiInputBase-input.Mui-disabled": {
                           color:
                             cellStatus &&
@@ -1009,14 +1009,14 @@ const MixColumnsPractice = () => {
                             cellStatus[r][c] === "correct"
                               ? "#2e7d32"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#d32f2f"
-                              : feedback === "Correct!"
-                              ? "#2e7d32"
-                              : showSolution
-                              ? "#1976d2"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
                           fontWeight: "bold",
                           opacity: 1,
                           WebkitTextFillColor:
@@ -1025,28 +1025,28 @@ const MixColumnsPractice = () => {
                             cellStatus[r][c] === "correct"
                               ? "#2e7d32"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#d32f2f"
-                              : feedback === "Correct!"
-                              ? "#2e7d32"
-                              : showSolution
-                              ? "#1976d2"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
                           background:
                             cellStatus &&
                             cellStatus[r] &&
                             cellStatus[r][c] === "correct"
                               ? "#e6f4ea"
                               : cellStatus &&
-                                cellStatus[r] &&
-                                cellStatus[r][c] === "incorrect"
-                              ? "#fdecea"
-                              : feedback === "Correct!"
-                              ? "#c8e6c9"
-                              : showSolution
-                              ? "#e3f2fd"
-                              : undefined,
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#fdecea"
+                                : feedback === "Correct!"
+                                  ? "#c8e6c9"
+                                  : showSolution
+                                    ? "#e3f2fd"
+                                    : undefined,
                         },
                       }}
                     />
@@ -1193,7 +1193,7 @@ const MixColumnsPractice = () => {
                     >
                       {n.toString(16).padStart(2, "0").toUpperCase()}
                     </Box>
-                  ))
+                  )),
                 )}
               </Box>
               <Box sx={{ mt: 2 }}>

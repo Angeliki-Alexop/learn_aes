@@ -37,14 +37,14 @@ function gfMul(a, b) {
 // Generate random 4x4 matrix
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
 // Inverse MixColumns transformation for one column
 function invMixColumn(col) {
   return INV_MIX_MATRIX.map((row) =>
-    row.reduce((acc, coef, i) => acc ^ gfMul(coef, col[i]), 0)
+    row.reduce((acc, coef, i) => acc ^ gfMul(coef, col[i]), 0),
   );
 }
 
@@ -91,7 +91,7 @@ function InvMixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            InvMixColumns Matrix
+            Inverse Fixed Matrix:
           </Typography>
           <Box
             sx={{
@@ -116,7 +116,7 @@ function InvMixColumnsCalculator({
                 >
                   {coefHex(n)}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -125,7 +125,7 @@ function InvMixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            Selected Column
+            Selected Column:
           </Typography>
           <Box
             sx={{
@@ -156,7 +156,10 @@ function InvMixColumnsCalculator({
           Calculate each output byte (row) for this column:
         </Typography>
         {INV_MIX_MATRIX.map((row, r) => (
-          <Box key={r} sx={{ mb: 2, p: 1, bgcolor: "#e3f2fd", borderRadius: 1 }}>
+          <Box
+            key={r}
+            sx={{ mb: 2, p: 1, bgcolor: "#e3f2fd", borderRadius: 1 }}
+          >
             <Typography
               variant="body2"
               sx={{ fontWeight: "bold", paddingBottom: 2 }}
@@ -188,10 +191,10 @@ function InvMixColumnsCalculator({
                         calcStatus[r][c] === "correct"
                           ? "#e6f4ea"
                           : calcStatus &&
-                            calcStatus[r] &&
-                            calcStatus[r][c] === "incorrect"
-                          ? "#fdecea"
-                          : undefined,
+                              calcStatus[r] &&
+                              calcStatus[r][c] === "incorrect"
+                            ? "#fdecea"
+                            : undefined,
                     }}
                     inputProps={{
                       maxLength: 4,
@@ -212,19 +215,26 @@ function InvMixColumnsCalculator({
                 value={outputValue[r]}
                 onChange={(e) => onOutputChange(r, e.target.value)}
                 size="small"
-                disabled={showSolution || (outputStatus && outputStatus[r] === "correct")}
+                disabled={
+                  showSolution ||
+                  (outputStatus && outputStatus[r] === "correct")
+                }
                 sx={{
                   width: 60,
                   bgcolor:
                     outputStatus && outputStatus[r] === "correct"
                       ? "#e6f4ea"
                       : outputStatus && outputStatus[r] === "incorrect"
-                      ? "#fdecea"
-                      : undefined,
+                        ? "#fdecea"
+                        : undefined,
                 }}
                 inputProps={{
                   maxLength: 4,
-                  style: { textAlign: "center", fontFamily: "monospace", fontWeight: "bold" },
+                  style: {
+                    textAlign: "center",
+                    fontFamily: "monospace",
+                    fontWeight: "bold",
+                  },
                 }}
               />
             </Box>
@@ -233,10 +243,19 @@ function InvMixColumnsCalculator({
               output byte.
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
-              <Button size="small" variant="contained" onClick={() => onRowCheck(r)}>
+              <Button
+                size="small"
+                variant="contained"
+                onClick={() => onRowCheck(r)}
+              >
                 Check
               </Button>
-              <Button size="small" variant="outlined" onClick={() => onRowShow(r)} sx={{ background: "#fff" }}>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={() => onRowShow(r)}
+                sx={{ background: "#fff" }}
+              >
                 Show
               </Button>
               {rowFeedback && rowFeedback[r] && (
@@ -283,13 +302,28 @@ function HexBinConverter() {
   };
 
   return (
-    <Box sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 1, p: 2, mx: "auto" }}>
+    <Box
+      sx={{
+        mt: 1,
+        display: "flex",
+        flexDirection: "column",
+        gap: 1,
+        p: 2,
+        mx: "auto",
+      }}
+    >
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>Hex</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+          Hex
+        </Typography>
         <SwapHorizIcon sx={{ color: "primary.main" }} />
-        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>Binary</Typography>
+        <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.2 }}>
+          Binary
+        </Typography>
       </Box>
-      <Typography variant="caption">Convert AES bytes between hexadecimal and binary</Typography>
+      <Typography variant="caption">
+        Convert AES bytes between hexadecimal and binary
+      </Typography>
       <Box sx={{ display: "flex", gap: 2 }}>
         <TextField
           label="Hex (byte)"
@@ -299,7 +333,14 @@ function HexBinConverter() {
           placeholder="00"
           helperText="Enter 2 hex digits (00–FF)"
           aria-label="hex-to-binary"
-          sx={{ width: 140, "& .MuiInputBase-input": { fontFamily: "monospace", fontSize: 14, textAlign: "center" } }}
+          sx={{
+            width: 140,
+            "& .MuiInputBase-input": {
+              fontFamily: "monospace",
+              fontSize: 14,
+              textAlign: "center",
+            },
+          }}
         />
         <TextField
           label="Binary (8 bits)"
@@ -309,7 +350,14 @@ function HexBinConverter() {
           placeholder="00000000"
           helperText="Enter 8 bits"
           aria-label="binary-to-hex"
-          sx={{ width: 180, "& .MuiInputBase-input": { fontFamily: "monospace", fontSize: 13, textAlign: "center" } }}
+          sx={{
+            width: 180,
+            "& .MuiInputBase-input": {
+              fontFamily: "monospace",
+              fontSize: 13,
+              textAlign: "center",
+            },
+          }}
         />
       </Box>
     </Box>
@@ -321,34 +369,34 @@ const InvMixColumnsPractice = () => {
   const [userMatrix, setUserMatrix] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill("") )
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(false))
+      .map(() => Array(4).fill(false)),
   );
   const [showHelp, setShowHelp] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState(0);
   const [calcValues, setCalcValues] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill("") )
+      .map(() => Array(4).fill("")),
   );
   const [outputCalc, setOutputCalc] = useState(Array(4).fill(""));
   const [rowFeedback, setRowFeedback] = useState(Array(4).fill(null));
   const [calcStatus, setCalcStatus] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(null))
+      .map(() => Array(4).fill(null)),
   );
   const [outputStatus, setOutputStatus] = useState(Array(4).fill(null));
   const [cellStatus, setCellStatus] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(null))
+      .map(() => Array(4).fill(null)),
   );
 
   const dialogContentRef = useRef(null);
@@ -365,14 +413,14 @@ const InvMixColumnsPractice = () => {
     setCalcValues(
       Array(4)
         .fill()
-        .map(() => Array(4).fill("") )
+        .map(() => Array(4).fill("")),
     );
     setOutputCalc(Array(4).fill(""));
     setRowFeedback(Array(4).fill(null));
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
   }, [selectedColumn]);
@@ -409,29 +457,31 @@ const InvMixColumnsPractice = () => {
     setFeedback(
       correct
         ? "Correct!"
-        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
+        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!",
     );
   };
 
   const handleShowSolution = () => {
     setShowSolution(true);
     setUserMatrix(
-      solution.map((row) => row.map((val) => val.toString(16).padStart(2, "0").toUpperCase()))
+      solution.map((row) =>
+        row.map((val) => val.toString(16).padStart(2, "0").toUpperCase()),
+      ),
     );
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
     setCellStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
     setFeedback(null);
@@ -443,31 +493,31 @@ const InvMixColumnsPractice = () => {
     setUserMatrix(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
     setCalcValues(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setOutputCalc(Array(4).fill(""));
     setCalcStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
     setOutputStatus(Array(4).fill(null));
     setCellStatus(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(null))
+        .map(() => Array(4).fill(null)),
     );
   };
 
@@ -484,10 +534,14 @@ const InvMixColumnsPractice = () => {
 
   const handleRowShow = (r) => {
     const col = inputMatrix.map((row) => row[selectedColumn]);
-    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) => gfMul(coef, col[i]));
+    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) =>
+      gfMul(coef, col[i]),
+    );
     setCalcValues((prev) => {
       const u = prev.map((row) => [...row]);
-      u[r] = expectedMuls.map((n) => n.toString(16).padStart(2, "0").toUpperCase());
+      u[r] = expectedMuls.map((n) =>
+        n.toString(16).padStart(2, "0").toUpperCase(),
+      );
       return u;
     });
     const expectedOut = expectedMuls.reduce((a, b) => a ^ b, 0);
@@ -496,7 +550,10 @@ const InvMixColumnsPractice = () => {
       p[r] = expectedOut.toString(16).padStart(2, "0").toUpperCase();
       return p;
     });
-    const expectedOutHex = expectedOut.toString(16).padStart(2, "0").toUpperCase();
+    const expectedOutHex = expectedOut
+      .toString(16)
+      .padStart(2, "0")
+      .toUpperCase();
     setUserMatrix((prev) => {
       const m = prev.map((row) => [...row]);
       m[r][selectedColumn] = expectedOutHex;
@@ -528,7 +585,9 @@ const InvMixColumnsPractice = () => {
 
   const handleRowCheck = (r) => {
     const col = inputMatrix.map((row) => row[selectedColumn]);
-    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) => gfMul(coef, col[i]));
+    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) =>
+      gfMul(coef, col[i]),
+    );
     const expectedOut = expectedMuls.reduce((a, b) => a ^ b, 0);
 
     let allMatch = true;
@@ -540,65 +599,117 @@ const InvMixColumnsPractice = () => {
       }
     }
     const enteredOut = parseInt(outputCalc[r], 16);
-    if (Number.isNaN(enteredOut) || enteredOut !== expectedOut) allMatch = false;
+    if (Number.isNaN(enteredOut) || enteredOut !== expectedOut)
+      allMatch = false;
 
     setCalcStatus((prev) => {
       const u = prev.map((row) => [...row]);
       for (let c = 0; c < 4; c++) {
         const entered = parseInt(calcValues[r][c], 16);
-        u[r][c] = !Number.isNaN(entered) && entered === expectedMuls[c] ? "correct" : "incorrect";
+        u[r][c] =
+          !Number.isNaN(entered) && entered === expectedMuls[c]
+            ? "correct"
+            : "incorrect";
       }
       return u;
     });
     setOutputStatus((prev) => {
       const p = [...prev];
       const entOut = parseInt(outputCalc[r], 16);
-      p[r] = !Number.isNaN(entOut) && entOut === expectedOut ? "correct" : "incorrect";
+      p[r] =
+        !Number.isNaN(entOut) && entOut === expectedOut
+          ? "correct"
+          : "incorrect";
       return p;
     });
 
     setCellStatus((prev) => {
       const s = prev.map((row) => [...row]);
-      s[r][selectedColumn] = !Number.isNaN(parseInt(outputCalc[r], 16)) && parseInt(outputCalc[r], 16) === expectedOut ? "correct" : "incorrect";
+      s[r][selectedColumn] =
+        !Number.isNaN(parseInt(outputCalc[r], 16)) &&
+        parseInt(outputCalc[r], 16) === expectedOut
+          ? "correct"
+          : "incorrect";
       return s;
     });
 
-    if (!Number.isNaN(parseInt(outputCalc[r], 16)) && parseInt(outputCalc[r], 16) === expectedOut) {
+    if (
+      !Number.isNaN(parseInt(outputCalc[r], 16)) &&
+      parseInt(outputCalc[r], 16) === expectedOut
+    ) {
       setUserMatrix((prev) => {
         const m = prev.map((row) => [...row]);
-        m[r][selectedColumn] = expectedOut.toString(16).padStart(2, "0").toUpperCase();
+        m[r][selectedColumn] = expectedOut
+          .toString(16)
+          .padStart(2, "0")
+          .toUpperCase();
         return m;
       });
     }
 
     setRowFeedback((prev) => {
       const q = [...prev];
-      q[r] = allMatch ? "Correct! Please continue with the next calculation." : "Incorrect result. Please try again.";
+      q[r] = allMatch
+        ? "Correct! Please continue with the next calculation."
+        : "Incorrect result. Please try again.";
       return q;
     });
   };
 
   return (
-    <Box sx={{ maxWidth: "auto", mx: "auto", mt: 2, boxShadow: 2, background: "#fff", borderRadius: 2, p: 2 }}>
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+    <Box
+      sx={{
+        maxWidth: "auto",
+        mx: "auto",
+        mt: 2,
+        boxShadow: 2,
+        background: "#fff",
+        borderRadius: 2,
+        p: 2,
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          mb: 2,
+        }}
+      >
         <Typography variant="h5">InvMixColumns Practice</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        InvMixColumns transforms each column of the state matrix using matrix
-        multiplication in GF(2⁸) with the inverse coefficients. Enter the
-        result for each cell after InvMixColumns. You can use the helper
-        below to see how each output is calculated.
+        InvMixColumns is the inverse of the MixColumns step and is used during
+        AES decryption. In this step, each column of the original matrix (4
+        bytes) is multiplied by Inverse Fixed Matrix using arithmetic in GF(2⁸).
+        Enter the resulting byte values for each cell after the InvMixColumns
+        step. Note: You can use the helper below to see how each output is
+        calculated.
       </Typography>
-      <Box sx={{ display: "flex", gap: 4, justifyContent: "center", alignItems: "center", mb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 4,
+          justifyContent: "center",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
         {/* Original Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
             Original Matrix (hex):
           </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 1 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 1,
+            }}
+          >
             {inputMatrix.map((row, r) =>
               row.map((val, c) => (
                 <Box
@@ -618,19 +729,43 @@ const InvMixColumnsPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
 
         {/* Transformation Matrix */}
-        <Box sx={{ minWidth: "auto", textAlign: "center", bgcolor: "#f5f5f5", p: 2, borderRadius: 2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <Box
+          sx={{
+            minWidth: "auto",
+            textAlign: "center",
+            bgcolor: "#f5f5f5",
+            p: 2,
+            borderRadius: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-            InvMixColumns Transformation Matrix:
+            Inverse Fixed Matrix:
           </Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 32px)", gap: 1, mb: 1 }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 32px)",
+              gap: 1,
+              mb: 1,
+            }}
+          >
             {INV_MIX_MATRIX.flat().map((n, i) => (
-              <Box key={i} sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>{n.toString(16).padStart(2, "0").toUpperCase()}</Box>
+              <Box
+                key={i}
+                sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}
+              >
+                {n.toString(16).padStart(2, "0").toUpperCase()}
+              </Box>
             ))}
           </Box>
         </Box>
@@ -641,11 +776,21 @@ const InvMixColumnsPractice = () => {
             Enter InvMixColumns output (hex):
           </Typography>
 
-          <Box sx={{ display: "grid", gridTemplateColumns: "48px repeat(4, 1fr)", gap: 1, alignItems: "stretch" }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "48px repeat(4, 1fr)",
+              gap: 1,
+              alignItems: "stretch",
+            }}
+          >
             {/* header row: empty label cell + column headings */}
             <Box />
             {[0, 1, 2, 3].map((ci) => (
-              <Box key={`col-head-${ci}`} sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}>
+              <Box
+                key={`col-head-${ci}`}
+                sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}
+              >
                 c{ci + 1}
               </Box>
             ))}
@@ -654,24 +799,159 @@ const InvMixColumnsPractice = () => {
             {userMatrix.map((rowVals, r) => (
               <React.Fragment key={`row-${r}`}>
                 {/* row label cell */}
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid transparent", fontWeight: "bold", bgcolor: "transparent", p: 1 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid transparent",
+                    fontWeight: "bold",
+                    bgcolor: "transparent",
+                    p: 1,
+                  }}
+                >
                   b{r}
                 </Box>
 
                 {/* four cells for this row */}
                 {rowVals.map((val, c) => (
-                  <Box key={`ans-${r}-${c}`} sx={{ border: incorrectCells[r][c] ? "2px solid #d32f2f" : cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "2px solid #2e7d32" : showSolution ? "2px solid #1976d2" : "1px solid #ccc", borderRadius: 1, p: 1, textAlign: "center", bgcolor: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#e6f4ea" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#fdecea" : feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48 }}>
+                  <Box
+                    key={`ans-${r}-${c}`}
+                    sx={{
+                      border: incorrectCells[r][c]
+                        ? "2px solid #d32f2f"
+                        : cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                          ? "2px solid #2e7d32"
+                          : showSolution
+                            ? "2px solid #1976d2"
+                            : "1px solid #ccc",
+                      borderRadius: 1,
+                      p: 1,
+                      textAlign: "center",
+                      bgcolor:
+                        cellStatus &&
+                        cellStatus[r] &&
+                        cellStatus[r][c] === "correct"
+                          ? "#e6f4ea"
+                          : cellStatus &&
+                              cellStatus[r] &&
+                              cellStatus[r][c] === "incorrect"
+                            ? "#fdecea"
+                            : feedback === "Correct!"
+                              ? "#c8e6c9"
+                              : showSolution
+                                ? "#e3f2fd"
+                                : "#f5f5f5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 48,
+                    }}
+                  >
                     <TextField
                       value={
                         showSolution
-                          ? solution[r][c].toString(16).padStart(2, "0").toUpperCase()
+                          ? solution[r][c]
+                              .toString(16)
+                              .padStart(2, "0")
+                              .toUpperCase()
                           : val
                       }
                       onChange={(e) => handleInputChange(r, c, e.target.value)}
-                      inputProps={{ maxLength: 2, style: { textAlign: "center", textTransform: "uppercase", fontWeight: "bold", color: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#2e7d32" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#d32f2f" : feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined } }}
-                      disabled={ showSolution || (cellStatus && cellStatus[r] && cellStatus[r][c] === "correct") }
+                      inputProps={{
+                        maxLength: 2,
+                        style: {
+                          textAlign: "center",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                          color:
+                            cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                              ? "#2e7d32"
+                              : cellStatus &&
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
+                        },
+                      }}
+                      disabled={
+                        showSolution ||
+                        (cellStatus &&
+                          cellStatus[r] &&
+                          cellStatus[r][c] === "correct")
+                      }
                       size="small"
-                      sx={{ width: 56, bgcolor: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#e6f4ea" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#fdecea" : feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : undefined, "& .MuiInputBase-input.Mui-disabled": { color: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#2e7d32" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#d32f2f" : feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined, fontWeight: "bold", opacity: 1, WebkitTextFillColor: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#2e7d32" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#d32f2f" : feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined, background: cellStatus && cellStatus[r] && cellStatus[r][c] === "correct" ? "#e6f4ea" : cellStatus && cellStatus[r] && cellStatus[r][c] === "incorrect" ? "#fdecea" : feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : undefined } }}
+                      sx={{
+                        width: 56,
+                        bgcolor:
+                          cellStatus &&
+                          cellStatus[r] &&
+                          cellStatus[r][c] === "correct"
+                            ? "#e6f4ea"
+                            : cellStatus &&
+                                cellStatus[r] &&
+                                cellStatus[r][c] === "incorrect"
+                              ? "#fdecea"
+                              : feedback === "Correct!"
+                                ? "#c8e6c9"
+                                : showSolution
+                                  ? "#e3f2fd"
+                                  : undefined,
+                        "& .MuiInputBase-input.Mui-disabled": {
+                          color:
+                            cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                              ? "#2e7d32"
+                              : cellStatus &&
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
+                          fontWeight: "bold",
+                          opacity: 1,
+                          WebkitTextFillColor:
+                            cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                              ? "#2e7d32"
+                              : cellStatus &&
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#d32f2f"
+                                : feedback === "Correct!"
+                                  ? "#2e7d32"
+                                  : showSolution
+                                    ? "#1976d2"
+                                    : undefined,
+                          background:
+                            cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                              ? "#e6f4ea"
+                              : cellStatus &&
+                                  cellStatus[r] &&
+                                  cellStatus[r][c] === "incorrect"
+                                ? "#fdecea"
+                                : feedback === "Correct!"
+                                  ? "#c8e6c9"
+                                  : showSolution
+                                    ? "#e3f2fd"
+                                    : undefined,
+                        },
+                      }}
                     />
                   </Box>
                 ))}
@@ -681,15 +961,32 @@ const InvMixColumnsPractice = () => {
         </Box>
       </Box>
       {feedback && (
-        <Typography color={feedback === "Correct!" ? "success.main" : "error.main"} sx={{ textAlign: "center", mb: 2 }}>{feedback}</Typography>
+        <Typography
+          color={feedback === "Correct!" ? "success.main" : "error.main"}
+          sx={{ textAlign: "center", mb: 2 }}
+        >
+          {feedback}
+        </Typography>
       )}
       {showSolution && (
-        <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>All correct answers are now filled in the User Output Matrix above.</Typography>
+        <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
+          All correct answers are now filled in the User Output Matrix above.
+        </Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
-        <Button variant="contained" onClick={handleCheck} disabled={showSolution}>Check Answers</Button>
-        <Button variant="outlined" onClick={handleShowSolution}>Show Solution</Button>
-        <Button variant="contained" color="secondary" onClick={handleNext}>Next Example</Button>
+        <Button
+          variant="contained"
+          onClick={handleCheck}
+          disabled={showSolution}
+        >
+          Check Answers
+        </Button>
+        <Button variant="outlined" onClick={handleShowSolution}>
+          Show Solution
+        </Button>
+        <Button variant="contained" color="secondary" onClick={handleNext}>
+          Next Example
+        </Button>
       </Box>
 
       <Box sx={{ mt: 5 }}>
@@ -728,28 +1025,62 @@ const InvMixColumnsPractice = () => {
         open={showHelp}
         onClose={() => setShowHelp(false)}
         fullWidth
-        maxWidth="md"
-        scroll="paper"
+        maxWidth="xl"
+        PaperProps={{ sx: { width: "92%", maxWidth: 1000, maxHeight: "92vh" } }}
         aria-labelledby="invmixcolumns-dialog-title"
         aria-describedby="invmixcolumns-dialog-desc"
       >
         <DialogTitle
           id="invmixcolumns-dialog-title"
-          sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
           AES InvMixColumns – Step-by-Step Guide
-          <IconButton aria-label="Close InvMixColumns help" onClick={() => setShowHelp(false)} size="small">
+          <IconButton
+            aria-label="Close InvMixColumns help"
+            onClick={() => setShowHelp(false)}
+            size="small"
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
-        <DialogContent dividers ref={dialogContentRef} tabIndex={-1} id="invmixcolumns-dialog-desc">
-          <Box sx={{ bgcolor: "#fff8e1ff", p: 2, borderRadius: 1, mt: 2, display: "flex", flexDirection: "column" }}>
-            <Typography variant="body1" component="div" sx={{ mt: 1, width: "100%", maxWidth: 720 }}>
+        <DialogContent
+          dividers
+          ref={dialogContentRef}
+          tabIndex={-1}
+          id="invmixcolumns-dialog-desc"
+        >
+          <Box
+            sx={{
+              bgcolor: "#fff8e1ff",
+              p: 2,
+              borderRadius: 1,
+              mt: 2,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{ mt: 1, width: "100%", maxWidth: 1000 }}
+            >
               <strong>InvMixColumns Matrix:</strong>
               <br />
               Each column is multiplied by this inverse transformation matrix:
               <br />
-              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(4, 40px)", gap: 1, mt: 1, ml: 3 }}>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(4, 40px)",
+                  gap: 1,
+                  mt: 1,
+                  ml: 3,
+                }}
+              >
                 {INV_MIX_MATRIX.map((row, r) =>
                   row.map((n, c) => (
                     <Box
@@ -766,14 +1097,18 @@ const InvMixColumnsPractice = () => {
                     >
                       {n.toString(16).padStart(2, "0").toUpperCase()}
                     </Box>
-                  ))
+                  )),
                 )}
               </Box>
               <Box sx={{ mt: 2 }}>
-                <Typography variant="body1" component="div" sx={{ width: "100%", maxWidth: 720 }}>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ width: "100%", maxWidth: 1000 }}
+                >
                   <strong>Each new byte is computed as:</strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
 • S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
 • S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
@@ -781,25 +1116,35 @@ const InvMixColumnsPractice = () => {
 • S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
     `}</code>
                 </Box>
-                <Typography variant="body1" component="div" sx={{ width: "100%", maxWidth: 720, mt: 2 }}>
-                  <strong>Multiplication rules (GF(2^8)) for inverse coefficients:</strong>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
+                >
+                  <strong>
+                    Multiplication rules (GF(2^8)) for inverse coefficients:
+                  </strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
-• 09 × X = (02 × (02 × (02 × X))) ⊕ X — equals (8×X) ⊕ X
-• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X — equals (8×X) ⊕ (2×X) ⊕ X
-• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X — equals (8×X) ⊕ (4×X) ⊕ X
-• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) — equals (8×X) ⊕ (4×X) ⊕ (2×X)
+• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
+• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
+• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
+• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)
     `}</code>
                 </Box>
-                <Typography variant="body1" component="div" sx={{ width: "100%", maxWidth: 720, mt: 2 }}>
+                <Typography
+                  variant="body1"
+                  component="div"
+                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
+                >
                   <strong>Notes</strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
 • XOR = bitwise addition without carry
 • 02 × X = shift left and reduce by 1B if MSB = 1
-• Use combinations of xtime (02×) and XOR to compute 09, 0B, 0D, 0E products
+• Use combinations of (02×) and XOR to compute 09, 0B, 0D, 0E products
 • Every column is processed independently
 `}</code>
                 </Box>
