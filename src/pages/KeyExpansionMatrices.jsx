@@ -217,12 +217,13 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
           }
 
           const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
-          const displayLabel = mode === 'Decrypt' ? numberOfRounds - idx : idx;
+          // use display label if you want round to be reversed for Decrypt mode
+          // const displayLabel = mode === 'Decrypt' ? numberOfRounds - idx : idx;
 
           return (
             <div key={idx} style={{ width: "100%" }}>
               <Typography variant="caption" align="center">
-                Round {displayLabel}
+                Round {idx}
               </Typography>
               <RenderMatrix
                 hexString={toHex(roundKey)}
