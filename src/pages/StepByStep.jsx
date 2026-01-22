@@ -842,52 +842,73 @@ function StepByStep() {
                   p: 2,
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Plaintext (english)
-                  </Typography>
-                  <LightTooltip
-                    title="The original plaintext message entered by the user"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography>{inputText || "(empty)"}</Typography>
+                {mode === "Decrypt" ? (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Ciphertext
+                      </Typography>
+                      <LightTooltip
+                        title="The ciphertext provided as input to the decryption process"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {inputText || toHex(initialState)}
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Plaintext (english)
+                      </Typography>
+                      <LightTooltip
+                        title="The original plaintext message entered by the user"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography>{inputText || "(empty)"}</Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Plaintext (Hex)
-                  </Typography>
-                  <LightTooltip
-                    title="The hexadecimal representation of the plaintext"
-                    placement="right-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(initialState)}
-                </Typography>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Plaintext (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The hexadecimal representation of the plaintext"
+                        placement="right-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {toHex(initialState)}
+                    </Typography>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Padded plaintext (Hex)
-                  </Typography>
-                  <LightTooltip
-                    title="The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
-                    placement="top-start"
-                  >
-                    <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                  </LightTooltip>
-                </Box>
-                <Typography sx={{ wordBreak: "break-word" }}>
-                  {toHex(paddedState)}
-                </Typography>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                    >
+                      <Typography sx={{ fontWeight: 700 }}>
+                        Padded plaintext (Hex)
+                      </Typography>
+                      <LightTooltip
+                        title="The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
+                        placement="top-start"
+                      >
+                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
+                      </LightTooltip>
+                    </Box>
+                    <Typography sx={{ wordBreak: "break-word" }}>
+                      {toHex(paddedState)}
+                    </Typography>
+                  </>
+                )}
               </Box>
 
               <Box
