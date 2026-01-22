@@ -18,7 +18,7 @@ import { sBox } from "../../utils/aes_manual_v2";
 
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
@@ -26,7 +26,7 @@ function applySBox(matrix) {
   return matrix.map((row) =>
     row.map((byte) => {
       return sBox[byte];
-    })
+    }),
   );
 }
 
@@ -35,7 +35,7 @@ const SubBytesPractice = () => {
   const [userAnswers, setUserAnswers] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -45,7 +45,7 @@ const SubBytesPractice = () => {
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(false))
+      .map(() => Array(4).fill(false)),
   );
   const handleInputChange = (r, c, value) => {
     const updated = userAnswers.map((row) => [...row]);
@@ -76,7 +76,7 @@ const SubBytesPractice = () => {
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
   };
 
@@ -85,14 +85,14 @@ const SubBytesPractice = () => {
     setUserAnswers(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
   };
 
@@ -123,7 +123,16 @@ const SubBytesPractice = () => {
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         Apply the SubBytes transformation by replacing each byte using the AES
-        S-box lookup table. Enter your answers in hexadecimal format.
+        S-box lookup table{" "}
+        <Grid3x3
+          size={20}
+          style={{
+            display: "inline-block",
+            verticalAlign: "middle",
+            margin: "3px 2px",
+          }}
+        />{" "}
+        . Enter your answers in hexadecimal format.
       </Typography>
       <Box
         sx={{
@@ -165,7 +174,7 @@ const SubBytesPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -193,8 +202,8 @@ const SubBytesPractice = () => {
                     border: incorrectCells[r][c]
                       ? "2px solid #d32f2f"
                       : showSolution
-                      ? "2px solid #1976d2"
-                      : "1px solid #ccc",
+                        ? "2px solid #1976d2"
+                        : "1px solid #ccc",
                     borderRadius: 1,
                     p: 1,
                     textAlign: "center",
@@ -235,7 +244,7 @@ const SubBytesPractice = () => {
                     }}
                   />
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -301,7 +310,7 @@ const SubBytesPractice = () => {
             <strong>Hint:</strong> Enter the substituted values in hexadecimal
             format. Click the{" "}
             <Grid3x3
-              size={18}
+              size={20}
               style={{
                 display: "inline-block",
                 verticalAlign: "middle",

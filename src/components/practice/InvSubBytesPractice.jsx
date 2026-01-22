@@ -17,7 +17,7 @@ import { invSBox } from "../../utils/aes_manual_v2";
 
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
@@ -25,7 +25,7 @@ function applyInvSBox(matrix) {
   return matrix.map((row) =>
     row.map((byte) => {
       return invSBox[byte];
-    })
+    }),
   );
 }
 
@@ -34,7 +34,7 @@ const InvSubBytesPractice = () => {
   const [userAnswers, setUserAnswers] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -44,7 +44,7 @@ const InvSubBytesPractice = () => {
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(false))
+      .map(() => Array(4).fill(false)),
   );
 
   const handleInputChange = (r, c, value) => {
@@ -76,7 +76,7 @@ const InvSubBytesPractice = () => {
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
   };
 
@@ -85,14 +85,14 @@ const InvSubBytesPractice = () => {
     setUserAnswers(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
   };
 
@@ -122,9 +122,17 @@ const InvSubBytesPractice = () => {
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the inverse SubBytes transformation by replacing each byte using
-        the AES inverse S-box lookup table. Enter your answers in hexadecimal
-        format.
+        Apply the InvSubBytes transformation by replacing each byte using the
+        AES inverse S-box lookup table{" "}
+        <Grid3x3
+          size={20}
+          style={{
+            display: "inline-block",
+            verticalAlign: "middle",
+            margin: "1px 2px",
+          }}
+        />{" "}
+        . Enter your answers in hexadecimal format.
       </Typography>
       <Box
         sx={{
@@ -166,7 +174,7 @@ const InvSubBytesPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -176,23 +184,64 @@ const InvSubBytesPractice = () => {
             Enter InvSubBytes output (hex):
           </Typography>
 
-          <Box sx={{ display: "grid", gridTemplateColumns: "48px repeat(4, 1fr)", gap: 1, alignItems: "stretch" }}>
-            <Box />
-            {[0, 1, 2, 3].map((ci) => (
-              <Box key={`col-head-${ci}`} sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}>
-                c{ci + 1}
-              </Box>
-            ))}
-
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 1,
+              alignItems: "stretch",
+            }}
+          >
             {userAnswers.map((rowVals, r) => (
               <React.Fragment key={`row-${r}`}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid transparent", fontWeight: "bold", bgcolor: "transparent", p: 1 }}>
-                  b{r}
-                </Box>
-
                 {rowVals.map((val, c) => (
-                  <Box key={`ans-${r}-${c}`} sx={{ border: incorrectCells[r][c] ? "2px solid #d32f2f" : showSolution ? "2px solid #1976d2" : "1px solid #ccc", borderRadius: 1, p: 1, textAlign: "center", bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48 }}>
-                    <TextField value={ showSolution ? solution[r][c].toString(16).padStart(2, "0").toUpperCase() : val } onChange={(e) => handleInputChange(r, c, e.target.value)} inputProps={{ maxLength: 2, style: { textAlign: "center", textTransform: "uppercase", fontWeight: "bold" } }} disabled={showSolution} size="small" sx={{ width: 56, bgcolor: showSolution ? "#e3f2fd" : undefined, "& .MuiInputBase-input": { color: showSolution ? "#1976d2" : undefined, fontWeight: showSolution ? "bold" : undefined } }} />
+                  <Box
+                    key={`ans-${r}-${c}`}
+                    sx={{
+                      border: incorrectCells[r][c]
+                        ? "2px solid #d32f2f"
+                        : showSolution
+                          ? "2px solid #1976d2"
+                          : "1px solid #ccc",
+                      borderRadius: 1,
+                      p: 1,
+                      textAlign: "center",
+                      bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 48,
+                    }}
+                  >
+                    <TextField
+                      value={
+                        showSolution
+                          ? solution[r][c]
+                              .toString(16)
+                              .padStart(2, "0")
+                              .toUpperCase()
+                          : val
+                      }
+                      onChange={(e) => handleInputChange(r, c, e.target.value)}
+                      inputProps={{
+                        maxLength: 2,
+                        style: {
+                          textAlign: "center",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                        },
+                      }}
+                      disabled={showSolution}
+                      size="small"
+                      sx={{
+                        width: 56,
+                        bgcolor: showSolution ? "#e3f2fd" : undefined,
+                        "& .MuiInputBase-input": {
+                          color: showSolution ? "#1976d2" : undefined,
+                          fontWeight: showSolution ? "bold" : undefined,
+                        },
+                      }}
+                    />
                   </Box>
                 ))}
               </React.Fragment>
@@ -245,9 +294,11 @@ const InvSubBytesPractice = () => {
         <DialogContent>
           <Typography gutterBottom>
             InvSubBytes is the inverse operation of SubBytes used in AES
-            decryption. Each byte is replaced with the value found in the
-            inverse S-box table. Use the original byte's hex value to look up
-            the corresponding inverse-substituted byte.
+            decryption. Each byte is replaced with a new byte according to a
+            predefined substitution table called inverse S-box. To perform this
+            step, take the byte in hex: the first hex digit indicates the row in
+            the S-box, and the second hex digit indicates the column. The value
+            found at that position becomes the inverse-substituted byte.
           </Typography>
           <Typography
             variant="body2"
@@ -259,7 +310,7 @@ const InvSubBytesPractice = () => {
             <strong>Hint:</strong> Enter the substituted values in hexadecimal
             format. Click the
             <Grid3x3
-              size={18}
+              size={20}
               style={{
                 display: "inline-block",
                 verticalAlign: "middle",
