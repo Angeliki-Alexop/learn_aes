@@ -5,7 +5,7 @@ import { sBox, invSBox } from "../utils/aes_manual_v2";
 
 function SBoxOverlay({ open, onClose }) {
   const [selected, setSelected] = React.useState(null);
-  const [mode, setMode] = React.useState('sbox'); // 'sbox' or 'invsbox'
+  const [mode, setMode] = React.useState("sbox"); // 'sbox' or 'invsbox'
 
   const handleCellClick = (row, col) => {
     setSelected({ row, col });
@@ -39,10 +39,21 @@ function SBoxOverlay({ open, onClose }) {
             justifyContent: "space-between",
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flex: 1,
+              mb: 2,
+            }}
+          >
             <Tabs
               value={mode}
-              onChange={(e, val) => { setMode(val); setSelected(null); }}
+              onChange={(e, val) => {
+                setMode(val);
+                setSelected(null);
+              }}
               aria-label="S-box pages"
               sx={{ ml: 0 }}
               textColor="primary"
@@ -64,20 +75,46 @@ function SBoxOverlay({ open, onClose }) {
             <CloseIcon />
           </IconButton>
         </Box>
-          <Typography variant="body1" gutterBottom>
-          The {mode === 'sbox' ? 'S-box' : 'Inverse S-box'} (Substitution box) is a fixed lookup table used in AES to
-          replace each byte with a different byte. It adds non-linearity, making
-          the encryption resistant to patterns and attacks. Each byte is
-          substituted independently by using its hexadecimal value to select a
-          row and column in the table and the value found there becomes the new
-          byte. Use the mode selector to switch between the forward S-box and the inverse lookup used during decryption.
-        </Typography>
-        <Typography variant="body2" sx={{ mt: 1, mb: 1, fontStyle: "italic" }}>
-          <strong>Hint:</strong> Click any cell to highlight its row and column.
-          The selected cell shows the substituted value for the corresponding
-          input byte.
-        </Typography>
-          <Box sx={{ overflowX: "auto" }}>
+        {mode === "sbox" ? (
+          <>
+            <Typography variant="body1" gutterBottom>
+              The S-box (Substitution box) is a fixed lookup table used in AES
+              to replace each byte with a different byte during the encryption
+              process. It introduces non-linearity to make the cipher resistant
+              to patterns and attacks. Each input byte (in hex) selects a row
+              and column in the S-box; the value at that position is the
+              substituted (output) byte.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
+            >
+              <strong>Hint (encryption):</strong> Click any cell to highlight
+              its row and column. The selected cell shows the substituted value
+              for the corresponding input byte.
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="body1" gutterBottom>
+              The Inverse S-box (Substitution box) is a fixed lookup table used
+              in AES during the decryption process to reverse the SubBytes
+              transformation. Each input byte (in hex) selects a row and column
+              in the inverse S-box, the value at that position replaces the byte
+              in the state. This step undoes the non-linear substitution applied
+              during encryption and helps recover the original data.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
+            >
+              <strong>Hint (decryption):</strong> Click any cell to highlight
+              its row and column. The selected cell shows the output value for
+              the corresponding input byte.
+            </Typography>
+          </>
+        )}
+        <Box sx={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
@@ -120,7 +157,7 @@ function SBoxOverlay({ open, onClose }) {
                   >
                     {row.toString(16).toUpperCase()}
                   </th>
-                    {Array.from({ length: 16 }, (_, col) => {
+                  {Array.from({ length: 16 }, (_, col) => {
                     const idx = row * 16 + col;
                     const isSelected =
                       selected && selected.row === row && selected.col === col;
@@ -128,7 +165,7 @@ function SBoxOverlay({ open, onClose }) {
                       selected && selected.row === row && !isSelected;
                     const isCol =
                       selected && selected.col === col && !isSelected;
-                    const table = mode === 'sbox' ? sBox : invSBox;
+                    const table = mode === "sbox" ? sBox : invSBox;
                     return (
                       <td
                         key={col}
@@ -140,8 +177,8 @@ function SBoxOverlay({ open, onClose }) {
                           background: isSelected
                             ? "#ffd54f"
                             : isRow || isCol
-                            ? "#fff9c4"
-                            : "#f5f5f5",
+                              ? "#fff9c4"
+                              : "#f5f5f5",
                           fontFamily: "monospace",
                           cursor: "pointer",
                           transition: "background 0.2s",

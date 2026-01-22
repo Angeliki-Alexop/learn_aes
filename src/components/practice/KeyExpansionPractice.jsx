@@ -113,7 +113,7 @@ const KeyExpansionPractice = () => {
     setIncorrect(
       Array(totalWords)
         .fill()
-        .map(() => [false, false, false, false])
+        .map(() => [false, false, false, false]),
     );
     // reset step mode pointers
     setCurrentWord(Nk);
@@ -181,7 +181,7 @@ const KeyExpansionPractice = () => {
 
   const renderHexCells = (
     hexArray = ["", "", "", ""],
-    errorArray = [false, false, false, false]
+    errorArray = [false, false, false, false],
   ) => {
     return (
       <Box
@@ -250,7 +250,7 @@ const KeyExpansionPractice = () => {
       // merge into userWords
       const updated = userWords.map((w) => [...w]);
       updated[currentWord] = expected.map((b) =>
-        b.toString(16).padStart(2, "0").toUpperCase()
+        b.toString(16).padStart(2, "0").toUpperCase(),
       );
       setUserWords(updated);
       // mark correct visually by auto-advancing to next word and locking this one
@@ -300,12 +300,12 @@ const KeyExpansionPractice = () => {
     setIncorrect(
       Array(totalWords)
         .fill()
-        .map(() => [false, false, false, false])
+        .map(() => [false, false, false, false]),
     );
     setUserWords(
       Array(totalWords)
         .fill()
-        .map(() => ["", "", "", ""])
+        .map(() => ["", "", "", ""]),
     );
     setCurrentWord(Nk);
   };
@@ -329,12 +329,12 @@ const KeyExpansionPractice = () => {
     setIncorrect(
       Array(4 * (newSize / 32 + 1))
         .fill()
-        .map(() => [false, false, false, false])
+        .map(() => [false, false, false, false]),
     );
     setUserWords(
       Array(4 * (newSize / 32 + 1))
         .fill()
-        .map(() => ["", "", "", ""])
+        .map(() => ["", "", "", ""]),
     );
   };
 
@@ -464,7 +464,7 @@ const KeyExpansionPractice = () => {
     const rc = typeof rCon[roundIndex] !== "undefined" ? rCon[roundIndex] : 0;
     const expectedRcon = expectedSub.map((b, i) => (i === 0 ? b ^ rc : b));
     const r = expectedRcon.map((b) =>
-      b.toString(16).padStart(2, "0").toUpperCase()
+      b.toString(16).padStart(2, "0").toUpperCase(),
     );
     setRconUser(r);
     setRconIncorrect([false, false, false, false]);
@@ -484,7 +484,7 @@ const KeyExpansionPractice = () => {
     const caseKind = getCaseKind(currentWord);
     if (caseKind !== "special") return; // rot only for special case
     const r = rotWord(prev).map((b) =>
-      b.toString(16).padStart(2, "0").toUpperCase()
+      b.toString(16).padStart(2, "0").toUpperCase(),
     );
     setRotUser(r);
     setRotIncorrect([false, false, false, false]);
@@ -535,7 +535,7 @@ const KeyExpansionPractice = () => {
     // persist the shown/correct step values into the grid
     const updated = userWords.map((w) => [...w]);
     updated[currentWord] = stepUserWord.map((v) =>
-      (v || "").toString().padStart(2, "0").toUpperCase()
+      (v || "").toString().padStart(2, "0").toUpperCase(),
     );
     setUserWords(updated);
 
@@ -558,7 +558,7 @@ const KeyExpansionPractice = () => {
     const expected = getExpectedWord(currentWord);
     if (!expected) return;
     setStepUserWord(
-      expected.map((b) => b.toString(16).padStart(2, "0").toUpperCase())
+      expected.map((b) => b.toString(16).padStart(2, "0").toUpperCase()),
     );
     setStepIncorrect([false, false, false, false]);
     // reveal intermediate values depending on case
@@ -569,10 +569,10 @@ const KeyExpansionPractice = () => {
         const expectedRot = rotWord(prev);
         const expectedSub = subWord(expectedRot);
         const r = expectedRot.map((b) =>
-          b.toString(16).padStart(2, "0").toUpperCase()
+          b.toString(16).padStart(2, "0").toUpperCase(),
         );
         const s = expectedSub.map((b) =>
-          b.toString(16).padStart(2, "0").toUpperCase()
+          b.toString(16).padStart(2, "0").toUpperCase(),
         );
         setRotUser(r);
         setSubUser(s);
@@ -587,7 +587,7 @@ const KeyExpansionPractice = () => {
           typeof rCon[roundIndex] !== "undefined" ? rCon[roundIndex] : 0;
         const expectedRcon = expectedSub.map((b, i) => (i === 0 ? b ^ rc : b));
         const rconHex = expectedRcon.map((b) =>
-          b.toString(16).padStart(2, "0").toUpperCase()
+          b.toString(16).padStart(2, "0").toUpperCase(),
         );
         setRconUser(rconHex);
         setRconIncorrect([false, false, false, false]);
@@ -596,7 +596,7 @@ const KeyExpansionPractice = () => {
         // reveal only SubWord (no rotate, no rcon)
         const expectedSub = subWord(prev);
         const s = expectedSub.map((b) =>
-          b.toString(16).padStart(2, "0").toUpperCase()
+          b.toString(16).padStart(2, "0").toUpperCase(),
         );
         setRotUser(["", "", "", ""]);
         setRotIncorrect([false, false, false, false]);
@@ -961,7 +961,7 @@ const KeyExpansionPractice = () => {
                         </Box>
                       ) : expandedWords[currentWord - 1] ? (
                         renderBytesAsCells(
-                          rotWord(expandedWords[currentWord - 1])
+                          rotWord(expandedWords[currentWord - 1]),
                         )
                       ) : (
                         <Typography sx={{ fontFamily: "monospace" }}>
@@ -1071,7 +1071,7 @@ const KeyExpansionPractice = () => {
                         </Box>
                       ) : expandedWords[currentWord - 1] ? (
                         renderBytesAsCells(
-                          subWord(rotWord(expandedWords[currentWord - 1]))
+                          subWord(rotWord(expandedWords[currentWord - 1])),
                         )
                       ) : (
                         <Typography sx={{ fontFamily: "monospace" }}>
@@ -1183,8 +1183,8 @@ const KeyExpansionPractice = () => {
                                 caseKind === "special"
                                   ? !rconCorrect
                                   : caseKind === "subonly"
-                                  ? !subCorrect
-                                  : false
+                                    ? !subCorrect
+                                    : false
                               }
                               sx={{ width: 64 }}
                             />
@@ -1196,8 +1196,8 @@ const KeyExpansionPractice = () => {
                               caseKind === "special"
                                 ? !rconCorrect
                                 : caseKind === "subonly"
-                                ? !subCorrect
-                                : false
+                                  ? !subCorrect
+                                  : false
                             }
                           >
                             Check
@@ -1319,11 +1319,11 @@ const KeyExpansionPractice = () => {
                             disabled={subCorrect}
                             sx={{
                               width: 64,
-                              '& .MuiOutlinedInput-root': {
+                              "& .MuiOutlinedInput-root": {
                                 bgcolor:
                                   subCorrect && keySize === 256
-                                    ? '#e8f5e9'
-                                    : '#fff',
+                                    ? "#e8f5e9"
+                                    : "#fff",
                               },
                             }}
                           />
@@ -1439,7 +1439,7 @@ const KeyExpansionPractice = () => {
                     expandedWords[wi][bi]
                       .toString(16)
                       .padStart(2, "0")
-                      .toUpperCase()
+                      .toUpperCase(),
                 );
               const isSourceA = currentWord !== null && wi === currentWord - Nk;
               const isSourceB = currentWord !== null && wi === currentWord - 1;
@@ -1458,14 +1458,14 @@ const KeyExpansionPractice = () => {
                       wi < Nk
                         ? "#f5f5f5"
                         : isTarget
-                        ? "#e3f2fd"
-                        : isCompleted
-                        ? "#e8f5e9"
-                        : isSourceA
-                        ? "#e8f5e9"
-                        : isSourceB
-                        ? "#fff8e1"
-                        : "#fff",
+                          ? "#e3f2fd"
+                          : isCompleted
+                            ? "#e8f5e9"
+                            : isSourceA
+                              ? "#e8f5e9"
+                              : isSourceB
+                                ? "#fff8e1"
+                                : "#fff",
                   }}
                 >
                   <Typography
@@ -1478,14 +1478,14 @@ const KeyExpansionPractice = () => {
                     {isTarget
                       ? renderHexCells(stepUserWord, stepIncorrect)
                       : userWords[wi]
-                      ? renderHexCells(
-                          userWords[wi],
-                          incorrect[wi] || [false, false, false, false]
-                        )
-                      : renderHexCells(
-                          ["", "", "", ""],
-                          [false, false, false, false]
-                        )}
+                        ? renderHexCells(
+                            userWords[wi],
+                            incorrect[wi] || [false, false, false, false],
+                          )
+                        : renderHexCells(
+                            ["", "", "", ""],
+                            [false, false, false, false],
+                          )}
                   </Box>
                 </Box>
               );
@@ -1499,7 +1499,7 @@ const KeyExpansionPractice = () => {
       <Dialog
         open={showHelp}
         onClose={() => setShowHelp(false)}
-        maxWidth="sm"
+        maxWidth="md"
         fullWidth
       >
         <DialogTitle>
@@ -1515,12 +1515,12 @@ const KeyExpansionPractice = () => {
         <DialogContent dividers>
           <Typography component="div" sx={{ whiteSpace: "pre-wrap" }}>
             {`AES uses a different key for each encryption round.
-  Key Expansion is the process that generates all these round keys from the original key.
+Key Expansion is the process that generates all these round keys from the original key.
 
-  The original key is split into words (1 word = 4 bytes).
-  New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+The original key is split into words (1 word = 4 bytes).
+New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
 
-  The key size determines how often these special steps are applied:
+The key size determines how often these special steps are applied:
     - AES-128 (16 bytes / 4 words):
       A special transformation is applied every 4th word.
     - AES-192 (24 bytes / 6 words):
@@ -1528,7 +1528,7 @@ const KeyExpansionPractice = () => {
     - AES-256 (32 bytes / 8 words):
       AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).
 
-  There are three cases for AES-256 when computing a new word w[i]:
+There are three cases for AES-256 when computing a new word w[i]:
 
   Case 1 — Special transform (i % 8 === 0)
   Apply the following steps to the previous word (w[i-1]), in order:
@@ -1552,9 +1552,7 @@ const KeyExpansionPractice = () => {
     - AES-256: 60 words`}
           </Typography>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowHelp(false)}>Close</Button>
-        </DialogActions>
+        <DialogActions></DialogActions>
       </Dialog>
       <Dialog
         open={showComplete}
