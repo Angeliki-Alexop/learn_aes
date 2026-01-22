@@ -875,7 +875,12 @@ function StepByStep() {
                     <Typography>{inputText || "(empty)"}</Typography>
 
                     <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: 1,
+                      }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
                         Plaintext (Hex)
@@ -892,7 +897,12 @@ function StepByStep() {
                     </Typography>
 
                     <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: 1,
+                      }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
                         Padded plaintext (Hex)
@@ -924,7 +934,7 @@ function StepByStep() {
                     Key for AES (english)
                   </Typography>
                   <LightTooltip
-                    title="The encryption key provided by the user for the AES encryption process"
+                    title="Key provided by the user"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -939,7 +949,7 @@ function StepByStep() {
                     Key for AES (Hex)
                   </Typography>
                   <LightTooltip
-                    title="The hexadecimal representation of the encryption key"
+                    title="The hexadecimal representation of the input key"
                     placement="top-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -983,7 +993,7 @@ function StepByStep() {
                 >
                   <Typography sx={{ fontWeight: 700 }}>Key size</Typography>
                   <LightTooltip
-                    title="Selected key size in bits)"
+                    title="Selected key size in bits"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1128,7 +1138,12 @@ function StepByStep() {
                             const placedValues = isInv
                               ? rowValues.slice().reverse()
                               : rowValues;
-                            const targets = [3 - rowIdx, 4 - rowIdx, 5 - rowIdx, 6 - rowIdx];
+                            const targets = [
+                              3 - rowIdx,
+                              4 - rowIdx,
+                              5 - rowIdx,
+                              6 - rowIdx,
+                            ];
                             for (let k = 0; k < 4; k++) {
                               if (colCheck === targets[k]) {
                                 cellValue = placedValues[k];
@@ -1454,7 +1469,7 @@ function StepByStep() {
                     Key for AES (english)
                   </Typography>
                   <LightTooltip
-                    title="The encryption key provided by the user"
+                    title="Key provided by the user"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1469,7 +1484,7 @@ function StepByStep() {
                     Key for AES (Hex)
                   </Typography>
                   <LightTooltip
-                    title="The hexadecimal representation of the encryption key"
+                    title="The hexadecimal representation of the input key"
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
