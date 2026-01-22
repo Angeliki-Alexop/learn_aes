@@ -206,7 +206,7 @@ function Train() {
                   sx={{ mt: 3, mb: 1, textTransform: "none" }}
                   variant="contained"
                 >
-                  &larr; Back to Exercise List
+                  Back to Exercise List
                 </Button>
                 {exercises.find((ex) => ex.key === selectedExercise)?.component}
               </Box>

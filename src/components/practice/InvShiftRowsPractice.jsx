@@ -15,7 +15,7 @@ import CloseIcon from "@mui/icons-material/Close";
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
@@ -34,7 +34,7 @@ const InvShiftRowsPractice = () => {
   const [userRows, setUserRows] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -47,7 +47,7 @@ const InvShiftRowsPractice = () => {
   const [showHelp, setShowHelp] = useState(false);
 
   const solution = invShiftRows(inputMatrix).map((row) =>
-    row.map((val) => val.toString(16).padStart(2, "0").toUpperCase())
+    row.map((val) => val.toString(16).padStart(2, "0").toUpperCase()),
   );
 
   // Handle input change for each cell
@@ -74,7 +74,7 @@ const InvShiftRowsPractice = () => {
     setFeedback(
       correct
         ? "Correct!"
-        : "Some rows are incorrect. Please check the highlighted rows and try again."
+        : "Some rows are incorrect. Please check the highlighted rows and try again.",
     );
   };
 
@@ -93,7 +93,7 @@ const InvShiftRowsPractice = () => {
     setUserRows(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
@@ -169,7 +169,7 @@ const InvShiftRowsPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -179,23 +179,106 @@ const InvShiftRowsPractice = () => {
             Enter InvShiftRows output (hex):
           </Typography>
 
-          <Box sx={{ display: "grid", gridTemplateColumns: "48px repeat(4, 1fr)", gap: 1, alignItems: "stretch" }}>
-            <Box />
-            {[0, 1, 2, 3].map((ci) => (
-              <Box key={`col-head-${ci}`} sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}>
-                c{ci + 1}
-              </Box>
-            ))}
-
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 1,
+              alignItems: "stretch",
+            }}
+          >
             {userRows.map((rowVals, r) => (
               <React.Fragment key={`row-${r}`}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid transparent", fontWeight: "bold", bgcolor: "transparent", p: 1 }}>
-                  b{r}
-                </Box>
-
                 {rowVals.map((val, c) => (
-                  <Box key={`ans-${r}-${c}`} sx={{ border: incorrectRows[r] ? "2px solid #d32f2f" : showSolution ? "2px solid #1976d2" : feedback === "Correct!" ? "2px solid #2e7d32" : "1px solid #ccc", borderRadius: 1, p: 1, textAlign: "center", bgcolor: feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : "#f5f5f5", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48 }}>
-                    <TextField value={val} onChange={(e) => handleInputChange(r, c, e.target.value)} inputProps={{ maxLength: 2, style: { textAlign: "center", textTransform: "uppercase", fontWeight: "bold", color: feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined, background: feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : undefined, opacity: 1, WebkitTextFillColor: feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined } }} disabled={showSolution} size="small" sx={{ width: 56, bgcolor: feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : undefined, "& .MuiInputBase-input.Mui-disabled": { color: feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined, fontWeight: "bold", opacity: 1, WebkitTextFillColor: feedback === "Correct!" ? "#2e7d32" : showSolution ? "#1976d2" : undefined, background: feedback === "Correct!" ? "#c8e6c9" : showSolution ? "#e3f2fd" : undefined } }} />
+                  <Box
+                    key={`ans-${r}-${c}`}
+                    sx={{
+                      border: incorrectRows[r]
+                        ? "2px solid #d32f2f"
+                        : showSolution
+                          ? "2px solid #1976d2"
+                          : feedback === "Correct!"
+                            ? "2px solid #2e7d32"
+                            : "1px solid #ccc",
+                      borderRadius: 1,
+                      p: 1,
+                      textAlign: "center",
+                      bgcolor:
+                        feedback === "Correct!"
+                          ? "#c8e6c9"
+                          : showSolution
+                            ? "#e3f2fd"
+                            : "#f5f5f5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 48,
+                    }}
+                  >
+                    <TextField
+                      value={val}
+                      onChange={(e) => handleInputChange(r, c, e.target.value)}
+                      inputProps={{
+                        maxLength: 2,
+                        style: {
+                          textAlign: "center",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                          color:
+                            feedback === "Correct!"
+                              ? "#2e7d32"
+                              : showSolution
+                                ? "#1976d2"
+                                : undefined,
+                          background:
+                            feedback === "Correct!"
+                              ? "#c8e6c9"
+                              : showSolution
+                                ? "#e3f2fd"
+                                : undefined,
+                          opacity: 1,
+                          WebkitTextFillColor:
+                            feedback === "Correct!"
+                              ? "#2e7d32"
+                              : showSolution
+                                ? "#1976d2"
+                                : undefined,
+                        },
+                      }}
+                      disabled={showSolution}
+                      size="small"
+                      sx={{
+                        width: 56,
+                        bgcolor:
+                          feedback === "Correct!"
+                            ? "#c8e6c9"
+                            : showSolution
+                              ? "#e3f2fd"
+                              : undefined,
+                        "& .MuiInputBase-input.Mui-disabled": {
+                          color:
+                            feedback === "Correct!"
+                              ? "#2e7d32"
+                              : showSolution
+                                ? "#1976d2"
+                                : undefined,
+                          fontWeight: "bold",
+                          opacity: 1,
+                          WebkitTextFillColor:
+                            feedback === "Correct!"
+                              ? "#2e7d32"
+                              : showSolution
+                                ? "#1976d2"
+                                : undefined,
+                          background:
+                            feedback === "Correct!"
+                              ? "#c8e6c9"
+                              : showSolution
+                                ? "#e3f2fd"
+                                : undefined,
+                        },
+                      }}
+                    />
                   </Box>
                 ))}
               </React.Fragment>
@@ -247,15 +330,15 @@ const InvShiftRowsPractice = () => {
         <DialogContent>
           <Typography gutterBottom>
             InvShiftRows is the inverse transposition step in AES decryption.
-            Each row of the state matrix is rotated right by a different
+            Each row of the original matrix is shifted right by a different
             offset:
             <ul>
               <li>Row 0: No shift</li>
-              <li>Row 1: Rotate right by 1</li>
-              <li>Row 2: Rotate right by 2</li>
-              <li>Row 3: Rotate right by 3</li>
+              <li>Row 1: Shift right by 1</li>
+              <li>Row 2: Shift right by 2</li>
+              <li>Row 3: Shift right by 3</li>
             </ul>
-            Enter the rotated values for each row in hexadecimal format.
+            Enter the shifted values for each row in hexadecimal format.
           </Typography>
         </DialogContent>
       </Dialog>
