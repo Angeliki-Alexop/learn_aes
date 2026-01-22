@@ -65,8 +65,8 @@ function StepByStep() {
   const [currentRound, setCurrentRound] = useState(-2); // Start from -2 to include Input and KeySchedule
   const [currentStep, setCurrentStep] = useState("Input");
   const [roundKeys, setRoundKeys] = useState([]);
-  const [inputText, setInputText] = useState("Test");
-  const [key, setKey] = useState("DefaultKey123456");
+  const [inputText, setInputText] = useState("");
+  const [key, setKey] = useState("");
   const [currentState, setCurrent] = useState([]);
   const [newState, setNewState] = useState([]);
   const [sidebarVisible, setSidebarVisible] = useState(false); // Sidebar hidden by default
@@ -596,13 +596,13 @@ function StepByStep() {
               Select the desired mode:
             </Typography>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <Button
+                <Button
                 variant={mode === "Encrypt" ? "contained" : "outlined"}
                 color="primary"
                 onClick={() => {
                   setMode("Encrypt");
-                  setTempInputText("Test");
-                  setTempKey(defaultKeyForSize(keySize));
+                    setTempInputText("");
+                    setTempKey("");
                 }}
                 sx={
                   mode === "Encrypt"
@@ -621,8 +621,8 @@ function StepByStep() {
                 color="primary"
                 onClick={() => {
                   setMode("Decrypt");
-                  setTempInputText("2aaeedcfd945964e2f4913d76b510257");
-                  setTempKey(defaultKeyForSize(keySize));
+                  setTempInputText("");
+                  setTempKey("");
                 }}
                 sx={
                   mode === "Decrypt"
@@ -657,7 +657,7 @@ function StepByStep() {
                   onChange={(e) => {
                     const newSize = Number(e.target.value);
                     setKeySize(newSize);
-                    setTempKey(defaultKeyForSize(newSize));
+                    setTempKey("");
                   }}
                 >
                   <MenuItem value={128}>128 bits</MenuItem>
