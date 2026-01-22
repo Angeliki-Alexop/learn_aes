@@ -50,18 +50,64 @@ The first row is not shifted, the second row is shifted by one byte, the third b
   },
   InvSubBytes: {
     title: "Inverse SubBytes",
-    what: `InvSubBytes reverses the SubBytes step by substituting each byte using the inverse S-box. This returns each substituted byte back to its original value before the forward S-box was applied. It is the non-linear inverse operation used during AES decryption.`,
-    how: `Click any byte in the Current State (during InvSubBytes) to see which byte value in the S-box maps back to it. The tool will highlight the byte’s two hexadecimal indices (row and column) and show the inverse lookup result. This is useful to follow how the non-linear substitution is undone during decryption.`,
+    what: `InvSubBytes is the inverse of the SubBytes step. 
+    During decryption, each byte of the AES state is replaced independently using a fixed lookup table called the inverse S-box. 
+    For each byte, its hexadecimal value selects a row and column in the inverse S-box, and the value found there becomes the new byte. This step reverses the non-linear substitution applied during encryption.`,
+    how: `Click any byte in the Current State to highlight it and display its corresponding value in the inverse S-box panel.
+          The first hexadecimal digit selects the inverse S-box row, the second selects the column, and the highlighted value at that position is the new byte.
+`,
   },
   InvShiftRows: {
     title: "Inverse ShiftRows",
-    what: `InvShiftRows is the reverse of ShiftRows: each row of the AES state is cyclically shifted to the right instead of the left (first row: 0, second: right by 1, third: right by 2, fourth: right by 3). This operation restores the rows to their pre-ShiftRows positions during decryption.`,
-    how: `The ShiftRows table shows the bytes that move and their source positions; for InvShiftRows the table is mirrored to indicate right-shifts. The purple cells in the Next State indicate the bytes after the inverse rotation. Hovering or clicking a highlighted cell will show which source byte moved into that position. Use the Previous / Next Step buttons to compare the Current and Next states before and after the inverse rotation.`,
+    what: `InvShiftRows is the inverse of the ShiftRows step. 
+    During decryption, each row of the AES state is cyclically shifted to the right instead of to the left: the first row is not shifted, the second row is shifted right by 1 byte, the third by 2 bytes, and the fourth by 3 bytes. 
+    This operation restores the rows to their positions before the ShiftRows step in encryption.`,
+    how: `The stair-step shading indicates how far each row is shifted. 
+    The purple cells in the Next State show the bytes after rotation, and the corresponding source bytes in the ShiftRows Table are also highlighted in purple, showing exactly which values were moved to produce the result.`,
   },
   InvMixColumns: {
     title: "Inverse MixColumns",
-    what: `InvMixColumns reverses the MixColumns transformation by multiplying each column by the inverse MixColumns matrix in GF(2^8). Where MixColumns mixes bytes within a column using fixed coefficients (02, 03, 01, 01), InvMixColumns uses the inverse coefficients (0e, 0b, 0d, 09) to recover the original column values during decryption.`,
-    how: `Click any byte in the Next State (during InvMixColumns) to highlight the source column in the Current State that was used to compute it. The tool will show the inverse coefficients applied to each source byte and the intermediate GF(2^8) multiplications and XORs that produce the recovered byte. This makes it easy to verify and follow the inverse column arithmetic step by step.`,
+    what: `InvMixColumns is the inverse of the MixColumns step and is used during AES decryption.
+In this step, each column of the AES state matrix (4 bytes) is multiplied by a different fixed 4×4 matrix, which reverses the mixing performed during encryption.
+
+1. The InvMixColumns Matrix
+
+Each column [S₀ S₁ S₂ S₃]ᵀ is multiplied by this matrix:
+
+| 0E | 0B | 0D | 09 |
+| 09 | 0E | 0B | 0D |
+| 0D | 09 | 0E | 0B |
+| 0B | 0D | 09 | 0E |
+
+The result is a new column [S′₀ S′₁ S′₂ S′₃]ᵀ where each byte is calculated as:
+
+S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
+S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
+S′₂ = (0D × S₀) ⊕ (09 × S₁) ⊕ (0E × S₂) ⊕ (0B × S₃)
+S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
+
+Each new byte is a combination of all four original bytes in the column, but using inverse coefficients.
+
+2. Multiplication Rules in GF(2⁸)
+
+Multiplication in InvMixColumns also uses arithmetic in GF(2⁸).
+For learning purposes, the multiplications can be broken down using combinations of shifts and XORs:
+
+• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
+• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
+• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
+• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)
+
+Note:
+• 02 × X = Shift X left by 1 bit. If the he original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
+•All XOR operations are bitwise addition without carry.`,
+    how: `Click any byte in the 'Next State' matrix (the output of the MixColumns step).
+
+• This selects one output byte S′ and highlights the entire source column from the 'Current State' that was used to compute it. At the same time, the corresponding row of the 'Inverse Fixed Matrix' is highlighted to show the coefficients applied to each source byte.
+
+• The calculation panel displays the full computation: the individual finite-field multiplications (such as 0E × S₀, 0B × S₁, 0D × S₂, 09 × S₃), the intermediate XOR combinations performed step by step, and the final hexadecimal byte value produced by the column operation.
+
+• The panel also visualizes how each multiplication is carried out at the bit level, showing binary representations, left shifts, conditional XOR with 1B, and intermediate results. Multiplications by values such as 09, 0B, 0D, and 0E are broken down into repeated ×02 operations so you can clearly follow the finite-field arithmetic.`,
   },
   MixColumns: {
     what: `In MixColumns, each column of the AES state matrix (4 bytes) is treated as a vector and multiplied by a fixed 4×4 matrix using arithmetic in a special finite field called GF(2⁸).
@@ -99,13 +145,16 @@ Note: All XOR operations are bitwise addition without carry.`,
     • The calculation panel displays the full computation: the individual finite-field multiplications (such as 02 × S₀, 03 × S₁, 01 × S₂, 01 × S₃), the intermediate XOR combinations performed step by step, and the final hexadecimal byte value produced by the column operation.`,
   },
   AddRoundKey: {
-    what: `AddRoundKey is the AES step where the 'Current State' matrix is combined with a 'Round Key' matrix using the XOR operation (⊕). 
-    
-    Both are 4×4 matrices of bytes, and each byte of the state is XORed with the byte in the same position of the round key. 
-    
-    The Round Key is a 128-bit key derived from the original cipher key through the key expansion process, and a different round key is used in each round. 
-    
-    Note: AddRoundKey is applied once before the first round and at the end of every encryption round.`,
+    what: `AddRoundKey is the AES step where the 'Current State' matrix is combined with a 'Round Key' matrix using the XOR         operation (⊕).
+
+        Both are 4×4 matrices of bytes, and each byte of the state is XORed with the byte in the same position of the round key.
+
+        The Round Key is derived from the original key through the key expansion process, and a different round key is used in each round.
+
+        What happens during decryption?
+
+        During decryption, AddRoundKey works exactly the same way as in encryption. The Current State is XORed with a Round Key using the XOR operation (⊕).
+        The difference is which round key is used: decryption applies the round keys in reverse order, starting from the last round key and ending with the initial one.`,
     how: `Click any byte in the Next State matrix (the output of AddRoundKey step).
      • The corresponding byte in the 'Current State' and the matching byte in the active 'Round Key' are highlighted. 
      • The explanation panel displays the two input bytes (Current State and Round Key bytes) in hexadecimal and binary, the XOR operation used to combine them (for example, 3C ⊕ A7 = 9B), and the final result in both hexadecimal and binary.`,
