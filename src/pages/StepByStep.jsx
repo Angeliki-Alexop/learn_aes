@@ -1119,17 +1119,22 @@ function StepByStep() {
                         <tr key={rowIdx}>
                           {[0, 1, 2, 3, 4, 5, 6].map((colIdx) => {
                             let cellValue = "";
-                            // For inverse, mirror the column index horizontally so we can reuse the same placement logic
                             const colCheck = isInv ? 6 - colIdx : colIdx;
                             // Place the 4 values in shifted positions (visual sliding window)
-                            if (colCheck === 3 - rowIdx)
-                              cellValue = matrix[rowIdx][0];
-                            else if (colCheck === 4 - rowIdx)
-                              cellValue = matrix[rowIdx][1];
-                            else if (colCheck === 5 - rowIdx)
-                              cellValue = matrix[rowIdx][2];
-                            else if (colCheck === 6 - rowIdx)
-                              cellValue = matrix[rowIdx][3];
+                            // For inverse mode we should reverse the source row values,
+                            // but keep the same placement logic so the visual sliding
+                            // behaviour remains correct while the order is fixed.
+                            const rowValues = matrix[rowIdx];
+                            const placedValues = isInv
+                              ? rowValues.slice().reverse()
+                              : rowValues;
+                            const targets = [3 - rowIdx, 4 - rowIdx, 5 - rowIdx, 6 - rowIdx];
+                            for (let k = 0; k < 4; k++) {
+                              if (colCheck === targets[k]) {
+                                cellValue = placedValues[k];
+                                break;
+                              }
+                            }
 
                             // Determine regions (outline is mirrored when inv)
                             const isOutlineRegion =
