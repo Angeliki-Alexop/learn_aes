@@ -188,6 +188,44 @@ During decryption, each byte of the AES state is replaced independently using a 
 For each byte, its hexadecimal value selects a row and column in the inverse S-box, and the value found there becomes the new byte. This step reverses the non-linear substitution applied during encryption.`,
     how: `Click any byte in the Current State to highlight it and display its corresponding value in the inverse S-box panel.
 The first hexadecimal digit selects the inverse S-box row, the second selects the column, and the highlighted value at that position is the new byte.`,
+  },
+  shiftRows: {
+    title: 'ShiftRows',
+    what: `ShiftRows is an AES step where the bytes of the state matrix are shifted cyclically to the left.
+
+Each row of the 4×4 matrix is shifted by a different number of positions:
+• The first row is not shifted
+• The second row is shifted 1 position to the left
+• The third row is shifted 2 positions to the left
+• The fourth row is shifted 3 positions to the left
+
+This is a simple but important operation that spreads data across the matrix.`,
+    how: `Observe how each row of the matrix is shifted by a specific number of positions to the left. The positions that leave the right side return to the left side (circular shift).`,
+  },
+  invShiftRows: {
+    title: 'InvShiftRows',
+    what: `InvShiftRows is the inverse of the ShiftRows step.
+
+During decryption, the bytes of the state matrix are shifted cyclically to the right to reverse the shifts that were applied during encryption:
+• The first row is not shifted
+• The second row is shifted 1 position to the right
+• The third row is shifted 2 positions to the right
+• The fourth row is shifted 3 positions to the right`,
+    how: `Observe how each row of the matrix is shifted by a specific number of positions to the right to reverse the leftward shift of the encryption stage.`,
+  },
+  mixColumns: {
+    title: 'MixColumns',
+    what: `MixColumns is an AES step where each column of the state matrix is multiplied by a fixed matrix using arithmetic in the Galois field GF(2^8).
+
+This is a linear transformation that mixes bytes within each column, increasing the diffusion of cryptographic data.`,
+    how: `Click any byte in the result (Next State) to see how it was calculated using the given column and the fixed MixColumns matrix.`,
+  },
+  invMixColumns: {
+    title: 'InvMixColumns',
+    what: `InvMixColumns is the inverse of the MixColumns step.
+
+During decryption, each column of the state matrix is multiplied by the inverse matrix using arithmetic in the Galois field GF(2^8) to reverse the mixing that was applied during encryption.`,
+    how: `Click any byte in the result (Next State) to see how it was calculated using the given column and the inverse MixColumns matrix.`,
   }
       },
       navigation: {
