@@ -79,6 +79,22 @@ const translation = {
       labels: {
         roundKey: 'Round Key',
       },
+      sidebar: {
+        input: 'Input',
+        keySchedule: 'Key Schedule',
+        result: 'Result',
+        steps: {
+          SubBytes: 'SubBytes',
+          ShiftRows: 'ShiftRows',
+          MixColumns: 'MixColumns',
+          AddRoundKey: 'AddRoundKey',
+          InvShiftRows: 'InvShiftRows',
+          InvSubBytes: 'InvSubBytes',
+          InvMixColumns: 'InvMixColumns',
+          'Key Expansion': 'Key Expansion',
+          Result: 'Result',
+        }
+      },
       keySchedule: {
         title: 'Key Schedule - Key Expansion',
         allRoundKeys: 'All round keys (Matrix format)',
@@ -107,7 +123,8 @@ const translation = {
         previousStep: 'PREVIOUS STEP',
         nextStep: 'NEXT STEP',
         nextRound: 'NEXT ROUND',
-        finalRound: 'FINAL ROUND',
+  finalRound: 'FINAL ROUND',
+  result: 'RESULT',
         submit: 'SUBMIT',
       }
     },

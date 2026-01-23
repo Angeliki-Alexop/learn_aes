@@ -308,7 +308,7 @@ export function StepNavigation({
                 setCurrentStep("Result");
               }}
             >
-              {t('pages.stepByStep.navigation.finalRound')}
+              {t('pages.stepByStep.navigation.result')}
             </Button>
           )}
         </>

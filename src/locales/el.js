@@ -78,13 +78,30 @@ const translation = {
       labels: {
         roundKey: 'Round Key',
       },
+      sidebar: {
+        input: 'Είσοδος',
+        keySchedule: 'Key Schedule',
+        result: 'Αποτέλεσμα',
+        steps: {
+          SubBytes: 'SubBytes',
+          ShiftRows: 'ShiftRows',
+          MixColumns: 'MixColumns',
+          AddRoundKey: 'AddRoundKey',
+          InvShiftRows: 'InvShiftRows',
+          InvSubBytes: 'InvSubBytes',
+          InvMixColumns: 'InvMixColumns',
+          'Key Expansion': 'Key Expansion',
+          Result: 'Result',
+        }
+      },
       navigation: {
         input: 'ΕΙΣΟΔΟΣ',
         previousRound: 'ΠΡΟΗΓΟΥΜΕΝΟΣ ΓΥΡΟΣ',
         previousStep: 'ΠΡΟΗΓΟΥΜΕΝΟ ΒΗΜΑ',
         nextStep: 'ΕΠΟΜΕΝΟ ΒΗΜΑ',
         nextRound: 'ΕΠΟΜΕΝΟΣ ΓΥΡΟΣ',
-        finalRound: 'ΤΕΛΕΥΤΑΙΟΣ ΓΥΡΟΣ',
+  finalRound: 'ΤΕΛΕΥΤΑΙΟΣ ΓΥΡΟΣ',
+  result: 'ΑΠΟΤΕΛΕΣΜΑ',
         submit: 'ΥΠΟΒΟΛΗ',
       },
       keySchedule: {

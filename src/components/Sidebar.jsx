@@ -1,11 +1,13 @@
 import React from 'react';
 import { Typography, List, ListItem, ListItemText, Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import './../styles/Sidebar.css';
 const stepsEncrypt = ['SubBytes', 'ShiftRows', 'MixColumns', 'AddRoundKey'];
 const finalRoundStepsEncrypt = ['SubBytes', 'ShiftRows', 'AddRoundKey'];
 const stepsDecrypt = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey', 'InvMixColumns'];
 const finalRoundStepsDecrypt = ['InvShiftRows', 'InvSubBytes', 'AddRoundKey'];
 function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keySize, mode, setCurrentRound, setCurrentStep }) {
+  const { t } = useTranslation();
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
   const handleStepClick = (displayRound, step) => {
     // displayRound is the visual label (may be reversed in Decrypt mode)
@@ -23,7 +25,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
     <div className="sidebar">
       <Box id="input_box" className={`round-box ${currentStep === 'Input' ? 'active-step' : ''}`} mb={2} onClick={() => handleStepClick(-2, 'Input')}>
         <Typography variant="h6" component="h2" align="center">
-          Input
+          {t('pages.stepByStep.sidebar.input')}
         </Typography>
       </Box>
       <Box id="key_schedule_box" className="round-box" mb={2}>
@@ -34,13 +36,13 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
           onClick={() => { setCurrentRound(-1); setCurrentStep('Key Expansion'); }}
           style={{ cursor: 'pointer' }}
         >
-          Key Schedule
+          {t('pages.stepByStep.sidebar.keySchedule')}
         </Typography>
         {/* Only show Key Expansion when Key Schedule is active */}
         {currentRound === -1 && (
           <List>
             <ListItem className={currentStep === 'Key Expansion' && currentRound === -1 ? 'active-step' : ''} onClick={() => { setCurrentRound(-1); setCurrentStep('Key Expansion'); }}>
-              <ListItemText primary="Key Expansion" />
+              <ListItemText primary={t('pages.stepByStep.keySchedule.title')} />
             </ListItem>
           </List>
         )}
@@ -74,7 +76,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
                 onClick={() => { handleStepClick(displayRound, defaultStep); }}
                 style={{ cursor: 'pointer' }}
               >
-                Round {displayRound}
+                {t('pages.stepByStep.keySchedule.roundLabel', { n: displayRound })}
               </Typography>
               {/* Show steps for the linked stateKey */}
               {currentRound === stateKey && (
@@ -85,7 +87,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
                       className={currentStep === step && currentRound === stateKey ? 'active-step' : ''}
                       onClick={() => { handleStepClick(displayRound, step); }}
                     >
-                      <ListItemText primary={step} />
+                      <ListItemText primary={t(`pages.stepByStep.sidebar.steps.${step}`) || step} />
                     </ListItem>
                   ))}
                 </List>
@@ -97,7 +99,7 @@ function Sidebar({ currentRound, currentStep, inputText, aesKey, algorithm, keyS
       {/* Result box */}
       <Box id="result_box" className={`round-box ${currentStep === 'Result' ? 'active-step' : ''}`} mb={2} onClick={() => handleStepClick(totalRounds + 1, 'Result')}>
         <Typography variant="h6" component="h2" align="center">
-          Result
+          {t('pages.stepByStep.sidebar.result')}
         </Typography>
       </Box>
     </div>
