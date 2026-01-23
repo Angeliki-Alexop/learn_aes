@@ -89,6 +89,14 @@ const translation = {
         currentState: 'Current State',
         nextState: 'Next State',
       },
+      mixColumns: {
+        fixedMatrix: 'Fixed Matrix',
+        inverseFixedMatrix: 'Inverse Fixed Matrix',
+        shifted: 'Shifted',
+        result: 'Result',
+        key: 'Key',
+        value: 'Value',
+      },
       sidebar: {
         input: 'Input',
         keySchedule: 'Key Schedule',

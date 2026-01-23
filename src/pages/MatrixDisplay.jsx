@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { formatAsMatrix } from "../utils/stepByStepUtils";
 import { highlightColor } from "./StepByStep";
 
@@ -116,13 +117,14 @@ export function RenderMatrix({
 }
 
 export function RenderFixedMatrix({ highlightedRow = null }) {
+  const { t } = useTranslation();
   const fixedMatrix = arguments[0].matrix || [
     ["02", "03", "01", "01"],
     ["01", "02", "03", "01"],
     ["01", "01", "02", "03"],
     ["03", "01", "01", "02"],
   ];
-  const title = arguments[0].title || 'Fixed Matrix';
+  const title = arguments[0].title || t("pages.stepByStep.mixColumns.fixedMatrix", "Fixed Matrix");
   return (
     <Box className="matrix fixed-matrix">
       <table className="matrix-table">

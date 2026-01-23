@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { MoveLeft, Equal, CirclePlus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getMixColumnsTableData, getMixColumnsResultTable, getInvMixColumnsTableData, getInvMixColumnsResultTable } from "./MixColumnsExplanationsHelper";
 
 // color palette used across the site (avoid repeating hex literals)
@@ -20,11 +21,16 @@ const OP_COLORS = {
   "09": "#059669", // the single additional color
 };
 
-function renderLabel(label) {
+function renderLabel(label, t) {
+  if (label === "Value") {
+    const valueText = t("pages.stepByStep.mixColumns.value", "Value");
+    return valueText;
+  }
   if (label.startsWith("Shifted")) {
+    const shiftedText = t("pages.stepByStep.mixColumns.shifted", "Shifted");
     return (
       <span>
-        <MoveLeft size={18} style={{ verticalAlign: "middle", marginRight: 4 }} /> Shifted
+        <MoveLeft size={18} style={{ verticalAlign: "middle", marginRight: 4 }} /> {shiftedText}
       </span>
     );
   }
@@ -62,6 +68,7 @@ export default function MixColumnsExplanations({
   highlightedPrevStateColumn,
   invMode = false,
 }) {
+  const { t } = useTranslation();
   const mappedValues = highlightedFixedMatrixRow.map((fixedVal, idx) => ({
     fixed: fixedVal,
     prev: highlightedPrevStateColumn[idx],
@@ -173,7 +180,7 @@ export default function MixColumnsExplanations({
                             fontWeight: meta.highlight ? 600 : 400,
                           }}
                         >
-                          {renderLabel(row[0])}
+                          {renderLabel(row[0], t)}
                         </TableCell>
                         <TableCell
                           align="center"
@@ -220,7 +227,7 @@ export default function MixColumnsExplanations({
                             fontWeight: meta.highlight ? 600 : 400,
                           }}
                         >
-                          {renderLabel(row[0])}
+                          {renderLabel(row[0], t)}
                         </TableCell>
                         <TableCell
                           align="center"
@@ -274,12 +281,12 @@ export default function MixColumnsExplanations({
             <TableHead>
               <TableRow>
                 <TableCell align="center" colSpan={2} sx={{ fontWeight: "bold", fontSize: 14 }}>
-                  Result
+                  {t("pages.stepByStep.mixColumns.result", "Result")}
                 </TableCell>
               </TableRow>
               <TableRow>
-                <TableCell align="center" sx={{ fontSize: 14 }}>Key</TableCell>
-                <TableCell align="center" sx={{ fontSize: 14 }}>Value</TableCell>
+                <TableCell align="center" sx={{ fontSize: 14 }}>{t("pages.stepByStep.mixColumns.key", "Key")}</TableCell>
+                <TableCell align="center" sx={{ fontSize: 14 }}>{t("pages.stepByStep.mixColumns.value", "Value")}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -303,7 +310,7 @@ export default function MixColumnsExplanations({
                         textOverflow: "ellipsis",
                       }}
                     >
-                      {renderLabel(row[0])}
+                      {renderLabel(row[0], t)}
                     </TableCell>
                     <TableCell
                       align="center"
