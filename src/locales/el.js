@@ -47,6 +47,70 @@ const translation = {
 
 Συνεχίστε μέχρι να έχετε 60 λέξεις (15 round keys).`,
   }
+  ,
+  "pages": {
+    "stepByStep": {
+      "input": {
+        "title": "Εξερευνώντας το Πρότυπο Advanced Encryption Standard (AES)",
+        "description": "Καλώς ήρθατε! Αυτό το διαδραστικό εργαλείο θα σας καθοδηγήσει βήμα-βήμα στο αλγόριθμο AES, κάνοντας εύκολο να καταλάβετε πώς λειτουργεί κάθε λειτουργία. Χρησιμοποιήστε το AES Helper για επιπλέον εξηγήσεις, δείτε τι συμβαίνει σε κάθε στάδιο και μάθετε πώς να αλληλεπιδράτε με το εργαλείο για να εξερευνήσετε όλες τις δυνατότητες.",
+        "subtitle": {
+          "encrypt": "Κρυπτογράφηση AES",
+          "decrypt": "Αποκρυπτογράφηση AES"
+        },
+        "selectModeLabel": "Επιλέξτε τη λειτουργία:",
+        "controls": {
+          "encryptButton": "ΚΡΥΠΤΟΓΡΑΦΗΣΗ",
+          "decryptButton": "ΑΠΟΚΡΥΠΤΟΓΡΑΦΗΣΗ",
+          "submit": "Υποβολή"
+        },
+        "selectKeySizeLabel": "Επιλέξτε το μέγεθος κλειδιού:",
+        "labels": {
+          "keySize": "Μέγεθος Κλειδιού",
+          "plaintext": "Κείμενο (plaintext)",
+          "ciphertextHex": "Κρυπτοκείμενο (Hex)",
+          "key": "Κλειδί για AES"
+        },
+        "keySizeOptions": {
+          "128": "128 bits",
+          "192": "192 bits",
+          "256": "256 bits"
+        }
+      },
+      "errors": {
+        "plaintext": {
+          "tooLong": "Το plaintext πρέπει να έχει το πολύ 16 χαρακτήρες"
+        },
+        "ciphertext": {
+          "onlyHex": "Επιτρέπονται μόνο δεκαεξαδικοί χαρακτήρες (0-9, A-F)",
+          "hexLength": "Το Hex πρέπει να είναι ακριβώς 32 δεκαεξαδικοί χαρακτήρες (16 bytes)",
+          "base64Length": "Το Base64 πρέπει να αποκωδικοποιεί σε ακριβώς 16 bytes",
+          "invalidBase64": "Μη έγκυρο Base64 string"
+        }
+      },
+      "summary": {
+        "heading": "Περίληψη εισόδου",
+        "labels": {
+          "ciphertext": "Κρυπτοκείμενο",
+          "plaintext": "Κείμενο (plaintext)",
+          "plaintextHex": "Κείμενο (Hex)",
+          "paddedPlaintextHex": "Προσθαφαιρημένο κείμενο (Hex)",
+          "keyHex": "Κλειδί για AES (Hex)",
+          "operationMode": "Λειτουργία λειτουργίας",
+          "keySizeDisplay": "Μέγεθος κλειδιού"
+        },
+        "tooltips": {
+          "ciphertext": "Το κρυπτοκείμενο που παρέχεται ως είσοδος στη διαδικασία αποκρυπτογράφησης",
+          "plaintext": "Το αρχικό κείμενο που εισήγαγε ο χρήστης",
+          "plaintextHex": "Η δεκαεξαδική αναπαράσταση του κειμένου",
+          "paddedPlaintextHex": "Το κείμενο μετά την εφαρμογή PKCS#7 για να ταιριάξει το μέγεθος μπλοκ του AES (16 bytes) σε δεκαεξαδική μορφή.",
+          "key": "Κλειδί που παρέχεται από τον χρήστη",
+          "operationMode": "Επιλεγμένη λειτουργία Encrypt ή Decrypt",
+          "keySize": "Επιλεγμένο μέγεθος κλειδιού σε bits"
+        }
+      }
+    }
+  }
 };
 
 export default translation;
+

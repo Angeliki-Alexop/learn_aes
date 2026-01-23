@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import {
   Typography,
   Box,
@@ -97,6 +98,7 @@ function StepByStep() {
   const [flags, setFlags] = useState({ enable_stepbystep_decryption: true });
 
   const totalRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14; // Determine total rounds based on key size
+  const { t } = useTranslation();
 
   // Listen for header-triggered reset events (clicking StepByStep in header)
   useEffect(() => {
@@ -197,7 +199,7 @@ function StepByStep() {
 
     // For encryption ensure plaintext <= 16 chars
     if (mode === "Encrypt" && tempInputText.length > 16) {
-      setKeyError("Plaintext must be at most 16 characters");
+    setKeyError(t('pages.stepByStep.errors.plaintext.tooLong'));
       return;
     }
 
@@ -548,7 +550,7 @@ function StepByStep() {
     // If we're on the Input screen before the user has submitted, show
     // an introductory title and short description (based on selected mode).
     if (currentRound === -2 && currentStep === "Input" && !hasSubmitted) {
-      const subtitle = mode === "Encrypt" ? "AES Encryption" : "AES Decryption";
+      const subtitle = mode === "Encrypt" ? t('pages.stepByStep.input.subtitle.encrypt') : t('pages.stepByStep.input.subtitle.decrypt');
       return (
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography
@@ -561,19 +563,14 @@ function StepByStep() {
               color: "#661974",
             }}
           >
-            Exploring the Advanced Encryption Standard (AES)
+            {t('pages.stepByStep.input.title')}
           </Typography>
           <Typography
             variant="body1"
             color="information"
             sx={{ maxWidth: 900, mx: "auto", mb: 2 }}
           >
-            Welcome! This interactive tool will guide you through the AES
-            algorithm step by step, making it easy to understand how each
-            operation works. Use the AES Helper to get extra explanations, see
-            what’s happening at every stage, and learn how to interact with the
-            tool to explore all its features. Have fun learning and
-            experimenting with AES!
+            {t('pages.stepByStep.input.description')}
           </Typography>
           <Typography
             variant="h5"
@@ -593,7 +590,7 @@ function StepByStep() {
             }}
           >
             <Typography variant="body1" color="information">
-              Select the desired mode:
+              {t('pages.stepByStep.input.selectModeLabel')}
             </Typography>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                 <Button
@@ -614,7 +611,7 @@ function StepByStep() {
                     : {}
                 }
               >
-                ENCRYPTION
+                {t('pages.stepByStep.input.controls.encryptButton')}
               </Button>
               <Button
                 variant={mode === "Decrypt" ? "contained" : "outlined"}
@@ -634,7 +631,7 @@ function StepByStep() {
                     : {}
                 }
               >
-                DECRYPTION
+                {t('pages.stepByStep.input.controls.decryptButton')}
               </Button>
             </Box>
             {mode === "Decrypt" && <></>}
@@ -644,35 +641,35 @@ function StepByStep() {
               display="block"
               sx={{ mt: 1 }}
             >
-              Select the desired Key Size:
+              {t('pages.stepByStep.input.selectKeySizeLabel')}
             </Typography>
             <Box sx={{ mt: 1, width: 220 }}>
               <FormControl fullWidth size="small">
-                <InputLabel id="keysize-label">Key Size</InputLabel>
+                <InputLabel id="keysize-label">{t('pages.stepByStep.input.labels.keySize')}</InputLabel>
                 <Select
                   labelId="keysize-label"
                   id="keysize-select"
                   value={keySize}
-                  label="Key Size"
+                  label={t('pages.stepByStep.input.labels.keySize')}
                   onChange={(e) => {
                     const newSize = Number(e.target.value);
                     setKeySize(newSize);
                     setTempKey("");
                   }}
                 >
-                  <MenuItem value={128}>128 bits</MenuItem>
-                  <MenuItem value={192}>192 bits</MenuItem>
-                  <MenuItem value={256}>256 bits</MenuItem>
+                  <MenuItem value={128}>{t('pages.stepByStep.input.keySizeOptions.128')}</MenuItem>
+                  <MenuItem value={192}>{t('pages.stepByStep.input.keySizeOptions.192')}</MenuItem>
+                  <MenuItem value={256}>{t('pages.stepByStep.input.keySizeOptions.256')}</MenuItem>
                 </Select>
               </FormControl>
             </Box>
 
             <Box sx={{ width: "60%", maxWidth: 720, mt: 2 }}>
-              <TextField
+                <TextField
                 label={
                   mode === "Encrypt"
-                    ? "Plaintext (english)"
-                    : "Ciphertext (Hex)"
+                    ? t('pages.stepByStep.input.labels.plaintext')
+                    : t('pages.stepByStep.input.labels.ciphertextHex')
                 }
                 value={tempInputText}
                 onChange={(e) => {
@@ -681,9 +678,7 @@ function StepByStep() {
                     // limit plaintext to 16 characters
                     if (val.length > 16) {
                       setTempInputText(val.slice(0, 16));
-                      setTempInputError(
-                        "Plaintext must be at most 16 characters",
-                      );
+                      setTempInputError(t('pages.stepByStep.errors.plaintext.tooLong'));
                     } else {
                       setTempInputText(val);
                       setTempInputError("");
@@ -694,17 +689,11 @@ function StepByStep() {
                       // allow only hex digits and optionally spaces; validate cleaned length
                       const cleaned = val.replace(/\s+/g, "");
                       if (/[^0-9a-fA-F\s]/.test(val)) {
-                        setTempInputError(
-                          "Only hexadecimal characters (0-9, A-F) are allowed",
-                        );
+                        setTempInputError(t('pages.stepByStep.errors.ciphertext.onlyHex'));
                       } else if (cleaned.length > 32) {
-                        setTempInputError(
-                          "Hex input must be exactly 32 hex characters (16 bytes)",
-                        );
+                        setTempInputError(t('pages.stepByStep.errors.ciphertext.hexLength'));
                       } else if (cleaned.length !== 32) {
-                        setTempInputError(
-                          "Hex input must be exactly 32 hex characters (16 bytes)",
-                        );
+                        setTempInputError(t('pages.stepByStep.errors.ciphertext.hexLength'));
                       } else {
                         setTempInputError("");
                       }
@@ -716,14 +705,12 @@ function StepByStep() {
                       try {
                         const bin = atob(val || "");
                         if (bin.length !== 16) {
-                          setTempInputError(
-                            "Base64 must decode to exactly 16 bytes",
-                          );
+                          setTempInputError(t('pages.stepByStep.errors.ciphertext.base64Length'));
                         } else {
                           setTempInputError("");
                         }
                       } catch (err) {
-                        setTempInputError("Invalid Base64 string");
+                        setTempInputError(t('pages.stepByStep.errors.ciphertext.invalidBase64'));
                       }
                     }
                   }
@@ -735,12 +722,8 @@ function StepByStep() {
                 helperText={tempInputError}
                 inputProps={{ maxLength: mode === "Encrypt" ? 16 : 32 }}
               />
-              <TextField
-                label={
-                  mode === "Encrypt"
-                    ? "Key for AES (english)"
-                    : "Key for AES (english)"
-                }
+                <TextField
+                label={t('pages.stepByStep.input.labels.key')}
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
                 variant="outlined"
@@ -762,12 +745,12 @@ function StepByStep() {
                   }
                   sx={{ mt: 2 }}
                   title={
-                    mode === "Decrypt" && !flags.enable_stepbystep_decryption
-                      ? "Step-by-step decryption is currently disabled"
+                      mode === "Decrypt" && !flags.enable_stepbystep_decryption
+                        ? t('pages.stepByStep.summary.tooltips.ciphertext')
                       : ""
                   }
                 >
-                  Submit
+                    {t('pages.stepByStep.input.controls.submit')}
                 </Button>
               </Box>
             </Box>
@@ -821,7 +804,7 @@ function StepByStep() {
                 mb: 3,
               }}
             >
-              Input Summary
+              {t('pages.stepByStep.summary.heading')}
             </Typography>
 
             <Box
@@ -846,10 +829,10 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Ciphertext
+                        {t('pages.stepByStep.summary.labels.ciphertext')}
                       </Typography>
                       <LightTooltip
-                        title="The ciphertext provided as input to the decryption process"
+                        title={t('pages.stepByStep.summary.tooltips.ciphertext')}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -863,10 +846,10 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (english)
+                        {t('pages.stepByStep.summary.labels.plaintext')}
                       </Typography>
                       <LightTooltip
-                        title="The original plaintext message entered by the user"
+                        title={t('pages.stepByStep.summary.tooltips.plaintext')}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -883,10 +866,10 @@ function StepByStep() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (Hex)
+                        {t('pages.stepByStep.summary.labels.plaintextHex')}
                       </Typography>
                       <LightTooltip
-                        title="The hexadecimal representation of the plaintext"
+                        title={t('pages.stepByStep.summary.tooltips.plaintextHex')}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -905,10 +888,10 @@ function StepByStep() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
-                        Padded plaintext (Hex)
+                        {t('pages.stepByStep.summary.labels.paddedPlaintextHex')}
                       </Typography>
                       <LightTooltip
-                        title="The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format."
+                        title={t('pages.stepByStep.summary.tooltips.paddedPlaintextHex')}
                         placement="top-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -931,10 +914,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (english)
+                    {t('pages.stepByStep.input.labels.key')}
                   </Typography>
                   <LightTooltip
-                    title="Key provided by the user"
+                    title={t('pages.stepByStep.summary.tooltips.key')}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -946,10 +929,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (Hex)
+                    {t('pages.stepByStep.summary.labels.keyHex')}
                   </Typography>
                   <LightTooltip
-                    title="The hexadecimal representation of the input key"
+                    title={t('pages.stepByStep.summary.tooltips.key')}
                     placement="top-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -977,10 +960,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Operation mode
+                    {t('pages.stepByStep.summary.labels.operationMode')}
                   </Typography>
                   <LightTooltip
-                    title="Encrypt or Decrypt mode selected by the user"
+                    title={t('pages.stepByStep.summary.tooltips.operationMode')}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -991,9 +974,9 @@ function StepByStep() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
-                  <Typography sx={{ fontWeight: 700 }}>Key size</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.keySizeDisplay')}</Typography>
                   <LightTooltip
-                    title="Selected key size in bits"
+                    title={t('pages.stepByStep.summary.tooltips.keySize')}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
