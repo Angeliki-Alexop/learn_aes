@@ -25,10 +25,11 @@ export default function FloatingInfo({
   const { t } = useTranslation();
 
   const buildHow = (stepKey) => {
-    let how = t(`pages.stepByStep.stepInfo.${stepKey && stepKey.toLowerCase().replace(/\s+/g,'')}.how`, "");
+    const slug = stepKey && stepKey.toLowerCase().replace(/\s+/g, "");
+    let how = t(`pages.stepByStep.helper.${slug}.how`, "");
     if (!how) {
-      // fallback to short generic how if not provided
-      how = t(`pages.stepByStep.stepInfo.${stepKey}.how`, "") || "";
+      // fallback to older stepInfo namespace
+      how = t(`pages.stepByStep.stepInfo.${slug}.how`, "") || t(`pages.stepByStep.stepInfo.${stepKey}.how`, "") || "";
     }
 
     if (stepKey === "Key Expansion") {
@@ -54,7 +55,7 @@ export default function FloatingInfo({
     if (!step) return null;
     if (step === "Input" || step === "Result") return null;
     // look up titles/what/how from translation keys
-    const keyMap = {
+  const keyMap = {
       "Key Expansion": "keyExpansion",
       SubBytes: "subBytes",
       ShiftRows: "shiftRows",
@@ -66,11 +67,11 @@ export default function FloatingInfo({
     };
     const k = keyMap[step];
     if (!k) return null;
-    return {
-      title: t(`pages.stepByStep.stepInfo.${k}.title`, step),
-      what: t(`pages.stepByStep.stepInfo.${k}.what`, ""),
-      how: t(`pages.stepByStep.stepInfo.${k}.how`, ""),
-    };
+  // prefer helper namespace, fall back to stepInfo
+  const title = t(`pages.stepByStep.helper.${k}.title`, t(`pages.stepByStep.stepInfo.${k}.title`, step));
+  const what = t(`pages.stepByStep.helper.${k}.what`, t(`pages.stepByStep.stepInfo.${k}.what`, ""));
+  const how = t(`pages.stepByStep.helper.${k}.how`, t(`pages.stepByStep.stepInfo.${k}.how`, ""));
+  return { title, what, how };
   };
 
   const info = showInfoFor(currentStep);
@@ -143,20 +144,20 @@ export default function FloatingInfo({
                 }`}
                 onClick={() => setTab("what")}
               >
-                What is it?
+                {t("pages.stepByStep.helper.tabWhat", "What is it?")}
               </button>
               <button
                 type="button"
                 className={`floating-info-tab ${tab === "how" ? "active" : ""}`}
                 onClick={() => setTab("how")}
               >
-                How to interact?
+                {t("pages.stepByStep.helper.tabHow", "How to interact?")}
               </button>
             </div>
 
             <div className="floating-info-section">
               <h4 className="floating-info-section-title">
-                {tab === "what" ? "What is it?" : "How to interact?"}
+                {tab === "what" ? t("pages.stepByStep.helper.tabWhat", "What is it?") : t("pages.stepByStep.helper.tabHow", "How to interact?")}
               </h4>
               <div
                 className="floating-info-section-content"

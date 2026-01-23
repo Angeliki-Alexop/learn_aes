@@ -127,6 +127,48 @@ const translation = {
           case2_mid: `Case 2 — Mid-cycle SubWord (i % {{mod}} === {{mid}})\n\nApply the following step to the previous word (w[i-1]):\n1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].`,
         },
       },
+      stepInfo: {
+        addRoundKey: {
+          title: 'AddRoundKey',
+          what: `AddRoundKey is the AES step where the 'Current State' matrix is combined with a 'Round Key' matrix using the XOR operation (⊕).
+
+Both are 4×4 matrices of bytes, and each byte of the state is XORed with the byte in the same position of the round key.
+
+The Round Key is derived from the original key through the key expansion process, and a different round key is used in each round.
+
+What happens during decryption?
+
+During decryption, AddRoundKey works exactly the same way as in encryption. The Current State is XORed with a Round Key using the XOR operation (⊕).
+The difference is which round key is used: decryption applies the round keys in reverse order, starting from the last round key and ending with the initial one.`,
+          how: `Click any byte in the Next State matrix (the output of AddRoundKey step).
+• The corresponding byte in the 'Current State' and the matching byte in the active 'Round Key' are highlighted.
+• The explanation panel displays the two input bytes (Current State and Round Key bytes) in hexadecimal and binary, the XOR operation used to combine them (for example, 3C ⊕ A7 = 9B), and the final result in both hexadecimal and binary.`,
+        }
+      },
+      helper: {
+        addRoundKey: {
+          title: 'AddRoundKey',
+          what: `AddRoundKey is the AES step where the 'Current State' matrix is combined with a 'Round Key' matrix using the XOR operation (⊕).
+
+Both are 4×4 matrices of bytes, and each byte of the state is XORed with the byte in the same position of the round key.
+
+The Round Key is derived from the original key through the key expansion process, and a different round key is used in each round.
+
+What happens during decryption?
+
+During decryption, AddRoundKey works exactly the same way as in encryption. The Current State is XORed with a Round Key using the XOR operation (⊕).
+The difference is which round key is used: decryption applies the round keys in reverse order, starting from the last round key and ending with the initial one.`,
+          how: `Click any byte in the Next State matrix (the output of AddRoundKey step).
+• The corresponding byte in the 'Current State' and the matching byte in the active 'Round Key' are highlighted.
+• The explanation panel displays the two input bytes (Current State and Round Key bytes) in hexadecimal and binary, the XOR operation used to combine them (for example, 3C ⊕ A7 = 9B), and the final result in both hexadecimal and binary.`,
+        }
+        ,
+        roundLabel: 'Round {{n}}',
+        whatTitle: 'What',
+        howTitle: 'How to interact',
+        tabWhat: 'What is it?',
+        tabHow: 'How to interact?'
+      },
       navigation: {
         input: 'INPUT',
         previousRound: 'PREVIOUS ROUND',
