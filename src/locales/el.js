@@ -115,7 +115,7 @@ const translation = {
         submit: 'ΥΠΟΒΟΛΗ',
       },
       addRoundKey: {
-        line: 'Current State [{{r}}, {{c}}] XOR Round Key [{{r}}, {{c}}] = Result [{{r}}, {{c}}]',
+        line: 'Τρέχουσα Κατάσταση [{{r}}, {{c}}] XOR Round Key [{{r}}, {{c}}] = Αποτέλεσμα [{{r}}, {{c}}]',
         table: {
           state: 'Κατάσταση',
           hex: 'Hex',
@@ -123,8 +123,8 @@ const translation = {
         },
         currentState: 'Τρέχουσα Κατάσταση [{{r}}, {{c}}]',
         roundKey: 'Round Key [{{r}}, {{c}}]',
-        nextState: 'Επόμενη Κατάσταση [{{r}}, {{c}}]'
-      },
+        nextState: 'Αποτέλεσμα [{{r}}, {{c}}]'
+    },
       keySchedule: {
         title: 'Key Schedule - Key Expansion',
         allRoundKeys: 'Όλα τα round keys (μορφή μητρώου)',
