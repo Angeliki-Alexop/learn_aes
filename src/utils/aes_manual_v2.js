@@ -39,6 +39,19 @@ export const padPKCS7 = (data, blockSize) => {
   return paddedData;
 };
 
+// Safe PKCS#7 unpad: if padding appears valid, remove it; otherwise return input unchanged.
+export const unpadPKCS7 = (data, blockSize) => {
+  if (!Array.isArray(data) || data.length === 0) return data;
+  const last = data[data.length - 1];
+  if (typeof last !== 'number' || last <= 0 || last > blockSize) return data;
+  const paddingLen = last;
+  if (paddingLen > data.length) return data;
+  for (let i = data.length - paddingLen; i < data.length; i++) {
+    if (data[i] !== last) return data;
+  }
+  return data.slice(0, data.length - paddingLen);
+};
+
 // Function to perform SubBytes step
 export const subBytes = (state) => {
   return state.map(byte => sBox[byte]);
@@ -94,6 +107,55 @@ export const addRoundKey = (state, roundKey) => {
   return state.map((byte, idx) => byte ^ roundKey[idx]);
 };
 
+// Build inverse S-box from sBox
+export const invSBox = (() => {
+  const inv = new Array(256);
+  for (let i = 0; i < sBox.length; i++) inv[sBox[i]] = i;
+  return inv;
+})();
+
+export const invSubBytes = (state) => {
+  return state.map(byte => invSBox[byte]);
+};
+
+export const invShiftRows = (state) => {
+  // Convert to rows
+  const rows = [
+    [state[0], state[4], state[8], state[12]],
+    [state[1], state[5], state[9], state[13]],
+    [state[2], state[6], state[10], state[14]],
+    [state[3], state[7], state[11], state[15]],
+  ];
+  // Rotate right by row index
+  for (let r = 0; r < 4; r++) {
+    const k = r % 4;
+    if (k === 0) continue;
+    const row = rows[r].slice();
+    for (let c = 0; c < 4; c++) {
+      rows[r][(c + k) % 4] = row[c];
+    }
+  }
+  // Reassemble column-major
+  return [
+    rows[0][0], rows[1][0], rows[2][0], rows[3][0],
+    rows[0][1], rows[1][1], rows[2][1], rows[3][1],
+    rows[0][2], rows[1][2], rows[2][2], rows[3][2],
+    rows[0][3], rows[1][3], rows[2][3], rows[3][3],
+  ];
+};
+
+export const invMixColumns = (state) => {
+  const temp = state.slice();
+  for (let i = 0; i < 4; i++) {
+    const col = temp.slice(i * 4, i * 4 + 4);
+    state[i * 4]     = gMul(col[0], 0x0e) ^ gMul(col[1], 0x0b) ^ gMul(col[2], 0x0d) ^ gMul(col[3], 0x09);
+    state[i * 4 + 1] = gMul(col[0], 0x09) ^ gMul(col[1], 0x0e) ^ gMul(col[2], 0x0b) ^ gMul(col[3], 0x0d);
+    state[i * 4 + 2] = gMul(col[0], 0x0d) ^ gMul(col[1], 0x09) ^ gMul(col[2], 0x0e) ^ gMul(col[3], 0x0b);
+    state[i * 4 + 3] = gMul(col[0], 0x0b) ^ gMul(col[1], 0x0d) ^ gMul(col[2], 0x09) ^ gMul(col[3], 0x0e);
+  }
+  return state;
+};
+
 // Key Expansion Function
 export const keyExpansion = (key, keySize) => {
   const expandedKey = [];
@@ -138,34 +200,49 @@ export const keyExpansion = (key, keySize) => {
   return expandedKey;
 };
 
-// Function to perform AES encryption step by step
-export const aesEncryptStepByStep = (inputText, key, keySize) => {
+// Function to perform AES decryption step by step (operates on a single 16-byte block)
+export const aesDecryptStepByStep = (input, key, keySize) => {
   const steps = [];
-  let state = inputText.split('').map(char => char.charCodeAt(0)); // Convert input text to byte array
-  let expandedKey = keyExpansion(key.split('').map(char => char.charCodeAt(0)), keySize); // Convert key to byte array
+  // input may be a string (characters) or an array of bytes
+  let state = Array.isArray(input) ? input.slice() : input.split('').map(ch => ch.charCodeAt(0));
+  const expandedKey = keyExpansion(key.split('').map(char => char.charCodeAt(0)), keySize);
   const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
 
-  // Perform initial AddRoundKey
-  state = addRoundKey(state, expandedKey.slice(0, 16));
-  steps.push({ round: 0, state: state.map(b => b.toString(16).padStart(2, '0')) });
+  // Initial AddRoundKey with last round key
+  state = addRoundKey(state, expandedKey.slice(numberOfRounds * 16, (numberOfRounds + 1) * 16));
+  steps.push({ round: numberOfRounds, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
 
-  // Main rounds
-  for (let round = 1; round <= numberOfRounds; round++) {
-      state = subBytes(state);
-      steps.push({ round, step: 'SubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
+  // Main rounds (Nr-1 .. 1)
+  for (let round = numberOfRounds - 1; round >= 1; round--) {
+    state = invShiftRows(state);
+    steps.push({ round, step: 'InvShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
 
-      state = shiftRows(state);
-      steps.push({ round, step: 'ShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
+    state = invSubBytes(state);
+    steps.push({ round, step: 'InvSubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
 
-      if (round !== numberOfRounds) {
-          state = mixColumns(state);
-          steps.push({ round, step: 'MixColumns', state: state.map(b => b.toString(16).padStart(2, '0')) });
-      }
+    // Add round key for this round
+    state = addRoundKey(state, expandedKey.slice(round * 16, (round + 1) * 16));
+    steps.push({ round, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
 
-      state = addRoundKey(state, expandedKey.slice(round * 16, (round + 1) * 16));
-      steps.push({ round, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
+    // Apply inverse MixColumns (not for the final inverse round)
+    state = invMixColumns(state);
+    steps.push({ round, step: 'InvMixColumns', state: state.map(b => b.toString(16).padStart(2, '0')) });
   }
 
-  console.log('AES Encryption Steps:', steps); // Log the steps for debugging
+  // Final round (round 0)
+  state = invShiftRows(state);
+  steps.push({ round: 0, step: 'InvShiftRows', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  state = invSubBytes(state);
+  steps.push({ round: 0, step: 'InvSubBytes', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
+  state = addRoundKey(state, expandedKey.slice(0, 16));
+  steps.push({ round: 0, step: 'AddRoundKey', state: state.map(b => b.toString(16).padStart(2, '0')) });
+
   return steps;
 };
+
+// (aesEncryptStepByStep removed) Use the per-step helpers + generateStateMap in
+// `stepByStepHandlers.js` for constructing the UI state; keeping low-level
+// primitives (padPKCS7, keyExpansion, addRoundKey, subBytes, shiftRows,
+// mixColumns) here.

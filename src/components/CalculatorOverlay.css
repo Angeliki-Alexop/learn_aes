@@ -1,0 +1,10 @@
+.calc-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.calc-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}

@@ -13,18 +13,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
-// AES MixColumns matrix
-const MIX_MATRIX = [
-  [2, 3, 1, 1],
-  [1, 2, 3, 1],
-  [1, 1, 2, 3],
-  [3, 1, 1, 2],
+// Inverse MixColumns matrix (decimal equivalents)
+const INV_MIX_MATRIX = [
+  [0x0e, 0x0b, 0x0d, 0x09],
+  [0x09, 0x0e, 0x0b, 0x0d],
+  [0x0d, 0x09, 0x0e, 0x0b],
+  [0x0b, 0x0d, 0x09, 0x0e],
 ];
 
-// GF(2^8) multiplication helper
-function xtime(a) {
-  return ((a << 1) ^ (a & 0x80 ? 0x1b : 0)) & 0xff;
-}
+// GF(2^8) multiplication helper (same as MixColumns)
 function gfMul(a, b) {
   let res = 0;
   for (let i = 0; i < 8; i++) {
@@ -44,20 +41,19 @@ function getRandomMatrix() {
   );
 }
 
-// MixColumns transformation for one column
-function mixColumn(col) {
-  return MIX_MATRIX.map((row) =>
+// Inverse MixColumns transformation for one column
+function invMixColumn(col) {
+  return INV_MIX_MATRIX.map((row) =>
     row.reduce((acc, coef, i) => acc ^ gfMul(coef, col[i]), 0),
   );
 }
 
-// MixColumns for the whole state
-function mixColumns(matrix) {
-  // matrix: 4x4 state, columns are transformed
+// Inverse MixColumns for the whole state
+function invMixColumns(matrix) {
   const result = [];
   for (let c = 0; c < 4; c++) {
     const col = matrix.map((row) => row[c]);
-    const mixed = mixColumn(col);
+    const mixed = invMixColumn(col);
     for (let r = 0; r < 4; r++) {
       if (!result[r]) result[r] = [];
       result[r][c] = mixed[r];
@@ -66,13 +62,11 @@ function mixColumns(matrix) {
   return result;
 }
 
-// Helper functions for formatting
 function coefHex(n) {
   return "0x" + n.toString(16).padStart(2, "0").toUpperCase();
 }
 
-// --- GF(2⁸) calculator for a selected column ---
-function MixColumnsCalculator({
+function InvMixColumnsCalculator({
   matrix,
   column,
   onCalcChange,
@@ -89,16 +83,15 @@ function MixColumnsCalculator({
   return (
     <Box sx={{ mt: 2, p: 2, bgcolor: "#f9fbe7", borderRadius: 2 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Step-by-Step MixColumns Calculation (Selected Column)
+        Step-by-Step InvMixColumns Calculation (Selected Column)
       </Typography>
       <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 2 }}>
-        {/* Show the transformation matrix */}
         <Box>
           <Typography
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            Fixed Matrix:
+            Inverse Fixed Matrix:
           </Typography>
           <Box
             sx={{
@@ -109,7 +102,7 @@ function MixColumnsCalculator({
               mt: 1,
             }}
           >
-            {MIX_MATRIX.map((row, r) =>
+            {INV_MIX_MATRIX.map((row, r) =>
               row.map((n, c) => (
                 <Box
                   key={`mix-${r}-${c}`}
@@ -121,13 +114,12 @@ function MixColumnsCalculator({
                     minWidth: 36,
                   }}
                 >
-                  {n.toString(16).padStart(2, "0").toUpperCase()}
+                  {coefHex(n)}
                 </Box>
               )),
             )}
           </Box>
         </Box>
-        {/* Show the selected column values */}
         <Box>
           <Typography
             variant="body2"
@@ -159,12 +151,11 @@ function MixColumnsCalculator({
           </Box>
         </Box>
       </Box>
-      {/* Step-by-step calculation for each output byte */}
       <Box>
         <Typography variant="body2" sx={{ mb: 1 }}>
           Calculate each output byte (row) for this column:
         </Typography>
-        {matrix.map((row, r) => (
+        {INV_MIX_MATRIX.map((row, r) => (
           <Box
             key={r}
             sx={{ mb: 2, p: 1, bgcolor: "#e3f2fd", borderRadius: 1 }}
@@ -183,7 +174,7 @@ function MixColumnsCalculator({
                 flexWrap: "wrap",
               }}
             >
-              {row.map((coef, c) => (
+              {INV_MIX_MATRIX[r].map((coef, c) => (
                 <React.Fragment key={c}>
                   <Typography variant="body2">
                     {coefHex(coef)} × {coefHex(column[c])} =
@@ -280,7 +271,6 @@ function MixColumnsCalculator({
   );
 }
 
-// Small helper: convert a single byte between hex and binary (8 bits)
 function HexBinConverter() {
   const [hex, setHex] = React.useState("");
   const [bin, setBin] = React.useState("");
@@ -334,7 +324,6 @@ function HexBinConverter() {
       <Typography variant="caption">
         Convert AES bytes between hexadecimal and binary
       </Typography>
-
       <Box sx={{ display: "flex", gap: 2 }}>
         <TextField
           label="Hex (byte)"
@@ -375,7 +364,7 @@ function HexBinConverter() {
   );
 }
 
-const MixColumnsPractice = () => {
+const InvMixColumnsPractice = () => {
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userMatrix, setUserMatrix] = useState(
     Array(4)
@@ -410,21 +399,16 @@ const MixColumnsPractice = () => {
       .map(() => Array(4).fill(null)),
   );
 
-  // Ref for dialog content to move focus when opened (accessibility)
   const dialogContentRef = useRef(null);
 
   useEffect(() => {
     if (showHelp && dialogContentRef.current) {
-      // focus the dialog content so screen readers announce it and keyboard users land inside
       try {
         dialogContentRef.current.focus();
-      } catch (e) {
-        /* ignore focus errors */
-      }
+      } catch (e) {}
     }
   }, [showHelp]);
 
-  // Reset calculator intermediate fields and statuses when user selects a different column
   useEffect(() => {
     setCalcValues(
       Array(4)
@@ -441,16 +425,14 @@ const MixColumnsPractice = () => {
     setOutputStatus(Array(4).fill(null));
   }, [selectedColumn]);
 
-  const solution = mixColumns(inputMatrix);
+  const solution = invMixColumns(inputMatrix);
 
-  // Handle input change for each cell
   const handleInputChange = (rowIdx, colIdx, value) => {
     const updated = userMatrix.map((row) => [...row]);
     updated[rowIdx][colIdx] = value.toUpperCase();
     setUserMatrix(updated);
   };
 
-  // Check answers
   const handleCheck = () => {
     let correct = true;
     const newIncorrect = Array(4)
@@ -479,7 +461,6 @@ const MixColumnsPractice = () => {
     );
   };
 
-  // Show solution
   const handleShowSolution = () => {
     setShowSolution(true);
     setUserMatrix(
@@ -506,7 +487,6 @@ const MixColumnsPractice = () => {
     setFeedback(null);
   };
 
-  // Next example
   const handleNext = () => {
     const newMatrix = getRandomMatrix();
     setInputMatrix(newMatrix);
@@ -522,7 +502,6 @@ const MixColumnsPractice = () => {
         .fill()
         .map(() => Array(4).fill(false)),
     );
-    // Clear calculator intermediate and output fields when moving to next example
     setCalcValues(
       Array(4)
         .fill()
@@ -553,10 +532,11 @@ const MixColumnsPractice = () => {
     setOutputCalc(updated);
   };
 
-  // Show computed multiplication and XOR results for a single output row
   const handleRowShow = (r) => {
     const col = inputMatrix.map((row) => row[selectedColumn]);
-    const expectedMuls = MIX_MATRIX[r].map((coef, i) => gfMul(coef, col[i]));
+    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) =>
+      gfMul(coef, col[i]),
+    );
     setCalcValues((prev) => {
       const u = prev.map((row) => [...row]);
       u[r] = expectedMuls.map((n) =>
@@ -570,7 +550,6 @@ const MixColumnsPractice = () => {
       p[r] = expectedOut.toString(16).padStart(2, "0").toUpperCase();
       return p;
     });
-    // Fill the corresponding cell in the user output matrix for this column
     const expectedOutHex = expectedOut
       .toString(16)
       .padStart(2, "0")
@@ -581,7 +560,6 @@ const MixColumnsPractice = () => {
       return m;
     });
 
-    // Mark calculator multiplications and output as correct for this row
     setCalcStatus((prev) => {
       const u = prev.map((row) => [...row]);
       u[r] = expectedMuls.map(() => "correct");
@@ -605,10 +583,11 @@ const MixColumnsPractice = () => {
     });
   };
 
-  // Check user's entered multiplications and output for a single row
   const handleRowCheck = (r) => {
     const col = inputMatrix.map((row) => row[selectedColumn]);
-    const expectedMuls = MIX_MATRIX[r].map((coef, i) => gfMul(coef, col[i]));
+    const expectedMuls = INV_MIX_MATRIX[r].map((coef, i) =>
+      gfMul(coef, col[i]),
+    );
     const expectedOut = expectedMuls.reduce((a, b) => a ^ b, 0);
 
     let allMatch = true;
@@ -623,7 +602,6 @@ const MixColumnsPractice = () => {
     if (Number.isNaN(enteredOut) || enteredOut !== expectedOut)
       allMatch = false;
 
-    // Update calcStatus and outputStatus for visual feedback
     setCalcStatus((prev) => {
       const u = prev.map((row) => [...row]);
       for (let c = 0; c < 4; c++) {
@@ -645,7 +623,6 @@ const MixColumnsPractice = () => {
       return p;
     });
 
-    // Mark the main output matrix cell for the selected column
     setCellStatus((prev) => {
       const s = prev.map((row) => [...row]);
       s[r][selectedColumn] =
@@ -656,7 +633,6 @@ const MixColumnsPractice = () => {
       return s;
     });
 
-    // If the output is correct, write it into the userMatrix for that column
     if (
       !Number.isNaN(parseInt(outputCalc[r], 16)) &&
       parseInt(outputCalc[r], 16) === expectedOut
@@ -700,18 +676,19 @@ const MixColumnsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">MixColumns Practice</Typography>
+        <Typography variant="h5">InvMixColumns Practice</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        In MixColumns, each column of the original matrix (4 bytes) is
-        multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the
-        resulting byte values for each cell after the MixColumns step. Note: You
-        can use the helper below to see how each output is calculated.
+        InvMixColumns is the inverse of the MixColumns step and is used during
+        AES decryption. In this step, each column of the original matrix (4
+        bytes) is multiplied by Inverse Fixed Matrix using arithmetic in GF(2⁸).
+        Enter the resulting byte values for each cell after the InvMixColumns
+        step. Note: You can use the helper below to see how each output is
+        calculated.
       </Typography>
-      {/* Quick instructions moved into dialog (use the Help icon to open) */}
       <Box
         sx={{
           display: "flex",
@@ -756,7 +733,8 @@ const MixColumnsPractice = () => {
             )}
           </Box>
         </Box>
-        {/* Fixed Matrix Display */}
+
+        {/* Transformation Matrix */}
         <Box
           sx={{
             minWidth: "auto",
@@ -771,7 +749,7 @@ const MixColumnsPractice = () => {
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-            Fixed Matrix:
+            Inverse Fixed Matrix:
           </Typography>
           <Box
             sx={{
@@ -781,68 +759,23 @@ const MixColumnsPractice = () => {
               mb: 1,
             }}
           >
-            {/* First row */}
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              2
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              3
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            {/* Second row */}
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              2
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              3
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            {/* Third row */}
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              2
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              3
-            </Box>
-            {/* Fourth row */}
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              3
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              1
-            </Box>
-            <Box sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}>
-              2
-            </Box>
+            {INV_MIX_MATRIX.flat().map((n, i) => (
+              <Box
+                key={i}
+                sx={{ border: "1px solid #ccc", p: 1, bgcolor: "#fff" }}
+              >
+                {n.toString(16).padStart(2, "0").toUpperCase()}
+              </Box>
+            ))}
           </Box>
         </Box>
 
-        {/* User Output Matrix (with row labels b0..b3) */}
+        {/* User Output Matrix with labels (header c1..c4 and row labels b0..b3) */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter MixColumns output (hex):
+            Enter InvMixColumns output (hex):
           </Typography>
 
-          {/* grid with a label column + 4 matrix columns */}
           <Box
             sx={{
               display: "grid",
@@ -853,15 +786,10 @@ const MixColumnsPractice = () => {
           >
             {/* header row: empty label cell + column headings */}
             <Box />
-            {/* label column header placeholder */}
             {[0, 1, 2, 3].map((ci) => (
               <Box
                 key={`col-head-${ci}`}
-                sx={{
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  p: 1,
-                }}
+                sx={{ textAlign: "center", fontWeight: "bold", p: 1 }}
               >
                 c{ci + 1}
               </Box>
@@ -890,18 +818,15 @@ const MixColumnsPractice = () => {
                   <Box
                     key={`ans-${r}-${c}`}
                     sx={{
-                      border:
-                        cellStatus &&
-                        cellStatus[r] &&
-                        cellStatus[r][c] === "incorrect"
-                          ? "2px solid #d32f2f"
-                          : cellStatus &&
-                              cellStatus[r] &&
-                              cellStatus[r][c] === "correct"
-                            ? "2px solid #2e7d32"
-                            : showSolution
-                              ? "2px solid #1976d2"
-                              : "1px solid #ccc",
+                      border: incorrectCells[r][c]
+                        ? "2px solid #d32f2f"
+                        : cellStatus &&
+                            cellStatus[r] &&
+                            cellStatus[r][c] === "correct"
+                          ? "2px solid #2e7d32"
+                          : showSolution
+                            ? "2px solid #1976d2"
+                            : "1px solid #ccc",
                       borderRadius: 1,
                       p: 1,
                       textAlign: "center",
@@ -926,7 +851,14 @@ const MixColumnsPractice = () => {
                     }}
                   >
                     <TextField
-                      value={val}
+                      value={
+                        showSolution
+                          ? solution[r][c]
+                              .toString(16)
+                              .padStart(2, "0")
+                              .toUpperCase()
+                          : val
+                      }
                       onChange={(e) => handleInputChange(r, c, e.target.value)}
                       inputProps={{
                         maxLength: 2,
@@ -935,35 +867,6 @@ const MixColumnsPractice = () => {
                           textTransform: "uppercase",
                           fontWeight: "bold",
                           color:
-                            cellStatus &&
-                            cellStatus[r] &&
-                            cellStatus[r][c] === "correct"
-                              ? "#2e7d32"
-                              : cellStatus &&
-                                  cellStatus[r] &&
-                                  cellStatus[r][c] === "incorrect"
-                                ? "#d32f2f"
-                                : feedback === "Correct!"
-                                  ? "#2e7d32"
-                                  : showSolution
-                                    ? "#1976d2"
-                                    : undefined,
-                          background:
-                            cellStatus &&
-                            cellStatus[r] &&
-                            cellStatus[r][c] === "correct"
-                              ? "#e6f4ea"
-                              : cellStatus &&
-                                  cellStatus[r] &&
-                                  cellStatus[r][c] === "incorrect"
-                                ? "#fdecea"
-                                : feedback === "Correct!"
-                                  ? "#c8e6c9"
-                                  : showSolution
-                                    ? "#e3f2fd"
-                                    : undefined,
-                          opacity: 1,
-                          WebkitTextFillColor:
                             cellStatus &&
                             cellStatus[r] &&
                             cellStatus[r][c] === "correct"
@@ -1085,6 +988,7 @@ const MixColumnsPractice = () => {
           Next Example
         </Button>
       </Box>
+
       <Box sx={{ mt: 5 }}>
         <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
           Select which column to analyze:
@@ -1101,11 +1005,11 @@ const MixColumnsPractice = () => {
             </Button>
           ))}
         </Box>
-        <MixColumnsCalculator
-          matrix={MIX_MATRIX}
+        <InvMixColumnsCalculator
+          matrix={INV_MIX_MATRIX}
           column={inputMatrix.map((row) => row[selectedColumn])}
-          calcValues={calcValues}
           onCalcChange={handleCalcChange}
+          calcValues={calcValues}
           outputValue={outputCalc}
           onOutputChange={handleOutputChange}
           onRowShow={handleRowShow}
@@ -1116,26 +1020,27 @@ const MixColumnsPractice = () => {
           showSolution={showSolution}
         />
       </Box>
+
       <Dialog
         open={showHelp}
         onClose={() => setShowHelp(false)}
         fullWidth
-        maxWidth="md"
-        scroll="paper"
-        aria-labelledby="mixcolumns-dialog-title"
-        aria-describedby="mixcolumns-dialog-desc"
+        maxWidth="xl"
+        PaperProps={{ sx: { width: "92%", maxWidth: 1000, maxHeight: "92vh" } }}
+        aria-labelledby="invmixcolumns-dialog-title"
+        aria-describedby="invmixcolumns-dialog-desc"
       >
         <DialogTitle
-          id="mixcolumns-dialog-title"
+          id="invmixcolumns-dialog-title"
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          AES MixColumns – Step-by-Step Guide
+          AES InvMixColumns – Step-by-Step Guide
           <IconButton
-            aria-label="Close MixColumns help"
+            aria-label="Close InvMixColumns help"
             onClick={() => setShowHelp(false)}
             size="small"
           >
@@ -1143,12 +1048,11 @@ const MixColumnsPractice = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent
-          id="mixcolumns-dialog-desc"
           dividers
           ref={dialogContentRef}
           tabIndex={-1}
+          id="invmixcolumns-dialog-desc"
         >
-          {/* Expanded step-by-step quick instructions moved here */}
           <Box
             sx={{
               bgcolor: "#fff8e1ff",
@@ -1162,11 +1066,11 @@ const MixColumnsPractice = () => {
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 1, width: "100%", maxWidth: 720 }}
+              sx={{ mt: 1, width: "100%", maxWidth: 1000 }}
             >
-              <strong>MixColumns Matrix:</strong>
+              <strong>InvMixColumns Matrix:</strong>
               <br />
-              Each column is multiplied by this matrix:
+              Each column is multiplied by this inverse transformation matrix:
               <br />
               <Box
                 sx={{
@@ -1177,10 +1081,10 @@ const MixColumnsPractice = () => {
                   ml: 3,
                 }}
               >
-                {MIX_MATRIX.map((row, r) =>
+                {INV_MIX_MATRIX.map((row, r) =>
                   row.map((n, c) => (
                     <Box
-                      key={`quick-mix-${r}-${c}-dlg`}
+                      key={`inv-quick-mix-${r}-${c}`}
                       sx={{
                         border: "1px solid #ccc",
                         p: 1,
@@ -1200,44 +1104,47 @@ const MixColumnsPractice = () => {
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
+                  sx={{ width: "100%", maxWidth: 1000 }}
                 >
                   <strong>Each new byte is computed as:</strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
-• S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
-• S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
-• S′₂ = (01 × S₀) ⊕ (01 × S₁) ⊕ (02 × S₂) ⊕ (03 × S₃)
-• S′₃ = (03 × S₀) ⊕ (01 × S₁) ⊕ (01 × S₂) ⊕ (02 × S₃)
+• S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
+• S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
+• S′₂ = (0D × S₀) ⊕ (09 × S₁) ⊕ (0E × S₂) ⊕ (0B × S₃)
+• S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
     `}</code>
                 </Box>
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
+                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
                 >
-                  <strong>Multiplication rules (GF(2^8)):</strong>
+                  <strong>
+                    Multiplication rules (GF(2^8)) for inverse coefficients:
+                  </strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
-• 01 × X = X
-• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
-• 03 × X = (02 × X) ⊕ X
+• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
+• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
+• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
+• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)
     `}</code>
                 </Box>
                 <Typography
                   variant="body1"
                   component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
+                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
                 >
-                  <strong>Tips</strong>
+                  <strong>Notes</strong>
                 </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
+                <Box component="pre" sx={{ m: -1 }}>
                   <code>{`
 • XOR = bitwise addition without carry
-• 02 × X = shift left and reduce by 1B if needed
-• 03 × X = (02 × X) ⊕ X
+• 02 × X = shift left and reduce by 1B if MSB = 1
+• Use combinations of (02×) and XOR to compute 09, 0B, 0D, 0E products
 • Every column is processed independently
 `}</code>
                 </Box>
@@ -1250,4 +1157,4 @@ const MixColumnsPractice = () => {
   );
 };
 
-export default MixColumnsPractice;
+export default InvMixColumnsPractice;

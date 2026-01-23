@@ -1,43 +1,163 @@
 import React from "react";
 import "./StepInfo.css";
 
-// Rich informational content for each step: what, why, how
-const STEP_INFO = {
+// Rich informational content for each step: what, how
+export const STEP_INFO = {
   "Key Expansion": {
-    title: "Key Expansion",
-    what: `Key Expansion (also called the key schedule) transforms the initial AES key into a series of round keys. Each round of AES uses one round key which is 16 bytes (for AES-128). The algorithm expands the single input key into (Nr + 1) round keys where Nr is the number of rounds.`,
-    why: `Without a different round key at each round, the cipher would be much easier to analyze. The key schedule ensures the key material is mixed and varied across rounds so that each round contributes uniquely to the final ciphertext.`,
-    how: `Use the Key Schedule panel to the left to inspect all generated round keys. Click any round to jump to that round's view. You can compare the Round Key bytes with the Current State to understand how AddRoundKey will combine them.`,
+    title: "What is Key Expansion?",
+    what: `AES uses a different key for each encryption round.
+    The Key Schedule is the overall process AES uses to manage and generate all the round keys needed during encryption. 
+    Key Expansion is the specific algorithm within the key schedule that computes these round keys from the original cipher key.
+
+The original key is split into words (1 word = 4 bytes). New words are created one by one by combining previous words and, 
+at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+
+The key size determines how often these special steps are applied:
+  - AES-128 (16 bytes / 4 words):
+    A special transformation is applied every 4th word.
+  - AES-192 (24 bytes / 6 words):
+    A special transformation is applied every 6th word.
+  - AES-256 (32 bytes / 8 words):
+    A special transformation is applied every 8th word, with an extra S-box 
+    step halfway in each cycle.
+
+AES always needs one round key per round plus one initial key.
+Each round key is 4 words, so the total number of expanded words is:
+  - AES-128: 44 words
+  - AES-192: 52 words
+  - AES-256: 60 words
+  
+What happens during decryption?
+
+Decryption uses the same expanded round keys, but they are applied in reverse order.
+The key expansion process itself does not change, the keys are generated once and reused.
+During decryption, AES applies the round keys from the last round key to the first, ensuring that each encryption step is correctly reversed.`,
+    how: `Use the Key Expansion view to inspect how each round key is derived from the original key.\n `,
   },
   SubBytes: {
     title: "SubBytes",
-    what: `SubBytes replaces every byte in the state with a substitute byte using a fixed substitution table called the S-box. The S-box was designed to be non-linear and resistant to known cryptographic attacks.`,
-    why: `This substitution introduces non-linearity into AES, preventing attackers from modelling the cipher as a simple linear system. It's a key reason AES is secure against differential and linear cryptanalysis.`,
-    how: `Click any byte in the Current State to highlight it and show the corresponding S-box output in the S-box panel. You can then click entries in the S-box to see which input bytes map to that output.`,
+    what: `SubBytes is a transformation where each byte of the AES state is replaced independently using a fixed lookup table called the S-box.
+For each byte, its hexadecimal value selects a row and column in the S-box, and the value found there becomes the new byte. 
+The SubBytes step is the only non-linear transformation of the cipher.`,
+    how: `Click any byte in the Current State to highlight it and display its corresponding value in the S-box panel. 
+    The first hexadecimal digit selects the S-box row, the second selects the column, and the value at that position is the substituted byte.`,
   },
   ShiftRows: {
-    title: "ShiftRows",
-    what: `ShiftRows cyclically shifts the rows of the state. The first row is left intact, the second row shifts by one byte, third by two, and fourth by three (for AES-128). The operation repositions bytes so columns mix data from different rows in the next step.`,
-    why: `This step provides inter-column diffusion. When combined with MixColumns, it ensures that a change to a single input byte affects many output bytes after a few rounds.`,
-    how: `The visual shows a sliding window: the outlined 4x4 area is the state after shifting. Hover or click to see which original bytes move into each position. Use this to trace how a byte flows through the round.`,
+    what: `ShiftRows is a transformation where the rows of the AES state are cyclically shifted to the left.
+The first row is not shifted, the second row is shifted by one byte, the third by two bytes, and the fourth by three bytes.`,
+    how: `The stair-step shading indicates how far each row is shifted. 
+    The purple cells in the Next State show the bytes after rotation, and the corresponding source bytes in the ShiftRows Table are also highlighted in purple, showing exactly which values were moved to produce the result.`,
+  },
+  InvSubBytes: {
+    title: "Inverse SubBytes",
+    what: `InvSubBytes is the inverse of the SubBytes step. 
+    During decryption, each byte of the AES state is replaced independently using a fixed lookup table called the inverse S-box. 
+    For each byte, its hexadecimal value selects a row and column in the inverse S-box, and the value found there becomes the new byte. This step reverses the non-linear substitution applied during encryption.`,
+    how: `Click any byte in the Current State to highlight it and display its corresponding value in the inverse S-box panel.
+          The first hexadecimal digit selects the inverse S-box row, the second selects the column, and the highlighted value at that position is the new byte.
+`,
+  },
+  InvShiftRows: {
+    title: "Inverse ShiftRows",
+    what: `InvShiftRows is the inverse of the ShiftRows step. 
+    During decryption, each row of the AES state is cyclically shifted to the right instead of to the left: the first row is not shifted, the second row is shifted right by 1 byte, the third by 2 bytes, and the fourth by 3 bytes. 
+    This operation restores the rows to their positions before the ShiftRows step in encryption.`,
+    how: `The stair-step shading indicates how far each row is shifted. 
+    The purple cells in the Next State show the bytes after rotation, and the corresponding source bytes in the ShiftRows Table are also highlighted in purple, showing exactly which values were moved to produce the result.`,
+  },
+  InvMixColumns: {
+    title: "Inverse MixColumns",
+    what: `InvMixColumns is the inverse of the MixColumns step and is used during AES decryption.
+In this step, each column of the AES state matrix (4 bytes) is multiplied by a different fixed 4×4 matrix, which reverses the mixing performed during encryption.
+
+1. The InvMixColumns Matrix
+
+Each column [S₀ S₁ S₂ S₃]ᵀ is multiplied by this matrix:
+
+| 0E | 0B | 0D | 09 |
+| 09 | 0E | 0B | 0D |
+| 0D | 09 | 0E | 0B |
+| 0B | 0D | 09 | 0E |
+
+The result is a new column [S′₀ S′₁ S′₂ S′₃]ᵀ where each byte is calculated as:
+
+S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
+S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
+S′₂ = (0D × S₀) ⊕ (09 × S₁) ⊕ (0E × S₂) ⊕ (0B × S₃)
+S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
+
+Each new byte is a combination of all four original bytes in the column, but using inverse coefficients.
+
+2. Multiplication Rules in GF(2⁸)
+
+Multiplication in InvMixColumns also uses arithmetic in GF(2⁸).
+For learning purposes, the multiplications can be broken down using combinations of shifts and XORs:
+
+• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
+• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
+• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
+• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)
+
+Note:
+• 02 × X = Shift X left by 1 bit. If the he original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
+•All XOR operations are bitwise addition without carry.`,
+    how: `Click any byte in the 'Next State' matrix (the output of the MixColumns step).
+
+• This selects one output byte S′ and highlights the entire source column from the 'Current State' that was used to compute it. At the same time, the corresponding row of the 'Inverse Fixed Matrix' is highlighted to show the coefficients applied to each source byte.
+
+• The calculation panel displays the full computation: the individual finite-field multiplications (such as 0E × S₀, 0B × S₁, 0D × S₂, 09 × S₃), the intermediate XOR combinations performed step by step, and the final hexadecimal byte value produced by the column operation.
+
+• The panel also visualizes how each multiplication is carried out at the bit level, showing binary representations, left shifts, conditional XOR with 1B, and intermediate results. Multiplications by values such as 09, 0B, 0D, and 0E are broken down into repeated ×02 operations so you can clearly follow the finite-field arithmetic.`,
   },
   MixColumns: {
-    title: "MixColumns",
-    what: `MixColumns treats each column as a four-term polynomial and multiplies it by a fixed polynomial modulo x^4 + 1. In practice this is implemented by multiplying bytes in GF(2^8) with constants (02, 03, 01, 01), which combines column bytes together.`,
-    why: `MixColumns provides strong intra-column diffusion so that a small change in a column influences all four bytes of that column. Together with ShiftRows it spreads the influence of each input byte across the entire state over multiple rounds.`,
-    how: `Click any byte in the Next State (after MixColumns) to highlight its source column in the previous state and the corresponding row in the fixed MixColumns matrix. The component will display intermediate byte values so you can follow the multiplication and XOR steps.`,
+    what: `In MixColumns, each column of the AES state matrix (4 bytes) is treated as a vector and multiplied by a fixed 4×4 matrix using arithmetic in a special finite field called GF(2⁸).
+    Note: MixColumns is applied in every encryption round except the final round.
+
+1. The MixColumns Matrix
+
+Each column [S₀ S₁ S₂ S₃]ᵀ is multiplied by this matrix:
+
+| 02 | 03 | 01 | 01 |
+| 01 | 02 | 03 | 01 |
+| 01 | 01 | 02 | 03 |
+| 03 | 01 | 01 | 02 |
+
+The result is a new column [S′₀ S′₁ S′₂ S′₃]ᵀ where each byte is calculated as:
+
+S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
+S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
+S′₂ = (01 × S₀) ⊕ (01 × S₁) ⊕ (02 × S₂) ⊕ (03 × S₃)
+S′₃ = (03 × S₀) ⊕ (01 × S₁) ⊕ (01 × S₂) ⊕ (02 × S₃)
+
+Each new byte is a combination of all four original bytes in the column.
+
+2. Multiplication Rules in GF(2⁸)
+
+AES multiplication uses a special finite field, but for learning, you can follow these practical rules:
+• 01 × X = X
+• 02 × X = Shift X left by 1 bit. If the he original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
+• 03 × X = (02 × X) ⊕ X
+Note: All XOR operations are bitwise addition without carry.`,
+    how: `Click any byte in the 'Next State' matrix (the output of the MixColumns step).\n
+    • This selects one output byte S′ and highlights the entire source column from the 'Current State' that was used to compute it.
+    At the same time, the corresponding row of the 'Fixed Matrix' is highlighted to show the coefficients applied to each source byte.
+
+    • The calculation panel displays the full computation: the individual finite-field multiplications (such as 02 × S₀, 03 × S₁, 01 × S₂, 01 × S₃), the intermediate XOR combinations performed step by step, and the final hexadecimal byte value produced by the column operation.`,
   },
   AddRoundKey: {
-    title: "AddRoundKey",
-    what: `AddRoundKey XORs the current state with a round-specific key. XOR is a reversible bitwise operation which combines the key material directly into the state bytes.`,
-    why: `This is the only step that uses the actual key material in each round. Because XOR is reversible, the proper round keys are necessary to recover the original plaintext during decryption.`,
-    how: `Click bytes in the Current State or the Round Key to see the XOR operation and the resulting Next State. Comparing Current State and Round Key byte-by-byte helps understand how the next state is computed.`,
-  },
-  Input: {
-    title: "Input",
-    what: `The Input section shows the plaintext that will be processed by AES. The plaintext is converted to bytes and padded using PKCS#7 to fill a 16-byte block for AES-128.`,
-    why: `Understanding how your plaintext is padded and represented as bytes is important: small differences in input produce very different ciphertexts due to avalanche properties of AES.`,
-    how: `Edit the input text in the controller below the visualization, select the key size, and submit to regenerate the padded state and the round key schedule. The Input view shows the original text and its hex representation.`,
+    what: `AddRoundKey is the AES step where the 'Current State' matrix is combined with a 'Round Key' matrix using the XOR         operation (⊕).
+
+        Both are 4×4 matrices of bytes, and each byte of the state is XORed with the byte in the same position of the round key.
+
+        The Round Key is derived from the original key through the key expansion process, and a different round key is used in each round.
+
+        What happens during decryption?
+
+        During decryption, AddRoundKey works exactly the same way as in encryption. The Current State is XORed with a Round Key using the XOR operation (⊕).
+        The difference is which round key is used: decryption applies the round keys in reverse order, starting from the last round key and ending with the initial one.`,
+    how: `Click any byte in the Next State matrix (the output of AddRoundKey step).
+     • The corresponding byte in the 'Current State' and the matching byte in the active 'Round Key' are highlighted. 
+     • The explanation panel displays the two input bytes (Current State and Round Key bytes) in hexadecimal and binary, the XOR operation used to combine them (for example, 3C ⊕ A7 = 9B), and the final result in both hexadecimal and binary.`,
   },
 };
 
@@ -45,33 +165,87 @@ function Section({ title, content }) {
   return (
     <div className="stepinfo-section">
       <h4 className="stepinfo-section-title">{title}</h4>
-      <p className="stepinfo-section-content">{content}</p>
+      <div
+        className="stepinfo-section-content"
+        style={{ whiteSpace: "pre-line", lineHeight: 1.4 }}
+      >
+        {content}
+      </div>
     </div>
   );
 }
 
-export default function StepInfo({ currentStep, currentRound }) {
+export default function StepInfo({ currentStep, currentRound, keySize }) {
   const info = STEP_INFO[currentStep] || null;
 
   if (!info) {
     return null;
   }
 
-  return (
-    <div className="stepinfo-root">
-      <div className="stepinfo-content">
-        <div className="stepinfo-left">
-          <h3 className="stepinfo-title">{info.title}</h3>
-          <Section title="What" content={info.what} />
-          <Section title="Why it matters" content={info.why} />
-        </div>
-        <div className="stepinfo-right">
-          <Section title="How to interact" content={info.how} />
-          {typeof currentRound === "number" && currentRound >= 0 && (
-            <p className="stepinfo-round">Round: {currentRound}</p>
-          )}
+  // Build a dynamic How-to text for Key Expansion that depends on keySize
+  let howContent = info.how || "";
+  if (currentStep === "Key Expansion") {
+    const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
+    let extra = `Current key size: AES-${keySize} (${wordsPerKey} words per round key).
+
+  In the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of ${wordsPerKey} words; the special core transformation is applied every ${wordsPerKey}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.
+`;
+
+    if (wordsPerKey === 8) {
+      extra += `
+  There are three cases when computing a new word w[i]:
+
+  Case 1 — Special transform (i % 8 === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
+
+  Case 2 — Mid-cycle SubWord (i % 8 === 4)
+  Apply the following step to the previous word (w[i-1]):
+    1. SubWord: substitute each byte using the S-box.
+    2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
+  
+
+  Case 3 — Simple XOR
+    w[i] = w[i - 8] XOR w[i - 1]
+
+  Use the above rules with the current round key size (words per key = ${wordsPerKey}).`;
+    } else {
+      extra += `
+  There are two cases when computing a new word w[i]:
+
+  Case 1 — Special transform (i % ${wordsPerKey} === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - ${wordsPerKey}]: XOR the result with the word ${wordsPerKey} positions before (start of the previous round key) to produce w[i].
+
+  Case 2 — Simple XOR
+    w[i] = w[i - ${wordsPerKey}] XOR w[i - 1]
+
+  Use the above rules with the current round key size (words per key = ${wordsPerKey}).`;
+    }
+
+    howContent = howContent + extra;
+
+    return (
+      <div className="stepinfo-root">
+        <h3 className="stepinfo-title">What is {currentStep}?</h3>
+        {typeof currentRound === "number" && currentRound >= 0 && (
+          <p className="stepinfo-round">Round: {currentRound}</p>
+        )}
+        <div className="stepinfo-content two-cols">
+          <div className="stepinfo-left-col">
+            <Section content={info.what} />
+          </div>
+          <div className="stepinfo-right-col">
+            <Section title="How to interact" content={howContent} />
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 }

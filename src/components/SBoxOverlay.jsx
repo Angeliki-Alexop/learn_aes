@@ -1,9 +1,11 @@
 import React from "react";
-import { Drawer, Box, Typography } from "@mui/material";
-import { sBox } from "../utils/aes_manual_v2";
+import { Drawer, Box, Typography, IconButton, Tabs, Tab } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { sBox, invSBox } from "../utils/aes_manual_v2";
 
 function SBoxOverlay({ open, onClose }) {
   const [selected, setSelected] = React.useState(null);
+  const [mode, setMode] = React.useState("sbox"); // 'sbox' or 'invsbox'
 
   const handleCellClick = (row, col) => {
     setSelected({ row, col });
@@ -19,17 +21,99 @@ function SBoxOverlay({ open, onClose }) {
       }}
       PaperProps={{
         sx: {
-          width: 800,
+          width: { xs: "95vw", sm: 600, md: 800 },
+          maxWidth: "100%",
+          maxHeight: "90vh",
           zIndex: 1300,
           padding: 3,
-          background: "#fff",
+          background: "#ffffff",
+          overflow: "auto",
         },
       }}
     >
       <Box>
-        <Typography variant="h6" align="center" gutterBottom>
-          AES S-box
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flex: 1,
+              mb: 2,
+            }}
+          >
+            <Tabs
+              value={mode}
+              onChange={(e, val) => {
+                setMode(val);
+                setSelected(null);
+              }}
+              aria-label="S-box pages"
+              sx={{ ml: 0 }}
+              textColor="primary"
+              indicatorColor="primary"
+              size="medium"
+            >
+              <Tab label="Forward S-box (encryption)" value="sbox" />
+              <Tab label="Inverse S-box (decryption)" value="invsbox" />
+            </Tabs>
+          </Box>
+          <IconButton
+            onClick={() => {
+              setSelected(null);
+              onClose();
+            }}
+            aria-label="Close S-box"
+            sx={{ marginTop: -2 }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        {mode === "sbox" ? (
+          <>
+            <Typography variant="body1" gutterBottom>
+              The S-box (Substitution box) is a fixed lookup table used in AES
+              to replace each byte with a different byte during the encryption
+              process. It introduces non-linearity to make the cipher resistant
+              to patterns and attacks. Each input byte (in hex) selects a row
+              and column in the S-box; the value at that position is the
+              substituted (output) byte.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
+            >
+              <strong>Hint (encryption):</strong> Click any cell to highlight
+              its row and column. The selected cell shows the substituted value
+              for the corresponding input byte.
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Typography variant="body1" gutterBottom>
+              The Inverse S-box (Substitution box) is a fixed lookup table used
+              in AES during the decryption process to reverse the SubBytes
+              transformation. Each input byte (in hex) selects a row and column
+              in the inverse S-box, the value at that position replaces the byte
+              in the state. This step undoes the non-linear substitution applied
+              during encryption and helps recover the original data.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
+            >
+              <strong>Hint (decryption):</strong> Click any cell to highlight
+              its row and column. The selected cell shows the output value for
+              the corresponding input byte.
+            </Typography>
+          </>
+        )}
         <Box sx={{ overflowX: "auto" }}>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
@@ -81,6 +165,7 @@ function SBoxOverlay({ open, onClose }) {
                       selected && selected.row === row && !isSelected;
                     const isCol =
                       selected && selected.col === col && !isSelected;
+                    const table = mode === "sbox" ? sBox : invSBox;
                     return (
                       <td
                         key={col}
@@ -92,14 +177,14 @@ function SBoxOverlay({ open, onClose }) {
                           background: isSelected
                             ? "#ffd54f"
                             : isRow || isCol
-                            ? "#fff9c4"
-                            : "#f5f5f5",
+                              ? "#fff9c4"
+                              : "#f5f5f5",
                           fontFamily: "monospace",
                           cursor: "pointer",
                           transition: "background 0.2s",
                         }}
                       >
-                        {sBox[idx].toString(16).padStart(2, "0").toUpperCase()}
+                        {table[idx].toString(16).padStart(2, "0").toUpperCase()}
                       </td>
                     );
                   })}
@@ -107,22 +192,6 @@ function SBoxOverlay({ open, onClose }) {
               ))}
             </tbody>
           </table>
-        </Box>
-        <Box sx={{ mt: 3 }}>
-          <Typography variant="body1" gutterBottom>
-            The AES S-box (Substitution box) is a fundamental component in the
-            AES encryption algorithm. It provides non-linearity by substituting
-            each byte of the input with another value, making cryptanalysis more
-            difficult.
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ mt: 3, mb: 5, fontStyle: "italic" }}
-          >
-            <strong>Hint:</strong> Click any cell to highlight its row and
-            column. The selected cell shows the substituted value for the
-            corresponding input byte.
-          </Typography>
         </Box>
       </Box>
     </Drawer>

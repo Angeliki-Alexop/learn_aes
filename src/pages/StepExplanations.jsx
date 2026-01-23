@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import { CirclePlus } from 'lucide-react';
+import { CirclePlus } from "lucide-react";
 
 // Explanation rendering for AddRoundKey step
 export function RenderExplanation({
@@ -9,6 +9,7 @@ export function RenderExplanation({
   previousStepState,
   roundKeys,
   currentRound,
+  roundKeyIndex,
   toHex,
 }) {
   if (currentStep === "AddRoundKey" && highlightedCell) {
@@ -16,7 +17,8 @@ export function RenderExplanation({
     const rowIndex = Number(parts[1]);
     const colIndex = Number(parts[2]);
     const previousStateArray = previousStepState.split(" ");
-    const roundKeyArray = toHex(roundKeys[currentRound]).split(" ");
+    const rkIdx = typeof roundKeyIndex === 'number' ? roundKeyIndex : currentRound;
+    const roundKeyArray = toHex(roundKeys[rkIdx] || []).split(" ");
 
     const previousValueHex =
       previousStateArray[colIndex * 4 + rowIndex] || "00";
@@ -56,7 +58,7 @@ export function RenderExplanation({
           component="p"
           sx={{ fontWeight: "bold", color: "#7b1fa2", mb: 1 }}
         >
-          {`Previous State [${rowIndex}, ${colIndex}] XOR Round Key [${rowIndex}, ${colIndex}] = Result [${rowIndex}, ${colIndex}]`}
+          {`Current State [${rowIndex}, ${colIndex}] XOR Round Key [${rowIndex}, ${colIndex}] = Result [${rowIndex}, ${colIndex}]`}
         </Typography>
 
         <table
@@ -70,33 +72,120 @@ export function RenderExplanation({
         >
           <thead>
             <tr>
-              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>State</th>
-              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>Hex</th>
-              <th style={{ border: "1px solid #d3c7e8", padding: "6px", background: "rgba(123,31,162,0.06)", color: "#4a148c" }}>Binary</th>
+              <th
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  background: "rgba(123,31,162,0.06)",
+                  color: "#4a148c",
+                }}
+              >
+                State
+              </th>
+              <th
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  background: "rgba(123,31,162,0.06)",
+                  color: "#4a148c",
+                }}
+              >
+                Hex
+              </th>
+              <th
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  background: "rgba(123,31,162,0.06)",
+                  color: "#4a148c",
+                }}
+              >
+                Binary
+              </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Current State [{rowIndex}, {colIndex}]</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{previousValueHex}</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{previousValueBitsGrouped}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
+                Current State [{rowIndex}, {colIndex}]
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {previousValueHex}
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {previousValueBitsGrouped}
+              </td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Round Key [{rowIndex}, {colIndex}]</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{roundKeyValueHex}</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{roundKeyValueBitsGrouped}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
+                Round Key [{rowIndex}, {colIndex}]
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {roundKeyValueHex}
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {roundKeyValueBitsGrouped}
+              </td>
             </tr>
             <tr>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", textAlign: "center" }}>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  textAlign: "center",
+                }}
+              >
                 <CirclePlus size={18} color="#7b1fa2" />
               </td>
               <td style={{ border: "1px solid #d3c7e8", padding: "6px" }} />
               <td style={{ border: "1px solid #d3c7e8", padding: "6px" }} />
             </tr>
             <tr>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>Next State [{rowIndex}, {colIndex}]</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{resultValueHex}</td>
-              <td style={{ border: "1px solid #d3c7e8", padding: "6px", fontFamily: "monospace" }}>{resultValueBitsGrouped}</td>
+              <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
+                Next State [{rowIndex}, {colIndex}]
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {resultValueHex}
+              </td>
+              <td
+                style={{
+                  border: "1px solid #d3c7e8",
+                  padding: "6px",
+                  fontFamily: "monospace",
+                }}
+              >
+                {resultValueBitsGrouped}
+              </td>
             </tr>
           </tbody>
         </table>

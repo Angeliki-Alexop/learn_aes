@@ -150,7 +150,13 @@
   background-color: red; /* used in  SubBytes */
 }
 .matrix-table td.highlighted_new {
-  background-color: yellow; /* used in  SubBytes */
+  background-color: yellow; /* legacy: used in SubBytes for new value */
+}
+/* Purplish highlight used for showing corresponding cells (previous / round key) */
+.matrix-table td.highlighted_purple {
+  /* Deeper purple fill, no border as requested */
+  background-color: rgba(128, 0, 128, 0.28);
+  color: #000000; /* keep numbers readable/black as requested */
 }
 
 .matrix-title {
@@ -187,4 +193,46 @@
   color: #ffffff !important; /* white text for contrast */
   border: 1px solid rgba(100, 63, 220, 0.9) !important;
   box-sizing: border-box;
+}
+
+/* Disable hover background change and clicking for ShiftRows visualization only */
+.shiftrows-table .shiftrows-cell,
+.shiftrows-table .shiftrows-outline-cell {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.shiftrows-table .shiftrows-cell:hover,
+.shiftrows-table .shiftrows-outline-cell:hover {
+  background-color: transparent; /* Override global hover */
+}
+
+/* During ShiftRows step disable clicks and hover for all matrices (previous + next) */
+.shiftrows-step .matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.shiftrows-step .matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
+}
+
+/* During MixColumns step disable clicks and hover for Current State (previous) and Fixed Matrix only */
+.mixcolumns-step .matrix.previous-matrix .matrix-table td,
+.mixcolumns-step .matrix.fixed-matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.mixcolumns-step .matrix.previous-matrix .matrix-table td:hover,
+.mixcolumns-step .matrix.fixed-matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
+}
+
+/* During AddRoundKey step disable clicks and hover for Previous State and Round Key tables */
+.addroundkey-step .matrix.previous-matrix .matrix-table td,
+.addroundkey-step .matrix.roundkey-matrix .matrix-table td {
+  pointer-events: none; /* Prevent clicks */
+  cursor: default; /* Remove pointer cursor */
+}
+.addroundkey-step .matrix.previous-matrix .matrix-table td:hover,
+.addroundkey-step .matrix.roundkey-matrix .matrix-table td:hover {
+  background-color: transparent; /* Override global hover */
 }

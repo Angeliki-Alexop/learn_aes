@@ -7,14 +7,13 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Grid,
   TextField,
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import { Grid3x3 } from "lucide-react";
 
-import { sBox } from "../../utils/aes_manual_v2";
+import { invSBox } from "../../utils/aes_manual_v2";
 
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
@@ -22,15 +21,15 @@ function getRandomMatrix() {
   );
 }
 
-function applySBox(matrix) {
+function applyInvSBox(matrix) {
   return matrix.map((row) =>
     row.map((byte) => {
-      return sBox[byte];
+      return invSBox[byte];
     }),
   );
 }
 
-const SubBytesPractice = () => {
+const InvSubBytesPractice = () => {
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userAnswers, setUserAnswers] = useState(
     Array(4)
@@ -41,12 +40,13 @@ const SubBytesPractice = () => {
   const [showHelp, setShowHelp] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  const solution = applySBox(inputMatrix);
+  const solution = applyInvSBox(inputMatrix);
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
       .map(() => Array(4).fill(false)),
   );
+
   const handleInputChange = (r, c, value) => {
     const updated = userAnswers.map((row) => [...row]);
     updated[r][c] = value;
@@ -116,20 +116,20 @@ const SubBytesPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">SubBytes Practice</Typography>
+        <Typography variant="h5">InvSubBytes Practice</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the SubBytes transformation by replacing each byte using the AES
-        S-box lookup table{" "}
+        Apply the InvSubBytes transformation by replacing each byte using the
+        AES inverse S-box lookup table{" "}
         <Grid3x3
           size={20}
           style={{
             display: "inline-block",
             verticalAlign: "middle",
-            margin: "3px 2px",
+            margin: "1px 2px",
           }}
         />{" "}
         . Enter your answers in hexadecimal format.
@@ -178,74 +178,74 @@ const SubBytesPractice = () => {
             )}
           </Box>
         </Box>
-        {/* User Output Matrix */}
-        <Box
-          sx={{
-            width: 318,
-          }}
-        >
+        {/* User Output Matrix with headers and labels */}
+        <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter SubBytes output (hex):
+            Enter InvSubBytes output (hex):
           </Typography>
+
           <Box
             sx={{
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
               gap: 1,
+              alignItems: "stretch",
             }}
           >
-            {userAnswers.map((row, r) =>
-              row.map((val, c) => (
-                <Box
-                  key={`ans-${r}-${c}`}
-                  sx={{
-                    border: incorrectCells[r][c]
-                      ? "2px solid #d32f2f"
-                      : showSolution
-                        ? "2px solid #1976d2"
-                        : "1px solid #ccc",
-                    borderRadius: 1,
-                    p: 1,
-                    textAlign: "center",
-                    bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    minHeight: 48,
-                  }}
-                >
-                  <TextField
-                    value={
-                      showSolution
-                        ? solution[r][c]
-                            .toString(16)
-                            .padStart(2, "0")
-                            .toUpperCase()
-                        : val
-                    }
-                    onChange={(e) => handleInputChange(r, c, e.target.value)}
-                    inputProps={{
-                      maxLength: 2,
-                      style: {
-                        textAlign: "center",
-                        textTransform: "uppercase",
-                        fontWeight: "bold",
-                      },
-                    }}
-                    disabled={showSolution}
-                    size="small"
+            {userAnswers.map((rowVals, r) => (
+              <React.Fragment key={`row-${r}`}>
+                {rowVals.map((val, c) => (
+                  <Box
+                    key={`ans-${r}-${c}`}
                     sx={{
-                      width: 56,
-                      bgcolor: showSolution ? "#e3f2fd" : undefined,
-                      "& .MuiInputBase-input": {
-                        color: showSolution ? "#1976d2" : undefined,
-                        fontWeight: showSolution ? "bold" : undefined,
-                      },
+                      border: incorrectCells[r][c]
+                        ? "2px solid #d32f2f"
+                        : showSolution
+                          ? "2px solid #1976d2"
+                          : "1px solid #ccc",
+                      borderRadius: 1,
+                      p: 1,
+                      textAlign: "center",
+                      bgcolor: showSolution ? "#e3f2fd" : "#f5f5f5",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      minHeight: 48,
                     }}
-                  />
-                </Box>
-              )),
-            )}
+                  >
+                    <TextField
+                      value={
+                        showSolution
+                          ? solution[r][c]
+                              .toString(16)
+                              .padStart(2, "0")
+                              .toUpperCase()
+                          : val
+                      }
+                      onChange={(e) => handleInputChange(r, c, e.target.value)}
+                      inputProps={{
+                        maxLength: 2,
+                        style: {
+                          textAlign: "center",
+                          textTransform: "uppercase",
+                          fontWeight: "bold",
+                        },
+                      }}
+                      disabled={showSolution}
+                      size="small"
+                      sx={{
+                        width: 56,
+                        bgcolor: showSolution ? "#e3f2fd" : undefined,
+                        "& .MuiInputBase-input": {
+                          color: showSolution ? "#1976d2" : undefined,
+                          fontWeight: showSolution ? "bold" : undefined,
+                        },
+                      }}
+                    />
+                  </Box>
+                ))}
+              </React.Fragment>
+            ))}
           </Box>
         </Box>
       </Box>
@@ -286,19 +286,19 @@ const SubBytesPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>What is SubBytes?</strong>
+          <strong>What is InvSubBytes?</strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            SubBytes is the step in AES where each byte is replaced with a new
-            byte according to a predefined substitution table called the S-box.
-            To perform this step, take the byte in hex: the first hex digit
-            indicates the row in the S-box, and the second hex digit indicates
-            the column. The value found at that position becomes the substituted
-            byte.
+            InvSubBytes is the inverse operation of SubBytes used in AES
+            decryption. Each byte is replaced with a new byte according to a
+            predefined substitution table called inverse S-box. To perform this
+            step, take the byte in hex: the first hex digit indicates the row in
+            the S-box, and the second hex digit indicates the column. The value
+            found at that position becomes the inverse-substituted byte.
           </Typography>
           <Typography
             variant="body2"
@@ -308,7 +308,7 @@ const SubBytesPractice = () => {
             }}
           >
             <strong>Hint:</strong> Enter the substituted values in hexadecimal
-            format. Click the{" "}
+            format. Click the
             <Grid3x3
               size={20}
               style={{
@@ -316,8 +316,8 @@ const SubBytesPractice = () => {
                 verticalAlign: "middle",
                 margin: "0 4px",
               }}
-            />{" "}
-            icon in the navbar to view the S-box lookup table.
+            />
+            icon in the navbar to view the inverse S-box lookup table.
           </Typography>
         </DialogContent>
       </Dialog>
@@ -325,4 +325,4 @@ const SubBytesPractice = () => {
   );
 };
 
-export default SubBytesPractice;
+export default InvSubBytesPractice;

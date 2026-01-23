@@ -4,6 +4,7 @@ import {
   AppBar,
   Toolbar,
   IconButton,
+  Tooltip,
   Typography,
   Menu,
   MenuItem,
@@ -15,11 +16,14 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { Grid3x3 } from "lucide-react";
 import SBoxOverlay from "./SBoxOverlay";
+import CalculateIcon from "@mui/icons-material/Calculate";
+import CalculatorOverlay from "./CalculatorOverlay";
 
 function Navbar() {
   const location = useLocation();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [sboxOpen, setSboxOpen] = React.useState(false);
+  const [calcOpen, setCalcOpen] = React.useState(false);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,37 +38,55 @@ function Navbar() {
         <Container maxWidth="xl">
           <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
-              <img
-                src={import.meta.env.BASE_URL + "Logo.svg"}
-                alt="AES Learning & Training"
-                style={{
-                  height: "55px",
-                  width: "auto",
-                }}
-              />
+              <Link to="/">
+                <img
+                  src={import.meta.env.BASE_URL + "Logo.svg"}
+                  alt="AES Learning & Training"
+                  style={{
+                    height: "55px",
+                    width: "auto",
+                  }}
+                />
+              </Link>
             </Box>
-            <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+            <Box
+              sx={{ display: { xs: "none", md: "flex" }, alignItems: "center" }}
+            >
               <Button
                 component={Link}
                 to="/step-by-step"
+                onClick={() => {
+                  if (location.pathname === "/step-by-step") {
+                    window.dispatchEvent(new CustomEvent("stepbystep-reset"));
+                  }
+                }}
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/step-by-step" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/step-by-step"
+                      ? "#7c5fe6"
+                      : "inherit",
                 }}
               >
-                StepByStep
+                Step-By-Step
               </Button>
               <Button
                 component={Link}
-                to="/"
+                to="/train"
+                onClick={() => {
+                  if (location.pathname === "/train") {
+                    window.dispatchEvent(new CustomEvent("train-reset"));
+                  }
+                }}
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/train" ? "#7c5fe6" : "inherit",
                 }}
               >
-                Train
+                Training
               </Button>
               <Button
                 component={Link}
@@ -72,31 +94,58 @@ function Navbar() {
                 color="inherit"
                 sx={{
                   "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
+                  backgroundColor:
+                    location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
                 }}
               >
                 Learn More
               </Button>
-              <Button
-                component={Link}
-                to="/About"
-                color="inherit"
-                sx={{
-                  "&:hover": { backgroundColor: "#7c5fe6" },
-                  backgroundColor: location.pathname === "/About" ? "#7c5fe6" : "inherit",
+              {/* S-box Icon Button */}
+              <Tooltip
+                title="S-box"
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontSize: "14px",
+                      p: "8px 10px",
+                      backgroundColor: "#000000",
+                    },
+                  },
                 }}
               >
-                About
-              </Button>
-              {/* S-box Icon Button */}
-              <IconButton
-                color="inherit"
-                sx={{ ml: 2 }}
-                onClick={() => setSboxOpen(true)}
-                aria-label="Show S-box"
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 2 }}
+                  onClick={() => setSboxOpen(true)}
+                  aria-label="Show S-box"
+                >
+                  <Grid3x3 />
+                </IconButton>
+              </Tooltip>
+              {/* Calculator Icon Button */}
+              <Tooltip
+                title="Calculator"
+                arrow
+                componentsProps={{
+                  tooltip: {
+                    sx: {
+                      fontSize: "14px",
+                      p: "8px 10px",
+                      backgroundColor: "#000000",
+                    },
+                  },
+                }}
               >
-                <Grid3x3 />
-              </IconButton>
+                <IconButton
+                  color="inherit"
+                  sx={{ ml: 1 }}
+                  onClick={() => setCalcOpen(true)}
+                  aria-label="Open calculator"
+                >
+                  <CalculateIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
             {/* ...mobile menu code unchanged... */}
             <Box sx={{ display: { xs: "flex", md: "none" } }}>
@@ -125,21 +174,47 @@ function Navbar() {
                 open={Boolean(anchorEl)}
                 onClose={handleMenuClose}
               >
-                <MenuItem component={Link} to="/" onClick={handleMenuClose}>
-                  Home
-                </MenuItem>
-                <MenuItem component={Link} to="/decode" onClick={handleMenuClose}>
-                  Decode
-                </MenuItem>
-                <MenuItem component={Link} to="/encode" onClick={handleMenuClose}>
-                  Encode
-                </MenuItem>
                 <MenuItem
                   component={Link}
                   to="/step-by-step"
                   onClick={handleMenuClose}
                 >
-                  StepByStep
+                  Step-by-step
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/train"
+                  onClick={() => {
+                    if (location.pathname === "/train") {
+                      window.dispatchEvent(new CustomEvent("train-reset"));
+                    }
+                    handleMenuClose();
+                  }}
+                >
+                  Training
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/LearnMore"
+                  onClick={handleMenuClose}
+                >
+                  Learn More
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setSboxOpen(true);
+                    handleMenuClose();
+                  }}
+                >
+                  S-box
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setCalcOpen(true);
+                    handleMenuClose();
+                  }}
+                >
+                  Calculator
                 </MenuItem>
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}
               </Menu>
@@ -149,6 +224,7 @@ function Navbar() {
       </AppBar>
       {/* S-box Overlay */}
       <SBoxOverlay open={sboxOpen} onClose={() => setSboxOpen(false)} />
+      <CalculatorOverlay open={calcOpen} onClose={() => setCalcOpen(false)} />
     </>
   );
 }
