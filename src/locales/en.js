@@ -168,6 +168,27 @@ The difference is which round key is used: decryption applies the round keys in 
         howTitle: 'How to interact',
         tabWhat: 'What is it?',
         tabHow: 'How to interact?'
+  ,
+  subBytes: {
+    title: 'SubBytes',
+    what: `SubBytes is a transformation where each byte of the AES state is replaced independently using a fixed lookup table called the S-box.
+
+For each byte, its hexadecimal value selects a row and column in the S-box, and the value found there becomes the new byte.
+
+The SubBytes step is the only non-linear transformation of the cipher.`,
+    how: `Click any byte in the Current State to highlight it and display its corresponding value in the S-box panel.
+The first hexadecimal digit selects the S-box row, the second selects the column, and the value at that position is the substituted byte.`,
+  },
+  invSubBytes: {
+    title: 'InvSubBytes',
+    what: `InvSubBytes is the inverse of the SubBytes step.
+
+During decryption, each byte of the AES state is replaced independently using a fixed lookup table called the inverse S-box.
+
+For each byte, its hexadecimal value selects a row and column in the inverse S-box, and the value found there becomes the new byte. This step reverses the non-linear substitution applied during encryption.`,
+    how: `Click any byte in the Current State to highlight it and display its corresponding value in the inverse S-box panel.
+The first hexadecimal digit selects the inverse S-box row, the second selects the column, and the highlighted value at that position is the new byte.`,
+  }
       },
       navigation: {
         input: 'INPUT',
