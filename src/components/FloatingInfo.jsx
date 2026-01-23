@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./FloatingInfo.css";
-import { STEP_INFO } from "../stepInformation/StepInfo";
+import { useTranslation } from "react-i18next";
 import infoImg from "../assets/aes_info_image.png";
 
 export default function FloatingInfo({
@@ -22,19 +22,29 @@ export default function FloatingInfo({
     return () => document.removeEventListener("mousedown", handleOutside);
   }, [open]);
 
+  const { t } = useTranslation();
+
   const buildHow = (stepKey) => {
-    let how = (STEP_INFO[stepKey] && STEP_INFO[stepKey].how) || "";
+    let how = t(`pages.stepByStep.stepInfo.${stepKey && stepKey.toLowerCase().replace(/\s+/g,'')}.how`, "");
+    if (!how) {
+      // fallback to short generic how if not provided
+      how = t(`pages.stepByStep.stepInfo.${stepKey}.how`, "") || "";
+    }
+
     if (stepKey === "Key Expansion") {
       const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
-      let extra = `Current key size: AES-${keySize} (${wordsPerKey} words per round key).\n\nIn the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of ${wordsPerKey} words; the special core transformation is applied every ${wordsPerKey}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.\n`;
-
-      if (wordsPerKey === 8) {
-        extra += `\nThere are three cases when computing a new word w[i]:\n\nCase 1 — Special transform (i % 8 === 0)\nApply the following steps to the previous word (w[i-1]), in order:\n  1. Rotate: move the first byte to the end.\n  2. SubWord: substitute each byte using the S-box.\n  3. XOR Rcon: XOR the result with the round constant (Rcon).\n  4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].\n\nCase 2 — Mid-cycle SubWord (i % 8 === 4)\nApply the following step to the previous word (w[i-1]):\n  1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].\n\nCase 3 — Simple XOR (all other words)\n  w[i] = w[i - 8] XOR w[i - 1]\n\nUse the above rules with the current round key size (words per key = ${wordsPerKey}).`;
-      } else {
-        extra += `\nThere are two cases when computing a new word w[i]:\n\nCase 1 — Special transform (i % ${wordsPerKey} === 0)\nApply the following steps to the previous word (w[i-1]), in order:\n  1. Rotate: move the first byte to the end.\n  2. SubWord: substitute each byte using the S-box.\n  3. XOR Rcon: XOR the result with the round constant (Rcon).\n  4. XOR w[i - ${wordsPerKey}]: XOR the result with the word ${wordsPerKey} positions before (start of the previous round key) to produce w[i].\n\nCase 2 — Simple XOR\n  w[i] = w[i - ${wordsPerKey}] XOR w[i - 1]\n\nUse the above rules with the current round key size (words per key = ${wordsPerKey}).`;
-      }
-
-      how = how + "\n" + extra;
+      const header = t("pages.stepByStep.stepInfo.keyExpansion.howHeader", {
+        keySize,
+        wordsPerKey,
+      });
+      const extraKey = wordsPerKey === 8 ? "threeCases" : "twoCases";
+      const extra = t(`pages.stepByStep.stepInfo.keyExpansion.cases.${extraKey}`, {
+        wordsPerKey,
+        mod: wordsPerKey,
+        offset: wordsPerKey,
+        mid: 4,
+      });
+      how = [how, header, extra].filter(Boolean).join("\n\n");
     }
     return how;
   };
@@ -43,7 +53,24 @@ export default function FloatingInfo({
   const showInfoFor = (step) => {
     if (!step) return null;
     if (step === "Input" || step === "Result") return null;
-    return STEP_INFO[step] || null;
+    // look up titles/what/how from translation keys
+    const keyMap = {
+      "Key Expansion": "keyExpansion",
+      SubBytes: "subBytes",
+      ShiftRows: "shiftRows",
+      InvSubBytes: "invSubBytes",
+      InvShiftRows: "invShiftRows",
+      InvMixColumns: "invMixColumns",
+      MixColumns: "mixColumns",
+      AddRoundKey: "addRoundKey",
+    };
+    const k = keyMap[step];
+    if (!k) return null;
+    return {
+      title: t(`pages.stepByStep.stepInfo.${k}.title`, step),
+      what: t(`pages.stepByStep.stepInfo.${k}.what`, ""),
+      how: t(`pages.stepByStep.stepInfo.${k}.how`, ""),
+    };
   };
 
   const info = showInfoFor(currentStep);

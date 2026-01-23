@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 import { CirclePlus } from "lucide-react";
 
 // Explanation rendering for AddRoundKey step
@@ -12,6 +13,7 @@ export function RenderExplanation({
   roundKeyIndex,
   toHex,
 }) {
+  const { t } = useTranslation();
   if (currentStep === "AddRoundKey" && highlightedCell) {
     const parts = highlightedCell.split("-");
     const rowIndex = Number(parts[1]);
@@ -58,7 +60,7 @@ export function RenderExplanation({
           component="p"
           sx={{ fontWeight: "bold", color: "#7b1fa2", mb: 1 }}
         >
-          {`Current State [${rowIndex}, ${colIndex}] XOR Round Key [${rowIndex}, ${colIndex}] = Result [${rowIndex}, ${colIndex}]`}
+          {t('pages.stepByStep.addRoundKey.line', { r: rowIndex, c: colIndex })}
         </Typography>
 
         <table
@@ -80,7 +82,7 @@ export function RenderExplanation({
                   color: "#4a148c",
                 }}
               >
-                State
+                {t('pages.stepByStep.addRoundKey.table.state')}
               </th>
               <th
                 style={{
@@ -90,7 +92,7 @@ export function RenderExplanation({
                   color: "#4a148c",
                 }}
               >
-                Hex
+                {t('pages.stepByStep.addRoundKey.table.hex')}
               </th>
               <th
                 style={{
@@ -100,14 +102,14 @@ export function RenderExplanation({
                   color: "#4a148c",
                 }}
               >
-                Binary
+                {t('pages.stepByStep.addRoundKey.table.binary')}
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
-                Current State [{rowIndex}, {colIndex}]
+                {t('pages.stepByStep.addRoundKey.currentState', { r: rowIndex, c: colIndex })}
               </td>
               <td
                 style={{
@@ -130,7 +132,7 @@ export function RenderExplanation({
             </tr>
             <tr>
               <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
-                Round Key [{rowIndex}, {colIndex}]
+                {t('pages.stepByStep.addRoundKey.roundKey', { r: rowIndex, c: colIndex })}
               </td>
               <td
                 style={{
@@ -166,7 +168,7 @@ export function RenderExplanation({
             </tr>
             <tr>
               <td style={{ border: "1px solid #d3c7e8", padding: "6px" }}>
-                Next State [{rowIndex}, {colIndex}]
+                {t('pages.stepByStep.addRoundKey.nextState', { r: rowIndex, c: colIndex })}
               </td>
               <td
                 style={{

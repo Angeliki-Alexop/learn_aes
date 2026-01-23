@@ -100,15 +100,17 @@ export function RenderMatrix({
           ))}
         </tbody>
       </table>
-      <Typography
-        variant="body1"
-        component="p"
-        align="left"
-        className="matrix-title"
-        id={`${matrixId}-title`}
-      >
-        {title}
-      </Typography>
+      {title ? (
+        <Typography
+          variant="body1"
+          component="p"
+          align="left"
+          className="matrix-title"
+          id={`${matrixId}-title`}
+        >
+          {title}
+        </Typography>
+      ) : null}
     </Box>
   );
 }

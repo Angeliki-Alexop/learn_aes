@@ -79,6 +79,16 @@ const translation = {
       labels: {
         roundKey: 'Round Key',
       },
+      matrix: {
+        shiftRowsTable: 'ShiftRows Table',
+        sbox: 'S-Box',
+        inverseSBox: 'Inverse S-Box',
+  inverseFixedMatrix: 'Inverse Fixed Matrix',
+  fixedMatrix: 'Fixed Matrix',
+        roundKey: 'Round Key',
+        currentState: 'Current State',
+        nextState: 'Next State',
+      },
       sidebar: {
         input: 'Input',
         keySchedule: 'Key Schedule',
@@ -126,6 +136,18 @@ const translation = {
   finalRound: 'FINAL ROUND',
   result: 'RESULT',
         submit: 'SUBMIT',
+      }
+      ,
+      addRoundKey: {
+        line: 'Current State [{{r}}, {{c}}] XOR Round Key [{{r}}, {{c}}] = Result [{{r}}, {{c}}]',
+        table: {
+          state: 'State',
+          hex: 'Hex',
+          binary: 'Binary',
+        },
+        currentState: 'Current State [{{r}}, {{c}}]',
+        roundKey: 'Round Key [{{r}}, {{c}}]',
+        nextState: 'Next State [{{r}}, {{c}}]'
       }
     },
   },

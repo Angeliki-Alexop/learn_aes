@@ -73,10 +73,20 @@ const translation = {
         },
       },
       dynamic: {
-        roundStep: 'Round {{round}} - Step: {{step}}',
+        roundStep: 'Γύρος {{round}} - Βήμα: {{step}}',
       },
       labels: {
         roundKey: 'Round Key',
+      },
+      matrix: {
+        shiftRowsTable: 'Πίνακας ShiftRows',
+        sbox: 'S-Box',
+        inverseSBox: 'Αντίστροφο S-Box',
+  inverseFixedMatrix: 'Αντίστροφη Σταθερό Μητρώο',
+  fixedMatrix: 'Σταθερό Μητρώο',
+        roundKey: 'Round Key',
+        currentState: 'Τρέχουσα Κατάσταση',
+        nextState: 'Επόμενη Κατάσταση',
       },
       sidebar: {
         input: 'Είσοδος',
@@ -103,6 +113,17 @@ const translation = {
   finalRound: 'ΤΕΛΕΥΤΑΙΟΣ ΓΥΡΟΣ',
   result: 'ΑΠΟΤΕΛΕΣΜΑ',
         submit: 'ΥΠΟΒΟΛΗ',
+      },
+      addRoundKey: {
+        line: 'Current State [{{r}}, {{c}}] XOR Round Key [{{r}}, {{c}}] = Result [{{r}}, {{c}}]',
+        table: {
+          state: 'Κατάσταση',
+          hex: 'Hex',
+          binary: 'Δυαδικό',
+        },
+        currentState: 'Τρέχουσα Κατάσταση [{{r}}, {{c}}]',
+        roundKey: 'Round Key [{{r}}, {{c}}]',
+        nextState: 'Επόμενη Κατάσταση [{{r}}, {{c}}]'
       },
       keySchedule: {
         title: 'Key Schedule - Key Expansion',

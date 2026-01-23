@@ -1079,7 +1079,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={previousStepState}
               matrixId="previous"
-              title="Current State"
+              title={t('pages.stepByStep.matrix.currentState')}
               highlightRows={currentStep === "ShiftRows"}
               highlightColumns={false}
               highlightedCell={highlightedCell}
@@ -1220,7 +1220,7 @@ function StepByStep() {
                   align="center"
                   style={{ marginTop: 4 }}
                 >
-                  ShiftRows Table
+                  {t('pages.stepByStep.matrix.shiftRowsTable')}
                 </Typography>
               </div>
             )}
@@ -1232,8 +1232,8 @@ function StepByStep() {
                   highlightedInputValue={highlightedCellValue}
                   highlightedOutputValue={highlightedSBoxOutputValue}
                   title={
-                    currentStep === "InvSubBytes" ? "Inverse S-Box" : "S-Box"
-                  }
+                      currentStep === "InvSubBytes" ? t('pages.stepByStep.matrix.inverseSBox') : t('pages.stepByStep.matrix.sbox')
+                    }
                 />
               </div>
             )}
@@ -1249,7 +1249,7 @@ function StepByStep() {
                   ["0d", "09", "0e", "0b"],
                   ["0b", "0d", "09", "0e"],
                 ]}
-                title="Inverse Fixed Matrix"
+                title={t('pages.stepByStep.matrix.inverseFixedMatrix')}
               />
             )}
 
@@ -1258,7 +1258,7 @@ function StepByStep() {
               <RenderMatrix
                 hexString={toHex(roundKeys[roundKeyIndex] || [])}
                 matrixId="roundKey"
-                title="Round Key"
+                title={t('pages.stepByStep.matrix.roundKey')}
                 highlightRows={false}
                 highlightColumns={false}
                 highlightedCell={highlightedCell}
@@ -1270,7 +1270,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
-              title="Next State"
+              title={t('pages.stepByStep.matrix.nextState')}
               highlightRows={false}
               // Highlight columns for both ShiftRows and InvShiftRows so the
               // visual column markers remain consistent in either direction.
