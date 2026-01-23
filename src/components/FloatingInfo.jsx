@@ -94,18 +94,18 @@ export default function FloatingInfo({
   const renderWhat = () => {
     if (currentStep === "Input")
       return hasSubmitted
-        ? minimalForInputAfter.what
-        : minimalForInputBefore.what;
-    if (currentStep === "Result") return minimalForResult.what;
+        ? t("pages.stepByStep.helper.inputAfter.what", "")
+        : t("pages.stepByStep.helper.inputBefore.what", "");
+    if (currentStep === "Result") return t("pages.stepByStep.helper.result.what", "");
     return info ? info.what : "";
   };
 
   const renderHow = () => {
     if (currentStep === "Input")
       return hasSubmitted
-        ? minimalForInputAfter.how
-        : minimalForInputBefore.how;
-    if (currentStep === "Result") return minimalForResult.how;
+        ? t("pages.stepByStep.helper.inputAfter.how", "")
+        : t("pages.stepByStep.helper.inputBefore.how", "");
+    if (currentStep === "Result") return t("pages.stepByStep.helper.result.how", "");
     if (!info) return "";
     // for Key Expansion append dynamic text
     if (currentStep === "Key Expansion") return buildHow(currentStep);
