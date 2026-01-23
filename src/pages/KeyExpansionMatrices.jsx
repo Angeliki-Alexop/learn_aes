@@ -9,8 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 import { RenderMatrix } from "./MatrixDisplay";
-import en from "../locales/en";
-import el from "../locales/el";
+import { useTranslation } from 'react-i18next';
 import {
   getColumnsForExplanations,
   getHighlightedColumnsByMatrix,
@@ -20,6 +19,7 @@ import { CirclePlus, RotateCcw, Wand2, Equal } from "lucide-react";
 import { sBox, rCon } from "../utils/aes_manual_v2";
 
 function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = 'Encrypt' }) {
+  const { t } = useTranslation();
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState({});
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState(
@@ -40,9 +40,10 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
 
   // explanation text state so we can change it dynamically
   let defaultExplanationText = "";
-  if (keySize === 128) defaultExplanationText = en.keyExpansion.aes128;
-  else if (keySize === 192) defaultExplanationText = en.keyExpansion.aes192;
-  else if (keySize === 256) defaultExplanationText = en.keyExpansion.aes256;
+  // Use the English keyExpansion long explanations from the locale resource
+  if (keySize === 128) defaultExplanationText = t('keyExpansion.aes128');
+  else if (keySize === 192) defaultExplanationText = t('keyExpansion.aes192');
+  else if (keySize === 256) defaultExplanationText = t('keyExpansion.aes256');
 
   const [explanationText, setExplanationText] = useState(
     defaultExplanationText
@@ -95,74 +96,31 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
 
     setExplanationColumns(sortedColumnsWithXor);
 
-    // Dynamic explanatory text depending on key size and selected word
+    // Dynamic explanatory text depending on key size and selected word (use i18n)
+    const wordIndex = matrixIdx * 4 + colIdx;
     if (keySize === 128) {
-      const wordIndex = matrixIdx * 4 + colIdx; // global word index across round keys
       const isSpecial = wordIndex % 4 === 0;
       if (isSpecial) {
-        setExplanationText(
-          `Case 1 — (i % 4 === 0)\n
-          Apply the following steps to the previous word (w[i-1]), in order:\n
-          1. Rotate: move the first byte to the end.
-          2. SubWord: substitute each byte using the S-box.
-          3. XOR Rcon: XOR the result with the round constant (Rcon).
-          4. XOR w[i - 4]: XOR the result with the word 4 positions before to produce w[i].`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 4, offset: 4 }));
       } else {
-        setExplanationText(
-          `Case 2 — Simple XOR\n
-          w[i] = w[i - 4] XOR w[i - 1]`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 4 }));
       }
     } else if (keySize === 192) {
-      // AES-192: special transform every 6th word
-      const wordIndex = matrixIdx * 4 + colIdx;
       const isSpecial = wordIndex % 6 === 0;
       if (isSpecial) {
-        setExplanationText(
-          `Case 1 — (i % 6 === 0)\n
-          Apply the following steps to the previous word (w[i-1]), in order:\n
-          1. Rotate: move the first byte to the end.
-          2. SubWord: substitute each byte using the S-box.
-          3. XOR Rcon: XOR the result with the round constant (Rcon).
-          4. XOR w[i - 6]: XOR the result with the word 6 positions before to produce w[i].`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 6, offset: 6 }));
       } else {
-        setExplanationText(
-          `Case 2 — Simple XOR\n
-          w[i] = w[i - 6] XOR w[i - 1]`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 6 }));
       }
     } else if (keySize === 256) {
-      // AES-256: three cases
-      const wordIndex = matrixIdx * 4 + colIdx;
       if (wordIndex % 8 === 0) {
-        // Case 1: full special transform
-        setExplanationText(
-          `Case 1 — (i % 8 === 0)\n
-          Apply the following steps to the previous word (w[i-1]), in order:\n
-          1. Rotate: move the first byte to the end.
-          2. SubWord: substitute each byte using the S-box.
-          3. XOR Rcon: XOR the result with the round constant (Rcon).
-          4. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 8, offset: 8 }));
       } else if (wordIndex % 8 === 4) {
-        // Case 2: SubWord-only then XOR with w[i-8]
-        setExplanationText(
-          `Case 2 — Mid-cycle SubWord (i % 8 === 4)\n
-          Apply the following step to the previous word (w[i-1]):\n
-          1. SubWord: substitute each byte using the S-box.
-          2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2_mid', { mod: 8, mid: 4, offset: 8 }));
       } else {
-        // Case 3: simple XOR
-        setExplanationText(
-          `Case 3 — Simple XOR (all other words)\n
-          w[i] = w[i - 8] XOR w[i - 1]`
-        );
+        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 8 }));
       }
     } else {
-      // other key sizes: keep default explanation
       setExplanationText(defaultExplanationText);
     }
   };
@@ -187,7 +145,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
   return (
     <>
       <Typography variant="subtitle1" align="center">
-        All round keys (Matrix format)
+        {t('pages.stepByStep.keySchedule.title')}
       </Typography>
       <div
         className="key-expansion-matrix-grid"
@@ -223,7 +181,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
           return (
             <div key={idx} style={{ width: "100%" }}>
               <Typography variant="caption" align="center">
-                Round {idx}
+                {t('pages.stepByStep.keySchedule.roundLabel', { n: idx })}
               </Typography>
               <RenderMatrix
                 hexString={toHex(roundKey)}
@@ -290,23 +248,25 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
                       }}
                     >
                       {col.column === "previous word"
-                        ? "w[i-1]"
+                        ? t('pages.stepByStep.keySchedule.columns.previousWord')
                         : col.column === "offset word before"
-                        ? `w[i - ${wordsPerKey}]`
+                        ? t('pages.stepByStep.keySchedule.columns.offsetWordBefore', { offset: wordsPerKey })
                         : col.column === "current word"
-                        ? "Selected word"
+                        ? t('pages.stepByStep.keySchedule.columns.currentWord')
                         : col.column === "XOR"
-                        ? "XOR"
+                        ? t('pages.stepByStep.keySchedule.columns.XOR')
                         : col.column === "Rotate"
-                        ? "Rotate"
+                        ? t('pages.stepByStep.keySchedule.columns.Rotate')
                         : col.column === "Substitute"
-                        ? "Substitute"
+                        ? t('pages.stepByStep.keySchedule.columns.Substitute')
                         : col.column === "Rotated"
-                        ? "Rotated"
-                        : col.column === "Substituted Word"
-                        ? "SubWord"
+                        ? t('pages.stepByStep.keySchedule.columns.Rotated')
+                        : col.column === "Substituted Word" || col.column === "SubstitutedWord"
+                        ? t('pages.stepByStep.keySchedule.columns.SubstitutedWord')
                         : col.column === "Rcon"
-                        ? "Rcon"
+                        ? t('pages.stepByStep.keySchedule.columns.Rcon')
+                        : col.column === "Equals"
+                        ? t('pages.stepByStep.keySchedule.columns.Equals')
                         : col.column}
                     </TableCell>
                   ))}

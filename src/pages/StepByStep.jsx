@@ -992,7 +992,7 @@ function StepByStep() {
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
-            Key Schedule - Key Expansion
+            {t('pages.stepByStep.keySchedule.title')}
           </Typography>
           {/* StepInfo removed. Floating info button available at bottom-right. */}
           <div className="key-expansion" style={{ marginTop: "24px" }}>
@@ -1015,7 +1015,7 @@ function StepByStep() {
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
-            Round {displayRound} - Step: {currentStep}
+            {t('pages.stepByStep.dynamic.roundStep', { round: displayRound, step: currentStep })}
           </Typography>
           {/* Show plaintext (for Encrypt) or ciphertext (for Decrypt) under the heading */}
           <Box sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}>
@@ -1036,7 +1036,7 @@ function StepByStep() {
             >
               {mode === "Encrypt" ? (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>Plaintext</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.plaintext')}</Typography>
                   <Typography
                     sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "1rem" }}
                   >
@@ -1045,9 +1045,7 @@ function StepByStep() {
                 </>
               ) : (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>
-                    Ciphertext (Hex)
-                  </Typography>
+                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.ciphertext')}</Typography>
                   <Typography
                     sx={{
                       wordBreak: "break-word",

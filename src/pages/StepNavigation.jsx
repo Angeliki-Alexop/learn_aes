@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Button, TextField } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 
 export function StepNavigation({
   currentRound,
@@ -36,6 +37,7 @@ export function StepNavigation({
   stateMap,
   showInitialControls = true,
 }) {
+  const { t } = useTranslation();
   const inResultView = currentRound > totalRounds || currentStep === "Result";
   const defaultKeyForSize = (size) => {
     if (size === 128) return "DefaultKey123456";
@@ -80,11 +82,11 @@ export function StepNavigation({
                   : {}
               }
             >
-              Encryption
+              {t('pages.stepByStep.input.controls.encryptButton')}
             </Button>
             <Box display="flex" alignItems="center" sx={{ mx: 1 }}>
               <label htmlFor="key-size-select" style={{ marginRight: 8 }}>
-                Key Size:
+                {t('pages.stepByStep.input.labels.keySize')}
               </label>
               <select
                 id="key-size-select"
@@ -92,9 +94,9 @@ export function StepNavigation({
                 onChange={(e) => setKeySize(Number(e.target.value))}
                 style={{ padding: "4px 8px", fontSize: "1rem" }}
               >
-                <option value={128}>128 bits</option>
-                <option value={192}>192 bits</option>
-                <option value={256}>256 bits</option>
+                <option value={128}>{t('pages.stepByStep.input.keySizeOptions.128')}</option>
+                <option value={192}>{t('pages.stepByStep.input.keySizeOptions.192')}</option>
+                <option value={256}>{t('pages.stepByStep.input.keySizeOptions.256')}</option>
               </select>
             </Box>
             <Button
@@ -116,14 +118,14 @@ export function StepNavigation({
                   : {}
               }
             >
-              Decryption
+              {t('pages.stepByStep.input.controls.decryptButton')}
             </Button>
           </Box>
           <TextField
             label={
               mode === "Encrypt"
-                ? "Enter Plain Text to Encrypt"
-                : "AES Encrypted Text"
+                ? t('pages.stepByStep.input.labels.plaintext')
+                : t('pages.stepByStep.input.labels.ciphertextHex')
             }
             value={tempInputText}
             onChange={(e) => setTempInputText(e.target.value)}
@@ -133,11 +135,7 @@ export function StepNavigation({
             inputProps={{ maxLength: 64 }}
           />
           <TextField
-            label={
-              mode === "Encrypt"
-                ? "Enter Secret Key"
-                : "Enter Secret Key used for Encryption"
-            }
+            label={t('pages.stepByStep.input.labels.key')}
             value={tempKey}
             onChange={(e) => setTempKey(e.target.value)}
             variant="outlined"
@@ -163,14 +161,14 @@ export function StepNavigation({
             onClick={() => onFullSubmit ? onFullSubmit() : handleSubmitButtonClick(tempKey, tempInputText, keySize, setKeyError, setInputText, setKey, setSidebarVisible, setRoundKeys, setStateMap, setHasSubmitted)}
             style={{ marginTop: "16px" }}
           >
-            Submit
+            {t('pages.stepByStep.input.controls.submit')}
           </Button>
         </Box>
       )}
       {/* Show navigation buttons only after submit */}
       {hasSubmitted && (
         <>
-          <Button
+            <Button
             variant="contained"
             style={{
               backgroundColor: "#4b0082",
@@ -180,9 +178,9 @@ export function StepNavigation({
             onClick={() => handleInput(setCurrentRound, setCurrentStep)}
             disabled={currentRound === -2 && currentStep === "Input"}
           >
-            Input
+            {t('pages.stepByStep.navigation.input')}
           </Button>
-          <Button
+            <Button
             variant="contained"
             color="primary"
             style={{ margin: "8px" }}
@@ -191,9 +189,9 @@ export function StepNavigation({
             }
             disabled={inResultView ? false : currentRound <= 0}
           >
-            Previous Round
+            {t('pages.stepByStep.navigation.previousRound')}
           </Button>
-          <Button
+            <Button
             variant="contained"
             color="primary"
             style={{ margin: "8px" }}
@@ -215,9 +213,9 @@ export function StepNavigation({
             }
             disabled={inResultView ? false : (currentRound === -2 && currentStep === "Input")}
           >
-            Previous Step
+            {t('pages.stepByStep.navigation.previousStep')}
           </Button>
-          <Button
+            <Button
             variant="contained"
             color="primary"
             style={{ margin: "8px" }}
@@ -268,9 +266,9 @@ export function StepNavigation({
             }}
             disabled={inResultView ? true : (currentRound > totalRounds || currentStep === 'Result')}
           >
-            Next Step
+            {t('pages.stepByStep.navigation.nextStep')}
           </Button>
-          <Button
+            <Button
             variant="contained"
             color="primary"
             style={{ margin: "8px" }}
@@ -285,9 +283,9 @@ export function StepNavigation({
             }
             disabled={inResultView ? true : currentRound >= totalRounds}
           >
-            Next Round
+            {t('pages.stepByStep.navigation.nextRound')}
           </Button>
-          <Button
+            <Button
             variant="contained"
             color="secondary"
             style={{ margin: "8px" }}
@@ -296,11 +294,11 @@ export function StepNavigation({
             }
             disabled={inResultView ? true : currentRound >= totalRounds}
           >
-            Final Round
+            {t('pages.stepByStep.navigation.finalRound')}
           </Button>
           {/* Show Result button only when we're on the final round's last step (AddRoundKey) */}
           {currentRound === totalRounds && currentStep === "AddRoundKey" && (
-            <Button
+              <Button
               variant="contained"
               color="secondary"
               style={{ margin: "8px", backgroundColor: "#7c5fe6" }}
@@ -310,7 +308,7 @@ export function StepNavigation({
                 setCurrentStep("Result");
               }}
             >
-              Result
+              {t('pages.stepByStep.navigation.finalRound')}
             </Button>
           )}
         </>
