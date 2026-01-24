@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 import { Grid3x3 } from "lucide-react";
 
 import { invSBox } from "../../utils/aes_manual_v2";
@@ -30,6 +31,7 @@ function applyInvSBox(matrix) {
 }
 
 const InvSubBytesPractice = () => {
+  const { t } = useTranslation();
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userAnswers, setUserAnswers] = useState(
     Array(4)
@@ -67,7 +69,11 @@ const InvSubBytesPractice = () => {
       }
     }
     setIncorrectCells(newIncorrect);
-    setFeedback(correct ? "Correct!" : "Some answers are incorrect.");
+    setFeedback(
+      correct
+        ? t("train.practice.correct", "Correct!")
+        : t("train.practice.incorrect", "Some answers are incorrect.")
+    );
   };
 
   const handleShowSolution = () => {
@@ -116,14 +122,18 @@ const InvSubBytesPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">InvSubBytes Practice</Typography>
+        <Typography variant="h5">
+          {t("train.practice.invsubbytes", "InvSubBytes Practice")}
+        </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the InvSubBytes transformation by replacing each byte using the
-        AES inverse S-box lookup table{" "}
+        {t(
+          "train.practice.invsubbytes.description",
+          "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format."
+        )}
         <Grid3x3
           size={20}
           style={{
@@ -131,8 +141,7 @@ const InvSubBytesPractice = () => {
             verticalAlign: "middle",
             margin: "1px 2px",
           }}
-        />{" "}
-        . Enter your answers in hexadecimal format.
+        />
       </Typography>
       <Box
         sx={{
@@ -146,7 +155,7 @@ const InvSubBytesPractice = () => {
         {/* Original Matrix */}
         <Box sx={{ width: 318 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Original Matrix (hex):
+            {t("train.practice.originalMatrix", "Original Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -181,7 +190,7 @@ const InvSubBytesPractice = () => {
         {/* User Output Matrix with headers and labels */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter InvSubBytes output (hex):
+            {t("train.practice.yourAnswers", "Enter InvSubBytes output (hex):")}
           </Typography>
 
           <Box
@@ -251,7 +260,11 @@ const InvSubBytesPractice = () => {
       </Box>
       {feedback && (
         <Typography
-          color={feedback === "Correct!" ? "success.main" : "error.main"}
+          color={
+            feedback === t("train.practice.correct", "Correct!")
+              ? "success.main"
+              : "error.main"
+          }
           sx={{ textAlign: "center", mb: 2 }}
         >
           {feedback}
@@ -259,7 +272,10 @@ const InvSubBytesPractice = () => {
       )}
       {showSolution && (
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-          All correct answers are now filled in the User Output Matrix above.
+          {t(
+            "train.practice.solutionMsg",
+            "All correct answers are now filled in the User Output Matrix above."
+          )}
         </Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -268,13 +284,13 @@ const InvSubBytesPractice = () => {
           onClick={handleCheck}
           disabled={showSolution}
         >
-          Check Answers
+          {t("train.practice.check", "Check Answers")}
         </Button>
         <Button variant="outlined" onClick={handleShowSolution}>
-          Show Solution
+          {t("train.practice.showSolution", "Show Solution")}
         </Button>
         <Button variant="contained" color="secondary" onClick={handleNext}>
-          Next Example
+          {t("train.practice.next", "Next Example")}
         </Button>
       </Box>
 
@@ -286,19 +302,19 @@ const InvSubBytesPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>What is InvSubBytes?</strong>
+          <strong>
+            {t("train.practice.tooltips.invsubbytes.title", "What is InvSubBytes?")}
+          </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            InvSubBytes is the inverse operation of SubBytes used in AES
-            decryption. Each byte is replaced with a new byte according to a
-            predefined substitution table called inverse S-box. To perform this
-            step, take the byte in hex: the first hex digit indicates the row in
-            the S-box, and the second hex digit indicates the column. The value
-            found at that position becomes the inverse-substituted byte.
+            {t(
+              "train.practice.tooltips.invsubbytes.description",
+              "InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the inverse-substituted byte."
+            )}
           </Typography>
           <Typography
             variant="body2"
@@ -307,8 +323,13 @@ const InvSubBytesPractice = () => {
               fontStyle: "italic",
             }}
           >
-            <strong>Hint:</strong> Enter the substituted values in hexadecimal
-            format. Click the
+            <strong>
+              {t("train.practice.tooltips.invsubbytes.hint", "Hint:")}
+            </strong>{" "}
+            {t(
+              "train.practice.tooltips.invsubbytes.hint_text",
+              "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table."
+            )}
             <Grid3x3
               size={20}
               style={{
@@ -317,7 +338,6 @@ const InvSubBytesPractice = () => {
                 margin: "0 4px",
               }}
             />
-            icon in the navbar to view the inverse S-box lookup table.
           </Typography>
         </DialogContent>
       </Dialog>

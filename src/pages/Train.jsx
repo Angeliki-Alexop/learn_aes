@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { Container, Typography, Button, Box } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useTranslation } from "react-i18next";
 import "./../styles/Train.css";
 import SubBytesPractice from "../components/practice/SubBytesPractice";
 import ShiftRowsPractice from "../components/practice/ShiftRowsPractice";
@@ -13,6 +14,7 @@ import KeyExpansionPractice from "../components/practice/KeyExpansionPractice";
 import InvSubBytesPractice from "../components/practice/InvSubBytesPractice";
 
 function Train() {
+  const { t } = useTranslation();
   const [activePage, setActivePage] = useState("practice"); // default to practice landing
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [flags, setFlags] = useState({ enable_train_inverse_steps: true });
@@ -48,42 +50,42 @@ function Train() {
   const allExercises = [
     {
       key: "subbytes",
-      label: "SubBytes",
+      label: t("train.practice.subbytes", "SubBytes Practice"),
       component: <SubBytesPractice />,
     },
     {
       key: "shiftrows",
-      label: "ShiftRows",
+      label: t("train.practice.shiftrows", "ShiftRows Practice"),
       component: <ShiftRowsPractice />,
     },
     {
       key: "invshiftrows",
-      label: "InvShiftRows",
+      label: t("train.practice.invshiftrows", "InvShiftRows Practice"),
       component: <InvShiftRowsPractice />,
     },
     {
       key: "mixcolumns",
-      label: "MixColumns",
+      label: t("train.practice.mixcolumns", "MixColumns Practice"),
       component: <MixColumnsPractice />,
     },
     {
       key: "invmixcolumns",
-      label: "InvMixColumns",
+      label: t("train.practice.invmixcolumns", "InvMixColumns Practice"),
       component: <InvMixColumnsPractice />,
     },
     {
       key: "invsubbytes",
-      label: "InvSubBytes",
+      label: t("train.practice.invsubbytes", "InvSubBytes Practice"),
       component: <InvSubBytesPractice />,
     },
     {
       key: "addroundkey",
-      label: "AddRoundKey",
+      label: t("train.practice.addroundkey", "AddRoundKey Practice"),
       component: <AddRoundKeyPractice />,
     },
     {
       key: "keyexpansion",
-      label: "Key Expansion",
+      label: t("train.practice.keyexpansion", "Key Expansion Practice"),
       component: <KeyExpansionPractice />,
     },
   ];
@@ -109,28 +111,26 @@ function Train() {
                   gutterBottom
                   sx={{ textAlign: "center", mt: 4, mb: 4 }}
                 >
-                  AES Training Center
+                  {t("train.title", "AES Training Center")}
                 </Typography>
                 <Typography
                   variant="body1"
                   sx={{ textAlign: "center", mb: 3, maxWidth: 800, mx: "auto" }}
                 >
-                  Welcome to the AES Training Center! Here you can practice each
-                  step of the AES algorithm in an interactive way. Choose an
-                  exercise below to get started and test your understanding.
-                  Need help along the way? Click the{" "}
+                  {t("train.welcome", "Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the")}
+                  {" "}
                   <HelpOutlineIcon
                     fontSize="small"
                     sx={{ ml: 0.1, mb: 0.3, verticalAlign: "middle" }}
                   />{" "}
-                  icon at any step to get guidance.
+                  {t("train.welcomeEnd", "icon at any step to get guidance.")}
                 </Typography>
                 <Typography
                   variant="h6"
                   gutterBottom
                   sx={{ textAlign: "center", mb: 3 }}
                 >
-                  Select a step to train on:
+                  {t("train.selectStep", "Select a step to train on:")}
                 </Typography>
                 {/* First row: main steps */}
                 <Box
@@ -206,7 +206,7 @@ function Train() {
                   sx={{ mt: 3, mb: 1, textTransform: "none" }}
                   variant="contained"
                 >
-                  Back to Exercise List
+                  {t("train.backToList", "Back to Exercise List")}
                 </Button>
                 {exercises.find((ex) => ex.key === selectedExercise)?.component}
               </Box>

@@ -13,6 +13,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import CalculateIcon from "@mui/icons-material/Calculate";
+import { useTranslation } from "react-i18next";
 
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
@@ -122,6 +123,7 @@ function HexBinConverter() {
 }
 
 const AddRoundKeyPractice = () => {
+  const { t } = useTranslation();
   const [stateMatrix, setStateMatrix] = useState(getRandomMatrix());
   const [roundKeyMatrix, setRoundKeyMatrix] = useState(getRandomMatrix());
   const [userMatrix, setUserMatrix] = useState(
@@ -226,15 +228,18 @@ const AddRoundKeyPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">AddRoundKey Practice</Typography>
+        <Typography variant="h5">
+          {t("train.practice.addroundkey", "AddRoundKey Practice")}
+        </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the AddRoundKey transformation by XORing each byte of the state
-        matrix with the corresponding byte of the round key. Enter your answers
-        in hexadecimal format.
+        {t(
+          "train.practice.addroundkey.description",
+          "Apply the AddRoundKey transformation by XORing each byte of the state matrix with the corresponding byte of the round key. Enter your answers in hexadecimal format."
+        )}
       </Typography>
 
       <Box
@@ -249,7 +254,7 @@ const AddRoundKeyPractice = () => {
         {/* State Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            State Matrix (hex):
+            {t("train.practice.originalMatrix", "State Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -306,7 +311,7 @@ const AddRoundKeyPractice = () => {
         {/* Round Key Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Round Key (hex):
+            {t("pages.stepByStep.mixColumns.key", "Round Key (hex):")}
           </Typography>
           <Box
             sx={{
@@ -363,7 +368,7 @@ const AddRoundKeyPractice = () => {
         {/* User Output Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter Result (hex):
+            {t("pages.stepByStep.mixColumns.result", "Enter Result (hex):")}
           </Typography>
           <Box
             sx={{
@@ -474,7 +479,11 @@ const AddRoundKeyPractice = () => {
 
       {feedback && (
         <Typography
-          color={feedback === "Correct!" ? "success.main" : "error.main"}
+          color={
+            feedback === t("train.practice.correct", "Correct!")
+              ? "success.main"
+              : "error.main"
+          }
           sx={{ textAlign: "center", mb: 2 }}
         >
           {feedback}
@@ -482,7 +491,10 @@ const AddRoundKeyPractice = () => {
       )}
       {showSolution && (
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-          All correct answers are now filled in the Result Matrix above.
+          {t(
+            "train.practice.solutionMsg",
+            "All correct answers are now filled in the Result Matrix above."
+          )}
         </Typography>
       )}
 
@@ -492,13 +504,13 @@ const AddRoundKeyPractice = () => {
           onClick={handleCheck}
           disabled={showSolution}
         >
-          Check Answers
+          {t("train.practice.check", "Check Answers")}
         </Button>
         <Button variant="outlined" onClick={handleShowSolution}>
-          Show Solution
+          {t("train.practice.showSolution", "Show Solution")}
         </Button>
         <Button variant="contained" color="secondary" onClick={handleNext}>
-          Next Example
+          {t("train.practice.next", "Next Example")}
         </Button>
       </Box>
 
@@ -510,26 +522,33 @@ const AddRoundKeyPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>What is AddRoundKey?</strong>
+          <strong>
+            {t("train.practice.tooltips.addroundkey.title", "What is AddRoundKey?")}
+          </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            AddRoundKey is a step in AES where each byte of the state matrix is
-            combined with the corresponding byte of the round key using the XOR
-            operation (⊕).
+            {t(
+              "train.practice.tooltips.addroundkey.description",
+              "AddRoundKey is a step in AES where each byte of the state matrix is combined with the corresponding byte of the round key using the XOR operation (⊕)."
+            )}
           </Typography>
 
           <Typography variant="body2" sx={{ mt: 3, fontStyle: "italic" }}>
-            <strong>Hint:</strong> Convert each byte to binary, perform XOR bit
-            by bit, then convert back to hexadecimal. Click the
+            <strong>
+              {t("train.practice.tooltips.addroundkey.hint", "Hint:")}
+            </strong>{" "}
+            {t(
+              "train.practice.tooltips.addroundkey.hint_text",
+              "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter."
+            )}
             <CalculateIcon
               fontSize="small"
               sx={{ display: "inline-block", verticalAlign: "middle", mx: 0.5 }}
             />
-            icon in the navbar to open the converter.
           </Typography>
         </DialogContent>
       </Dialog>

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 import { Grid3x3 } from "lucide-react";
 
 import { sBox } from "../../utils/aes_manual_v2";
@@ -31,6 +32,7 @@ function applySBox(matrix) {
 }
 
 const SubBytesPractice = () => {
+  const { t } = useTranslation();
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userAnswers, setUserAnswers] = useState(
     Array(4)
@@ -67,7 +69,7 @@ const SubBytesPractice = () => {
       }
     }
     setIncorrectCells(newIncorrect);
-    setFeedback(correct ? "Correct!" : "Some answers are incorrect.");
+    setFeedback(correct ? t("train.practice.correct", "Correct!") : t("train.practice.incorrect", "Some answers are incorrect."));
   };
 
   const handleShowSolution = () => {
@@ -116,14 +118,14 @@ const SubBytesPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">SubBytes Practice</Typography>
+        <Typography variant="h5">{t("train.practice.subbytes", "SubBytes Practice")}</Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the SubBytes transformation by replacing each byte using the AES
-        S-box lookup table{" "}
+        {t("train.practice.applySubBytes", "Apply the SubBytes transformation by replacing each byte using the AES S-box lookup table")}
+        {" "}
         <Grid3x3
           size={20}
           style={{
@@ -132,7 +134,7 @@ const SubBytesPractice = () => {
             margin: "3px 2px",
           }}
         />{" "}
-        . Enter your answers in hexadecimal format.
+        . {t("common.enterHex", "Enter your answers in hexadecimal format.")}
       </Typography>
       <Box
         sx={{
@@ -146,7 +148,7 @@ const SubBytesPractice = () => {
         {/* Original Matrix */}
         <Box sx={{ width: 318 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Original Matrix (hex):
+            {t("train.practice.originalMatrix", "Original Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -185,7 +187,7 @@ const SubBytesPractice = () => {
           }}
         >
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter SubBytes output (hex):
+            {t("train.practice.yourAnswers", "Your Answers (hex):")}
           </Typography>
           <Box
             sx={{
@@ -268,13 +270,13 @@ const SubBytesPractice = () => {
           onClick={handleCheck}
           disabled={showSolution}
         >
-          Check Answers
+          {t("train.practice.check", "Check")}
         </Button>
         <Button variant="outlined" onClick={handleShowSolution}>
-          Show Solution
+          {t("train.practice.showSolution", "Show Solution")}
         </Button>
         <Button variant="contained" color="secondary" onClick={handleNext}>
-          Next Example
+          {t("train.practice.next", "Next")}
         </Button>
       </Box>
 
@@ -286,19 +288,14 @@ const SubBytesPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>What is SubBytes?</strong>
+          <strong>{t("train.practice.tooltips.subbytes.title", "What is SubBytes?")}</strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            SubBytes is the step in AES where each byte is replaced with a new
-            byte according to a predefined substitution table called the S-box.
-            To perform this step, take the byte in hex: the first hex digit
-            indicates the row in the S-box, and the second hex digit indicates
-            the column. The value found at that position becomes the substituted
-            byte.
+            {t("train.practice.tooltips.subbytes.description", "SubBytes is the step in AES where each byte is replaced with a new byte according to a predefined substitution table called the S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the substituted byte.")}
           </Typography>
           <Typography
             variant="body2"
@@ -307,17 +304,7 @@ const SubBytesPractice = () => {
               fontStyle: "italic",
             }}
           >
-            <strong>Hint:</strong> Enter the substituted values in hexadecimal
-            format. Click the{" "}
-            <Grid3x3
-              size={20}
-              style={{
-                display: "inline-block",
-                verticalAlign: "middle",
-                margin: "0 4px",
-              }}
-            />{" "}
-            icon in the navbar to view the S-box lookup table.
+            <strong>Hint:</strong> {t("train.practice.tooltips.subbytes.hint", "Enter the substituted values in hexadecimal format. Click the icon in the navbar to view the S-box lookup table.")}
           </Typography>
         </DialogContent>
       </Dialog>

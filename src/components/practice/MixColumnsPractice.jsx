@@ -12,6 +12,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { useTranslation } from "react-i18next";
 
 // AES MixColumns matrix
 const MIX_MATRIX = [
@@ -376,6 +377,7 @@ function HexBinConverter() {
 }
 
 const MixColumnsPractice = () => {
+  const { t } = useTranslation();
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userMatrix, setUserMatrix] = useState(
     Array(4)
@@ -474,8 +476,11 @@ const MixColumnsPractice = () => {
     setCellStatus(newCellStatus);
     setFeedback(
       correct
-        ? "Correct!"
-        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!",
+        ? t("train.practice.correct", "Correct!")
+        : t(
+            "train.practice.incorrect",
+            "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
+          ),
     );
   };
 
@@ -700,16 +705,18 @@ const MixColumnsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">MixColumns Practice</Typography>
+        <Typography variant="h5">
+          {t("train.practice.mixcolumns", "MixColumns Practice")}
+        </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        In MixColumns, each column of the original matrix (4 bytes) is
-        multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the
-        resulting byte values for each cell after the MixColumns step. Note: You
-        can use the helper below to see how each output is calculated.
+        {t(
+          "train.practice.mixcolumns.description",
+          "In MixColumns, each column of the original matrix (4 bytes) is multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the MixColumns step. Note: You can use the helper below to see how each output is calculated."
+        )}
       </Typography>
       {/* Quick instructions moved into dialog (use the Help icon to open) */}
       <Box
@@ -724,7 +731,7 @@ const MixColumnsPractice = () => {
         {/* Original Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Original Matrix (hex):
+            {t("train.practice.originalMatrix", "Original Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -771,7 +778,7 @@ const MixColumnsPractice = () => {
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-            Fixed Matrix:
+            {t("pages.stepByStep.mixColumns.fixedMatrix", "Fixed Matrix:")}
           </Typography>
           <Box
             sx={{
@@ -1059,7 +1066,11 @@ const MixColumnsPractice = () => {
       </Box>
       {feedback && (
         <Typography
-          color={feedback === "Correct!" ? "success.main" : "error.main"}
+          color={
+            feedback === t("train.practice.correct", "Correct!")
+              ? "success.main"
+              : "error.main"
+          }
           sx={{ textAlign: "center", mb: 2 }}
         >
           {feedback}
@@ -1067,7 +1078,10 @@ const MixColumnsPractice = () => {
       )}
       {showSolution && (
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-          All correct answers are now filled in the User Output Matrix above.
+          {t(
+            "train.practice.solutionMsg",
+            "All correct answers are now filled in the User Output Matrix above."
+          )}
         </Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -1076,18 +1090,21 @@ const MixColumnsPractice = () => {
           onClick={handleCheck}
           disabled={showSolution}
         >
-          Check Answers
+          {t("train.practice.check", "Check Answers")}
         </Button>
         <Button variant="outlined" onClick={handleShowSolution}>
-          Show Solution
+          {t("train.practice.showSolution", "Show Solution")}
         </Button>
         <Button variant="contained" color="secondary" onClick={handleNext}>
-          Next Example
+          {t("train.practice.next", "Next Example")}
         </Button>
       </Box>
       <Box sx={{ mt: 5 }}>
         <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
-          Select which column to analyze:
+          {t(
+            "train.practice.mixcolumns.selectColumn",
+            "Select which column to analyze:"
+          )}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
           {[0, 1, 2, 3].map((colIdx) => (
@@ -1133,7 +1150,10 @@ const MixColumnsPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          AES MixColumns – Step-by-Step Guide
+          {t(
+            "train.practice.tooltips.mixcolumns.title",
+            "AES MixColumns – Step-by-Step Guide"
+          )}
           <IconButton
             aria-label="Close MixColumns help"
             onClick={() => setShowHelp(false)}

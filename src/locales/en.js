@@ -1,4 +1,7 @@
 const translation = {
+  common: {
+    enterHex: 'Enter your answers in hexadecimal format.',
+  },
   nav: {
     stepByStep: 'Step-By-Step',
     training: 'Training',
@@ -270,6 +273,74 @@ During decryption, each column of the state matrix is multiplied by the inverse 
         roundKey: 'Round Key [{{r}}, {{c}}]',
         nextState: 'Next State [{{r}}, {{c}}]'
       }
+    },
+  },
+  train: {
+    title: 'AES Training Center',
+    welcome: 'Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the icon at any step to get guidance.',
+    selectStep: 'Select a step to train on:',
+    backToList: 'Back to Exercise List',
+    practice: {
+      subbytes: 'SubBytes Practice',
+      shiftrows: 'ShiftRows Practice',
+      mixcolumns: 'MixColumns Practice',
+      invmixcolumns: 'InvMixColumns Practice',
+      invshiftrows: 'InvShiftRows Practice',
+      addroundkey: 'AddRoundKey Practice',
+      keyexpansion: 'Key Expansion Practice',
+      invsubbytes: 'InvSubBytes Practice',
+      originalMatrix: 'Original Matrix (hex):',
+      yourAnswers: 'Your Answers (hex):',
+      check: 'Check Answers',
+      showSolution: 'Show Solution',
+      next: 'Next Example',
+      correct: 'Correct!',
+      incorrect: 'Some answers are incorrect. Incorrect cells are highlighted. Try again!',
+      solutionMsg: 'All correct answers are now filled in the User Output Matrix above.',
+      tooltips: {
+        subbytes: {
+          title: 'What is SubBytes?',
+          description: 'SubBytes is the step in AES where each byte is replaced with a new byte according to a predefined substitution table called the S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the substituted byte.',
+          hint: 'Enter the substituted values in hexadecimal format. Click the icon in the navbar to view the S-box lookup table.',
+        },
+        shiftrows: {
+          title: 'What is ShiftRows?',
+          description: 'ShiftRows is a transposition step in AES. Each row of the state matrix is shifted left by a different offset: Row 0: No shift, Row 1: Shift left by 1, Row 2: Shift left by 2, Row 3: Shift left by 3. Enter the shifted values for each row in hexadecimal format.',
+          hint: 'Remember that bytes wrapping around on the left side come back on the right side. Enter your answers in hexadecimal format.',
+        },
+        mixcolumns: {
+          title: 'AES MixColumns – Step-by-Step Guide',
+          description: 'MixColumns is the step in AES where each column of the state matrix is multiplied by a fixed matrix using arithmetic in the Galois field GF(2^8). This operation mixes the bytes within each column, providing diffusion in the cipher.',
+          hint: 'This is a complex operation involving polynomial multiplication in GF(2^8). Enter your answers in hexadecimal format.',
+        },
+        invmixcolumns: {
+          title: 'AES InvMixColumns – Step-by-Step Guide',
+          description: 'InvMixColumns is the inverse of the MixColumns step used during decryption. Each column of the state matrix is multiplied by the inverse fixed matrix using arithmetic in the Galois field GF(2^8) to reverse the mixing.',
+          hint: 'This operation reverses the MixColumns transformation. Enter your answers in hexadecimal format.',
+        },
+        invshiftrows: {
+          title: 'What is InvShiftRows?',
+          description: 'InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: Row 0: No shift, Row 1: Shift right by 1, Row 2: Shift right by 2, Row 3: Shift right by 3. Enter the shifted values for each row in hexadecimal format.',
+          hint: 'Remember that bytes wrapping around on the right side come back on the left side. Enter your answers in hexadecimal format.',
+        },
+        invsubbytes: {
+          title: 'What is InvSubBytes?',
+          description: 'InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the inverse-substituted byte.',
+          hint: 'Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.',
+          hint_text: 'Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.',
+        },
+        addroundkey: {
+          title: 'What is AddRoundKey?',
+          description: 'AddRoundKey is a step in AES where each byte of the state matrix is combined with the corresponding byte of the round key using the XOR operation (⊕).',
+          hint: 'Hint:',
+          hint_text: 'Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter.',
+        },
+        keyexpansion: {
+          title: 'What is Key Expansion?',
+          description: 'AES uses a different key for each encryption round. Key Expansion is the process that generates all these round keys from the original key. The original key is split into words (1 word = 4 bytes). New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant). The key size determines how often these special steps are applied: AES-128 (16 bytes / 4 words): A special transformation is applied every 4th word. AES-192 (24 bytes / 6 words): A special transformation is applied every 6th word. AES-256 (32 bytes / 8 words): AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).',
+          hint: 'Follow the key expansion algorithm carefully. Enter your answers in hexadecimal format.',
+        },
+      },
     },
   },
 };

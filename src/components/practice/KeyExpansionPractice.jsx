@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { useTranslation } from "react-i18next";
 import { keyExpansion, sBox, rCon } from "../../utils/aes_manual_v2";
 
 function getRandomKeyBytes(keySize) {
@@ -33,6 +34,7 @@ function wordsFromBytes(bytes) {
 }
 
 const KeyExpansionPractice = () => {
+  const { t } = useTranslation();
   const [keySize, setKeySize] = useState(128);
   const [keyBytes, setKeyBytes] = useState(getRandomKeyBytes(128));
   const [expandedKeyBytes, setExpandedKeyBytes] = useState([]);
@@ -633,7 +635,9 @@ const KeyExpansionPractice = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h5">Key Expansion Practice</Typography>
+        <Typography variant="h5">
+          {t("train.practice.keyexpansion", "Key Expansion Practice")}
+        </Typography>
         <Box>
           <IconButton onClick={() => setShowHelp(true)}>
             <HelpOutlineIcon />
@@ -650,7 +654,7 @@ const KeyExpansionPractice = () => {
         }}
       >
         <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-          Select key size:
+          {t("train.practice.keyexpansion.selectKeySize", "Select key size:")}
         </Typography>
         <ToggleButtonGroup
           value={keySize}
@@ -665,7 +669,9 @@ const KeyExpansionPractice = () => {
       </Box>
 
       <Box sx={{ mt: 3 }}>
-        <Typography variant="subtitle2">Original Key (words):</Typography>
+        <Typography variant="subtitle2">
+          {t("train.practice.keyexpansion.originalKey", "Original Key (words):")}
+        </Typography>
         <Box
           sx={{
             display: "grid",
@@ -700,7 +706,7 @@ const KeyExpansionPractice = () => {
             size="small"
             onClick={handleRegenerate}
           >
-            New Key
+            {t("train.practice.keyexpansion.newKey", "New Key")}
           </Button>
         </Box>
       </Box>
@@ -1503,7 +1509,10 @@ const KeyExpansionPractice = () => {
         fullWidth
       >
         <DialogTitle>
-          What is Key Expansion?
+          {t(
+            "train.practice.tooltips.keyexpansion.title",
+            "What is Key Expansion?"
+          )}
           <IconButton
             aria-label="close"
             onClick={() => setShowHelp(false)}

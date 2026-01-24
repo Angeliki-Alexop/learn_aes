@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CloseIcon from "@mui/icons-material/Close";
+import { useTranslation } from "react-i18next";
 
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
@@ -30,6 +31,7 @@ function invShiftRows(matrix) {
 }
 
 const InvShiftRowsPractice = () => {
+  const { t } = useTranslation();
   const [inputMatrix, setInputMatrix] = useState(getRandomMatrix());
   const [userRows, setUserRows] = useState(
     Array(4)
@@ -73,8 +75,11 @@ const InvShiftRowsPractice = () => {
     setIncorrectRows(newIncorrect);
     setFeedback(
       correct
-        ? "Correct!"
-        : "Some rows are incorrect. Please check the highlighted rows and try again.",
+        ? t("train.practice.correct", "Correct!")
+        : t(
+            "train.practice.incorrect",
+            "Some rows are incorrect. Please check the highlighted rows and try again."
+          ),
     );
   };
 
@@ -120,14 +125,18 @@ const InvShiftRowsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">InvShiftRows Practice</Typography>
+        <Typography variant="h5">
+          {t("train.practice.invshiftrows", "InvShiftRows Practice")}
+        </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body1" sx={{ mb: 2, textAlign: "center" }}>
-        Apply the inverse ShiftRows transformation by cyclically rotating each
-        row to the right by a specific offset.
+        {t(
+          "train.practice.invshiftrows.description",
+          "Apply the inverse ShiftRows transformation by cyclically rotating each row to the right by a specific offset."
+        )}
       </Typography>
       <Box
         sx={{
@@ -141,7 +150,7 @@ const InvShiftRowsPractice = () => {
         {/* Original Matrix */}
         <Box sx={{ width: 318 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Original Matrix (hex):
+            {t("train.practice.originalMatrix", "Original Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -176,7 +185,7 @@ const InvShiftRowsPractice = () => {
         {/* User Output Matrix with headers and labels */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter InvShiftRows output (hex):
+            {t("train.practice.yourAnswers", "Enter InvShiftRows output (hex):")}
           </Typography>
 
           <Box
@@ -288,7 +297,11 @@ const InvShiftRowsPractice = () => {
       </Box>
       {feedback && (
         <Typography
-          color={feedback === "Correct!" ? "success.main" : "error.main"}
+          color={
+            feedback === t("train.practice.correct", "Correct!")
+              ? "success.main"
+              : "error.main"
+          }
           sx={{ textAlign: "center", mb: 2 }}
         >
           {feedback}
@@ -296,7 +309,10 @@ const InvShiftRowsPractice = () => {
       )}
       {showSolution && (
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-          All correct answers are now filled in the User Output Matrix above.
+          {t(
+            "train.practice.solutionMsg",
+            "All correct answers are now filled in the User Output Matrix above."
+          )}
         </Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -305,13 +321,13 @@ const InvShiftRowsPractice = () => {
           onClick={handleCheck}
           disabled={showSolution}
         >
-          Check Answers
+          {t("train.practice.check", "Check Answers")}
         </Button>
         <Button variant="outlined" onClick={handleShowSolution}>
-          Show Solution
+          {t("train.practice.showSolution", "Show Solution")}
         </Button>
         <Button variant="contained" color="secondary" onClick={handleNext}>
-          Next Example
+          {t("train.practice.next", "Next Example")}
         </Button>
       </Box>
       <Dialog open={showHelp} onClose={() => setShowHelp(false)}>
@@ -322,23 +338,19 @@ const InvShiftRowsPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>What is InvShiftRows?</strong>
+          <strong>
+            {t("train.practice.tooltips.invshiftrows.title", "What is InvShiftRows?")}
+          </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            InvShiftRows is the inverse transposition step in AES decryption.
-            Each row of the original matrix is shifted right by a different
-            offset:
-            <ul>
-              <li>Row 0: No shift</li>
-              <li>Row 1: Shift right by 1</li>
-              <li>Row 2: Shift right by 2</li>
-              <li>Row 3: Shift right by 3</li>
-            </ul>
-            Enter the shifted values for each row in hexadecimal format.
+            {t(
+              "train.practice.tooltips.invshiftrows.description",
+              "InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: Row 0: No shift, Row 1: Shift right by 1, Row 2: Shift right by 2, Row 3: Shift right by 3. Enter the shifted values for each row in hexadecimal format."
+            )}
           </Typography>
         </DialogContent>
       </Dialog>
