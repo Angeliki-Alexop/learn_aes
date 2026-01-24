@@ -289,6 +289,7 @@ During decryption, each column of the state matrix is multiplied by the inverse 
       addroundkey: 'AddRoundKey Practice',
       keyexpansion: 'Key Expansion Practice',
       invsubbytes: 'InvSubBytes Practice',
+      applySubBytes: 'Apply the SubBytes transformation by replacing each byte using the AES S-box lookup table',
       originalMatrix: 'Original Matrix (hex):',
       yourAnswers: 'Your Answers (hex):',
       check: 'Check Answers',
@@ -297,6 +298,36 @@ During decryption, each column of the state matrix is multiplied by the inverse 
       correct: 'Correct!',
       incorrect: 'Some answers are incorrect. Incorrect cells are highlighted. Try again!',
       solutionMsg: 'All correct answers are now filled in the User Output Matrix above.',
+      'shiftrows.description': 'Apply the ShiftRows transformation by cyclically shifting each row left by a specific offset.',
+      'mixcolumns.description': 'In MixColumns, each column of the original matrix (4 bytes) is multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the MixColumns step. Note: You can use the helper below to see how each output is calculated.',
+      'invmixcolumns.description': 'InvMixColumns is the inverse of the MixColumns step and is used during AES decryption. In this step, each column of the original matrix (4 bytes) is multiplied by Inverse Fixed Matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the InvMixColumns step. Note: You can use the helper below to see how each output is calculated.',
+      'invshiftrows.description': 'Apply the inverse ShiftRows transformation by cyclically rotating each row to the right by a specific offset.',
+      'addroundkey.description': 'Apply the AddRoundKey transformation by XORing each byte of the state matrix with the corresponding byte of the round key. Enter your answers in hexadecimal format.',
+      'invsubbytes.description': 'Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format.',
+      'mixcolumns.selectColumn': 'Select which column to analyze:',
+      'invmixcolumns.selectColumn': 'Select which column to analyze:',
+      'mixcolumns.calculator': {
+        title: 'Step-by-Step MixColumns Calculation (Selected Column)',
+        fixedMatrix: 'Fixed Matrix:',
+        selectedColumn: 'Selected Column:',
+        calculateOutput: 'Calculate each output byte (row) for this column:',
+        outputRow: 'Output Row b',
+        enterMultiplication: 'Enter each multiplication result (hex), then XOR them to get the output byte.',
+        column: 'Column',
+        check: 'CHECK',
+        show: 'SHOW',
+      },
+      'invmixcolumns.calculator': {
+        title: 'Step-by-Step InvMixColumns Calculation (Selected Column)',
+        fixedMatrix: 'InvMixColumns Matrix:',
+        selectedColumn: 'Selected Column:',
+        calculateOutput: 'Calculate each output byte (row) for this column:',
+        outputRow: 'Output Row b',
+        enterMultiplication: 'Enter each multiplication result (hex), then XOR them to get the output byte.',
+        column: 'Column',
+        check: 'CHECK',
+        show: 'SHOW',
+      },
       tooltips: {
         subbytes: {
           title: 'What is SubBytes?',
@@ -343,6 +374,38 @@ During decryption, each column of the state matrix is multiplied by the inverse 
       },
     },
   },
+  learnMore: {
+    pageTitle: 'What is AES',
+    pageSubtitle: 'An approachable overview of AES and its main stages.',
+    sections: {
+      whatIsAES: {
+        title: 'What is AES',
+        text: 'AES (Advanced Encryption Standard) is a symmetric-key encryption algorithm that encrypts data in 128-bit blocks using a key of 128, 192, or 256 bits.',
+        caption: 'AES workflow: input → block processing → ciphertext.'
+      },
+      keySharing: {
+        title: 'How keys are shared',
+        text: 'Sender and receiver must share the same secret key through a secure channel before encrypted communication.',
+        caption: 'Symmetric key distribution (out-of-band secure channel).'
+      },
+      encryptionRounds: {
+        title: 'Encryption rounds',
+        text: 'AES performs a number of rounds involving SubBytes, ShiftRows, MixColumns and AddRoundKey. The final round omits MixColumns.',
+        caption: 'Encryption round sequence (high level).'
+      },
+      decryptionRounds: {
+        title: 'Decryption rounds',
+        text: 'Decryption applies the inverse operations in reverse order using the expanded key schedule.',
+        caption: 'Decryption round sequence (high level).'
+      }
+    },
+    navigation: {
+      upAriaLabel: 'up',
+      downAriaLabel: 'down',
+      sectionNavigation: 'Section navigation'
+    }
+  }
 };
 
 export default translation;
+

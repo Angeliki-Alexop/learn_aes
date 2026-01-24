@@ -2,9 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Container, Typography, Box, IconButton } from "@mui/material";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { useTranslation } from "react-i18next";
 import '../styles/LearnMore.css';
 
 function LearnMore() {
+  const { t } = useTranslation();
   // Load images placed in src/assets/learn_more. The filenames determine order.
   const imageEntries = Object.entries(import.meta.glob('../assets/learn_more/*', { as: 'url', eager: true }));
   const imagesSorted = imageEntries
@@ -14,28 +16,33 @@ function LearnMore() {
 
   const sectionsMeta = [
     {
-      title: 'What is AES',
-      text: 'AES (Advanced Encryption Standard) is a symmetric-key encryption algorithm that encrypts data in 128-bit blocks using a key of 128, 192, or 256 bits.',
-      caption: 'AES workflow: input → block processing → ciphertext.'
+      titleKey: 'learnMore.sections.whatIsAES.title',
+      textKey: 'learnMore.sections.whatIsAES.text',
+      captionKey: 'learnMore.sections.whatIsAES.caption'
     },
     {
-      title: 'How keys are shared',
-      text: 'Sender and receiver must share the same secret key through a secure channel before encrypted communication.',
-      caption: 'Symmetric key distribution (out-of-band secure channel).'
+      titleKey: 'learnMore.sections.keySharing.title',
+      textKey: 'learnMore.sections.keySharing.text',
+      captionKey: 'learnMore.sections.keySharing.caption'
     },
     {
-      title: 'Encryption rounds',
-      text: 'AES performs a number of rounds involving SubBytes, ShiftRows, MixColumns and AddRoundKey. The final round omits MixColumns.',
-      caption: 'Encryption round sequence (high level).'
+      titleKey: 'learnMore.sections.encryptionRounds.title',
+      textKey: 'learnMore.sections.encryptionRounds.text',
+      captionKey: 'learnMore.sections.encryptionRounds.caption'
     },
     {
-      title: 'Decryption rounds',
-      text: 'Decryption applies the inverse operations in reverse order using the expanded key schedule.',
-      caption: 'Decryption round sequence (high level).'
+      titleKey: 'learnMore.sections.decryptionRounds.title',
+      textKey: 'learnMore.sections.decryptionRounds.text',
+      captionKey: 'learnMore.sections.decryptionRounds.caption'
     }
   ];
 
-  const sections = sectionsMeta.map((meta, i) => ({ ...meta, img: imagesSorted[i] || null }));
+  const sections = sectionsMeta.map((meta, i) => ({ 
+    title: t(meta.titleKey),
+    text: t(meta.textKey),
+    caption: t(meta.captionKey),
+    img: imagesSorted[i] || null 
+  }));
 
   const containerRef = useRef(null);
   const refs = useRef([]);
@@ -107,8 +114,8 @@ function LearnMore() {
   return (
     <Container className="learn-page-root" maxWidth={false}>
       <header className="learn-header">
-        <Typography variant="h4" component="h1">What is AES</Typography>
-        <Typography variant="body1" className="learn-sub">An approachable overview of AES and its main stages.</Typography>
+        <Typography variant="h4" component="h1">{t('learnMore.pageTitle', 'What is AES')}</Typography>
+        <Typography variant="body1" className="learn-sub">{t('learnMore.pageSubtitle', 'An approachable overview of AES and its main stages.')}</Typography>
       </header>
 
       <main ref={containerRef} className="learn-container">
@@ -126,10 +133,10 @@ function LearnMore() {
             </Box>
             {/* per-section footer kept for accessibility but visually hidden; floating nav handles navigation */}
             <div className="learn-section-footer" aria-hidden>
-              <IconButton aria-label="up" className="nav-up" onClick={() => scrollToIndex(Math.max(0, i-1))}>
+              <IconButton aria-label={t('learnMore.navigation.upAriaLabel', 'up')} className="nav-up" onClick={() => scrollToIndex(Math.max(0, i-1))}>
                 <KeyboardArrowUpIcon />
               </IconButton>
-              <IconButton aria-label="down" className="nav-down" onClick={() => scrollToIndex(Math.min(refs.current.length-1, i+1))}>
+              <IconButton aria-label={t('learnMore.navigation.downAriaLabel', 'down')} className="nav-down" onClick={() => scrollToIndex(Math.min(refs.current.length-1, i+1))}>
                 <KeyboardArrowDownIcon />
               </IconButton>
             </div>
@@ -138,11 +145,11 @@ function LearnMore() {
       </main>
 
       {/* floating always-visible navigation */}
-      <div className="learn-floating-nav" role="navigation" aria-label="Section navigation">
-        <IconButton aria-label="up" onClick={() => scrollToIndex(Math.max(0, currentIndex-1))} className="nav-up">
+      <div className="learn-floating-nav" role="navigation" aria-label={t('learnMore.navigation.sectionNavigation', 'Section navigation')}>
+        <IconButton aria-label={t('learnMore.navigation.upAriaLabel', 'up')} onClick={() => scrollToIndex(Math.max(0, currentIndex-1))} className="nav-up">
           <KeyboardArrowUpIcon />
         </IconButton>
-        <IconButton aria-label="down" onClick={() => scrollToIndex(Math.min(refs.current.length-1, currentIndex+1))} className="nav-down">
+        <IconButton aria-label={t('learnMore.navigation.downAriaLabel', 'down')} onClick={() => scrollToIndex(Math.min(refs.current.length-1, currentIndex+1))} className="nav-down">
           <KeyboardArrowDownIcon />
         </IconButton>
       </div>

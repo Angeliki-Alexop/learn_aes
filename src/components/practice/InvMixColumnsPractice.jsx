@@ -81,10 +81,14 @@ function InvMixColumnsCalculator({
   outputStatus,
   showSolution,
 }) {
+  const { t } = useTranslation();
   return (
     <Box sx={{ mt: 2, p: 2, bgcolor: "#f9fbe7", borderRadius: 2 }}>
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
-        Step-by-Step InvMixColumns Calculation (Selected Column)
+        {t(
+          "train.practice.invmixcolumns.calculator.title",
+          "Step-by-Step InvMixColumns Calculation (Selected Column)"
+        )}
       </Typography>
       <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 2 }}>
         <Box>
@@ -92,7 +96,10 @@ function InvMixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            Inverse Fixed Matrix:
+            {t(
+              "train.practice.invmixcolumns.calculator.fixedMatrix",
+              "InvMixColumns Matrix:"
+            )}
           </Typography>
           <Box
             sx={{
@@ -126,7 +133,10 @@ function InvMixColumnsCalculator({
             variant="body2"
             sx={{ fontWeight: "bold", mb: 1, textAlign: "center" }}
           >
-            Selected Column:
+            {t(
+              "train.practice.invmixcolumns.calculator.selectedColumn",
+              "Selected Column:"
+            )}
           </Typography>
           <Box
             sx={{
@@ -154,7 +164,10 @@ function InvMixColumnsCalculator({
       </Box>
       <Box>
         <Typography variant="body2" sx={{ mb: 1 }}>
-          Calculate each output byte (row) for this column:
+          {t(
+            "train.practice.invmixcolumns.calculator.calculateOutput",
+            "Calculate each output byte (row) for this column:"
+          )}
         </Typography>
         {INV_MIX_MATRIX.map((row, r) => (
           <Box
@@ -165,7 +178,8 @@ function InvMixColumnsCalculator({
               variant="body2"
               sx={{ fontWeight: "bold", paddingBottom: 2 }}
             >
-              Output Row b{r - 1 + 1}
+              {t("train.practice.invmixcolumns.calculator.outputRow", "Output Row b")}
+              {r - 1 + 1}
             </Typography>
             <Box
               sx={{
@@ -240,8 +254,10 @@ function InvMixColumnsCalculator({
               />
             </Box>
             <Typography variant="body2" sx={{ mt: 1, display: "block" }}>
-              Enter each multiplication result (hex), then XOR them to get the
-              output byte.
+              {t(
+                "train.practice.invmixcolumns.calculator.enterMultiplication",
+                "Enter each multiplication result (hex), then XOR them to get the output byte."
+              )}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
               <Button
@@ -249,7 +265,7 @@ function InvMixColumnsCalculator({
                 variant="contained"
                 onClick={() => onRowCheck(r)}
               >
-                Check
+                {t("train.practice.invmixcolumns.calculator.check", "CHECK")}
               </Button>
               <Button
                 size="small"
@@ -257,7 +273,7 @@ function InvMixColumnsCalculator({
                 onClick={() => onRowShow(r)}
                 sx={{ background: "#fff" }}
               >
-                Show
+                {t("train.practice.invmixcolumns.calculator.show", "SHOW")}
               </Button>
               {rowFeedback && rowFeedback[r] && (
                 <Typography variant="body2" sx={{ ml: 1 }}>
@@ -1016,7 +1032,7 @@ const InvMixColumnsPractice = () => {
               size="small"
               onClick={() => setSelectedColumn(colIdx)}
             >
-              Column {colIdx + 1}
+              {t("train.practice.invmixcolumns.calculator.column", "Column")} {colIdx + 1}
             </Button>
           ))}
         </Box>
