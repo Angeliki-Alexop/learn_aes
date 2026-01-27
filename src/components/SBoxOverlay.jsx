@@ -2,8 +2,10 @@ import React from "react";
 import { Drawer, Box, Typography, IconButton, Tabs, Tab } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { sBox, invSBox } from "../utils/aes_manual_v2";
+import { useTranslation } from 'react-i18next';
 
 function SBoxOverlay({ open, onClose }) {
+  const { t } = useTranslation();
   const [selected, setSelected] = React.useState(null);
   const [mode, setMode] = React.useState("sbox"); // 'sbox' or 'invsbox'
 
@@ -78,39 +80,25 @@ function SBoxOverlay({ open, onClose }) {
         {mode === "sbox" ? (
           <>
             <Typography variant="body1" gutterBottom>
-              The S-box (Substitution box) is a fixed lookup table used in AES
-              to replace each byte with a different byte during the encryption
-              process. It introduces non-linearity to make the cipher resistant
-              to patterns and attacks. Each input byte (in hex) selects a row
-              and column in the S-box; the value at that position is the
-              substituted (output) byte.
+              {t('pages.stepByStep.matrix.sboxOverlay.sboxDescription')}
             </Typography>
             <Typography
               variant="body2"
               sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
             >
-              <strong>Hint (encryption):</strong> Click any cell to highlight
-              its row and column. The selected cell shows the substituted value
-              for the corresponding input byte.
+              <strong>{t('pages.stepByStep.matrix.sboxOverlay.sboxHint')}</strong>
             </Typography>
           </>
         ) : (
           <>
             <Typography variant="body1" gutterBottom>
-              The Inverse S-box (Substitution box) is a fixed lookup table used
-              in AES during the decryption process to reverse the SubBytes
-              transformation. Each input byte (in hex) selects a row and column
-              in the inverse S-box, the value at that position replaces the byte
-              in the state. This step undoes the non-linear substitution applied
-              during encryption and helps recover the original data.
+              {t('pages.stepByStep.matrix.sboxOverlay.invSboxDescription')}
             </Typography>
             <Typography
               variant="body2"
               sx={{ mt: 1, mb: 1, fontStyle: "italic" }}
             >
-              <strong>Hint (decryption):</strong> Click any cell to highlight
-              its row and column. The selected cell shows the output value for
-              the corresponding input byte.
+              <strong>{t('pages.stepByStep.matrix.sboxOverlay.invSboxHint')}</strong>
             </Typography>
           </>
         )}
