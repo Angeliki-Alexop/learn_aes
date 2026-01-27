@@ -862,7 +862,7 @@ const MixColumnsPractice = () => {
         {/* User Output Matrix (with row labels b0..b3) */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter MixColumns output (hex):
+            {t("train.practice.mixcolumns.outputLabel", "Enter MixColumns output (hex):")}
           </Typography>
 
           {/* grid with a label column + 4 matrix columns */}
@@ -1198,86 +1198,43 @@ const MixColumnsPractice = () => {
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 1, width: "100%", maxWidth: 720 }}
+              sx={{ mt: 1, width: "100%", maxWidth: 720, whiteSpace: "pre-wrap" }}
             >
-              <strong>MixColumns Matrix:</strong>
-              <br />
-              Each column is multiplied by this matrix:
-              <br />
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(4, 40px)",
-                  gap: 1,
-                  mt: 1,
-                  ml: 3,
-                }}
-              >
-                {MIX_MATRIX.map((row, r) =>
-                  row.map((n, c) => (
-                    <Box
-                      key={`quick-mix-${r}-${c}-dlg`}
-                      sx={{
-                        border: "1px solid #ccc",
-                        p: 1,
-                        bgcolor: "#fff8e1ff",
-                        textAlign: "center",
-                        fontFamily: "monospace",
-                        fontWeight: "bold",
-                        minWidth: 36,
-                      }}
-                    >
-                      {n.toString(16).padStart(2, "0").toUpperCase()}
-                    </Box>
-                  )),
-                )}
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
-                >
-                  <strong>Each new byte is computed as:</strong>
-                </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
-                  <code>{`
+              {t(
+                "train.practice.tooltips.mixcolumns.description",
+                `MixColumns Matrix:
+Each column is multiplied by this matrix:
+02 03 01 01
+01 02 03 01
+01 01 02 03
+03 01 01 02
+
+Each new byte is computed as:
 • S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
 • S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
 • S′₂ = (01 × S₀) ⊕ (01 × S₁) ⊕ (02 × S₂) ⊕ (03 × S₃)
 • S′₃ = (03 × S₀) ⊕ (01 × S₁) ⊕ (01 × S₂) ⊕ (02 × S₃)
-    `}</code>
-                </Box>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
-                >
-                  <strong>Multiplication rules (GF(2^8)):</strong>
-                </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
-                  <code>{`
+
+Multiplication rules (GF(2^8)):
 • 01 × X = X
 • 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
-• 03 × X = (02 × X) ⊕ X
-    `}</code>
-                </Box>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 720 }}
-                >
-                  <strong>Tips</strong>
-                </Typography>
-                <Box component="pre" sx={{ m: 0 }}>
-                  <code>{`
-• XOR = bitwise addition without carry
+• 03 × X = (02 × X) ⊕ X`
+              )}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{ mt: 2, width: "100%", maxWidth: 720, whiteSpace: "pre-wrap" }}
+            >
+              <strong>{t("train.practice.tooltips.mixcolumns.hint", "Tips:")}</strong>
+              {"\n"}
+              {t(
+                "train.practice.tooltips.mixcolumns.hintContent",
+                `• XOR = bitwise addition without carry
 • 02 × X = shift left and reduce by 1B if needed
 • 03 × X = (02 × X) ⊕ X
-• Every column is processed independently
-`}</code>
-                </Box>
-              </Box>
+• Every column is processed independently`
+              )}
             </Typography>
           </Box>
         </DialogContent>

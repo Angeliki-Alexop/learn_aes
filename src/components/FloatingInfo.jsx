@@ -34,18 +34,12 @@ export default function FloatingInfo({
 
     if (stepKey === "Key Expansion") {
       const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
-      const header = t("pages.stepByStep.stepInfo.keyExpansion.howHeader", {
-        keySize,
-        wordsPerKey,
-      });
-      const extraKey = wordsPerKey === 8 ? "threeCases" : "twoCases";
-      const extra = t(`pages.stepByStep.stepInfo.keyExpansion.cases.${extraKey}`, {
-        wordsPerKey,
-        mod: wordsPerKey,
-        offset: wordsPerKey,
-        mid: 4,
-      });
-      how = [how, header, extra].filter(Boolean).join("\n\n");
+      // Replace template variables in the how text
+      how = how
+        .replace(/\{\{keySize\}\}/g, keySize)
+        .replace(/\{\{wordsPerKey\}\}/g, wordsPerKey)
+        .replace(/\{\{mod\}\}/g, wordsPerKey)
+        .replace(/\{\{offset\}\}/g, wordsPerKey);
     }
     return how;
   };

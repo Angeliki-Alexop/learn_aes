@@ -794,7 +794,7 @@ const InvMixColumnsPractice = () => {
         {/* User Output Matrix with labels (header c1..c4 and row labels b0..b3) */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            Enter InvMixColumns output (hex):
+            {t("train.practice.invmixcolumns.outputLabel", "Enter InvMixColumns output (hex):")}
           </Typography>
 
           <Box
@@ -1100,89 +1100,41 @@ const InvMixColumnsPractice = () => {
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 1, width: "100%", maxWidth: 1000 }}
+              sx={{ mt: 1, width: "100%", maxWidth: 1000, whiteSpace: "pre-wrap" }}
             >
-              <strong>InvMixColumns Matrix:</strong>
-              <br />
-              Each column is multiplied by this inverse transformation matrix:
-              <br />
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(4, 40px)",
-                  gap: 1,
-                  mt: 1,
-                  ml: 3,
-                }}
-              >
-                {INV_MIX_MATRIX.map((row, r) =>
-                  row.map((n, c) => (
-                    <Box
-                      key={`inv-quick-mix-${r}-${c}`}
-                      sx={{
-                        border: "1px solid #ccc",
-                        p: 1,
-                        bgcolor: "#fff8e1ff",
-                        textAlign: "center",
-                        fontFamily: "monospace",
-                        fontWeight: "bold",
-                        minWidth: 36,
-                      }}
-                    >
-                      {n.toString(16).padStart(2, "0").toUpperCase()}
-                    </Box>
-                  )),
-                )}
-              </Box>
-              <Box sx={{ mt: 2 }}>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 1000 }}
-                >
-                  <strong>Each new byte is computed as:</strong>
-                </Typography>
-                <Box component="pre" sx={{ m: -1 }}>
-                  <code>{`
-• S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
-• S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
-• S′₂ = (0D × S₀) ⊕ (09 × S₁) ⊕ (0E × S₂) ⊕ (0B × S₃)
-• S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
-    `}</code>
-                </Box>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
-                >
-                  <strong>
-                    Multiplication rules (GF(2^8)) for inverse coefficients:
-                  </strong>
-                </Typography>
-                <Box component="pre" sx={{ m: -1 }}>
-                  <code>{`
-• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
-• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
-• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
-• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)
-    `}</code>
-                </Box>
-                <Typography
-                  variant="body1"
-                  component="div"
-                  sx={{ width: "100%", maxWidth: 1000, mt: 2 }}
-                >
-                  <strong>Notes</strong>
-                </Typography>
-                <Box component="pre" sx={{ m: -1 }}>
-                  <code>{`
-• XOR = bitwise addition without carry
-• 02 × X = shift left and reduce by 1B if MSB = 1
-• Use combinations of (02×) and XOR to compute 09, 0B, 0D, 0E products
-• Every column is processed independently
-`}</code>
-                </Box>
-              </Box>
+              {t(
+                "train.practice.tooltips.invmixcolumns.description",
+                `InvMixColumns Matrix:
+Each column is multiplied by this matrix:
+0E 0B 0D 09
+09 0E 0B 0D
+0D 09 0E 0B
+0B 0D 09 0E
+
+Each new byte is computed using Galois field multiplication with the inverse matrix coefficients.
+
+Multiplication rules (GF(2^8)):
+• 01 × X = X
+• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
+• 03 × X = (02 × X) ⊕ X
+• For other coefficients, use repeated doubling and XOR`
+              )}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{ mt: 2, width: "100%", maxWidth: 1000, whiteSpace: "pre-wrap" }}
+            >
+              <strong>{t("train.practice.tooltips.invmixcolumns.hint", "Tips:")}</strong>
+              {"\n"}
+              {t(
+                "train.practice.tooltips.invmixcolumns.hintContent",
+                `• InvMixColumns reverses the MixColumns transformation
+• Uses GF(2^8) multiplication with the inverse fixed matrix
+• 02 × X = shift left and reduce by 1B if needed
+• 03 × X = (02 × X) ⊕ X
+• Every column is processed independently`
+              )}
             </Typography>
           </Box>
         </DialogContent>

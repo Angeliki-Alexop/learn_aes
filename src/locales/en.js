@@ -238,6 +238,53 @@ This is a linear transformation that mixes bytes within each column, increasing 
 During decryption, each column of the state matrix is multiplied by the inverse matrix using arithmetic in the Galois field GF(2^8) to reverse the mixing that was applied during encryption.`,
     how: `Click any byte in the result (Next State) to see how it was calculated using the given column and the inverse MixColumns matrix.`,
   },
+  keyExpansion: {
+    title: 'Key Expansion',
+    what: `What is it?
+AES uses a different key for each encryption round.
+The Key Schedule is the overall process AES uses to manage and generate all the round keys needed during encryption.
+Key Expansion is the specific algorithm within the key schedule that computes these round keys from the original cipher key.
+
+The original key is split into words (1 word = 4 bytes). New words are created one by one by combining previous words and,
+at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+
+The key size determines how often these special steps are applied:
+- AES-128 (16 bytes / 4 words): A special transformation is applied every 4th word.
+- AES-192 (24 bytes / 6 words): A special transformation is applied every 6th word.
+- AES-256 (32 bytes / 8 words): A special transformation is applied every 8th word, with an extra S-box step halfway in each cycle.
+
+AES always needs one round key per round plus one initial key.
+Each round key is 4 words, so the total number of expanded words is:
+- AES-128: 44 words
+- AES-192: 52 words
+- AES-256: 60 words
+
+What happens during decryption?
+
+Decryption uses the same expanded round keys, but they are applied in reverse order.
+The key expansion process itself does not change, the keys are generated once and reused.
+During decryption, AES applies the round keys from the last round key to the first, ensuring that each encryption step is correctly reversed.`,
+    how: `How to interact?
+Use the Key Expansion view to inspect how each round key is derived from the original key.
+
+Current key size: AES-{{keySize}} ({{wordsPerKey}} words per round key).
+
+In the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of {{wordsPerKey}} words; the special core transformation is applied every {{wordsPerKey}}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.
+
+There are two cases when computing a new word w[i]:
+
+Case 1 — Special transform (i % {{mod}} === 0)
+Apply the following steps to the previous word (w[i-1]), in order:
+1. Rotate: move the first byte to the end.
+2. SubWord: substitute each byte using the S-box.
+3. XOR Rcon: XOR the result with the round constant (Rcon).
+4. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before (start of the previous round key) to produce w[i].
+
+Case 2 — Simple XOR
+w[i] = w[i - {{offset}}] XOR w[i - 1]
+
+Use the above rules with the current round key size (words per key = {{wordsPerKey}}).`,
+  },
   inputBefore: {
     what: "This section serves as the algorithm's input area. Select the operation mode (Encryption or Decryption), specify the key size, enter the secret key, and provide the text to be encrypted or decrypted.",
     how: "Step 1: Choose mode (Encryption or Decryption). This determines whether the simulation runs the forward AES steps (Encryption) or the inverse steps (Decryption). For Decryption you must use the same key size and key that were used to produce the ciphertext.\n\nStep 2: Select Key Size (128, 192, or 256 bits). The key size sets the expected key length and the number of AES rounds.\n\nStep 3: Enter the text to process. For Encryption provide plaintext and for Decryption provide ciphertext.\n\nStep 4: Enter the secret key matching the selected key size. The key must have the correct length for the chosen size (e.g., 128-bit = 32 hex characters). For Decryption this must be the original key used during encryption.\n\nStep 5: Click Submit to start the step-by-step simulation.",
@@ -278,6 +325,8 @@ During decryption, each column of the state matrix is multiplied by the inverse 
   train: {
     title: 'AES Training Center',
     welcome: 'Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the icon at any step to get guidance.',
+    welcomeStart: 'Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the',
+    welcomeEnd: 'icon at any step to get guidance.',
     selectStep: 'Select a step to train on:',
     backToList: 'Back to Exercise List',
     practice: {
@@ -306,6 +355,8 @@ During decryption, each column of the state matrix is multiplied by the inverse 
       'invsubbytes.description': 'Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format.',
       'mixcolumns.selectColumn': 'Select which column to analyze:',
       'invmixcolumns.selectColumn': 'Select which column to analyze:',
+      'mixcolumns.outputLabel': 'Enter MixColumns output (hex):',
+      'invmixcolumns.outputLabel': 'Enter InvMixColumns output (hex):',
       'mixcolumns.calculator': {
         title: 'Step-by-Step MixColumns Calculation (Selected Column)',
         fixedMatrix: 'Fixed Matrix:',
@@ -341,13 +392,51 @@ During decryption, each column of the state matrix is multiplied by the inverse 
         },
         mixcolumns: {
           title: 'AES MixColumns – Step-by-Step Guide',
-          description: 'MixColumns is the step in AES where each column of the state matrix is multiplied by a fixed matrix using arithmetic in the Galois field GF(2^8). This operation mixes the bytes within each column, providing diffusion in the cipher.',
-          hint: 'This is a complex operation involving polynomial multiplication in GF(2^8). Enter your answers in hexadecimal format.',
+          description: `MixColumns Matrix:
+Each column is multiplied by this matrix:
+02 03 01 01
+01 02 03 01
+01 01 02 03
+03 01 01 02
+
+Each new byte is computed as:
+• S′₀ = (02 × S₀) ⊕ (03 × S₁) ⊕ (01 × S₂) ⊕ (01 × S₃)
+• S′₁ = (01 × S₀) ⊕ (02 × S₁) ⊕ (03 × S₂) ⊕ (01 × S₃)
+• S′₂ = (01 × S₀) ⊕ (01 × S₁) ⊕ (02 × S₂) ⊕ (03 × S₃)
+• S′₃ = (03 × S₀) ⊕ (01 × S₁) ⊕ (01 × S₂) ⊕ (02 × S₃)
+
+Multiplication rules (GF(2^8)):
+• 01 × X = X
+• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
+• 03 × X = (02 × X) ⊕ X`,
+          hint: 'Tips:',
+          hintContent: `• XOR = bitwise addition without carry
+• 02 × X = shift left and reduce by 1B if needed
+• 03 × X = (02 × X) ⊕ X
+• Every column is processed independently`,
         },
         invmixcolumns: {
           title: 'AES InvMixColumns – Step-by-Step Guide',
-          description: 'InvMixColumns is the inverse of the MixColumns step used during decryption. Each column of the state matrix is multiplied by the inverse fixed matrix using arithmetic in the Galois field GF(2^8) to reverse the mixing.',
-          hint: 'This operation reverses the MixColumns transformation. Enter your answers in hexadecimal format.',
+          description: `InvMixColumns Matrix:
+Each column is multiplied by this matrix:
+0E 0B 0D 09
+09 0E 0B 0D
+0D 09 0E 0B
+0B 0D 09 0E
+
+Each new byte is computed using Galois field multiplication with the inverse matrix coefficients.
+
+Multiplication rules (GF(2^8)):
+• 01 × X = X
+• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
+• 03 × X = (02 × X) ⊕ X
+• For other coefficients, use repeated doubling and XOR`,
+          hint: 'Tips:',
+          hintContent: `• InvMixColumns reverses the MixColumns transformation
+• Uses GF(2^8) multiplication with the inverse fixed matrix
+• 02 × X = shift left and reduce by 1B if needed
+• 03 × X = (02 × X) ⊕ X
+• Every column is processed independently`,
         },
         invshiftrows: {
           title: 'What is InvShiftRows?',
