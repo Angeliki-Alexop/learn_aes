@@ -93,7 +93,7 @@ function MixColumnsCalculator({
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {t(
           "train.practice.mixcolumns.calculator.title",
-          "Step-by-Step MixColumns Calculation (Selected Column)"
+          "Step-by-Step MixColumns Calculation (Selected Column)",
         )}
       </Typography>
       <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 2 }}>
@@ -105,7 +105,7 @@ function MixColumnsCalculator({
           >
             {t(
               "train.practice.mixcolumns.calculator.fixedMatrix",
-              "Fixed Matrix:"
+              "Fixed Matrix:",
             )}
           </Typography>
           <Box
@@ -143,7 +143,7 @@ function MixColumnsCalculator({
           >
             {t(
               "train.practice.mixcolumns.calculator.selectedColumn",
-              "Selected Column:"
+              "Selected Column:",
             )}
           </Typography>
           <Box
@@ -175,7 +175,7 @@ function MixColumnsCalculator({
         <Typography variant="body2" sx={{ mb: 1 }}>
           {t(
             "train.practice.mixcolumns.calculator.calculateOutput",
-            "Calculate each output byte (row) for this column:"
+            "Calculate each output byte (row) for this column:",
           )}
         </Typography>
         {matrix.map((row, r) => (
@@ -187,7 +187,10 @@ function MixColumnsCalculator({
               variant="body2"
               sx={{ fontWeight: "bold", paddingBottom: 2 }}
             >
-              {t("train.practice.mixcolumns.calculator.outputRow", "Output Row b")}
+              {t(
+                "train.practice.mixcolumns.calculator.outputRow",
+                "Output Row b",
+              )}
               {r - 1 + 1}
             </Typography>
             <Box
@@ -265,7 +268,7 @@ function MixColumnsCalculator({
             <Typography variant="body2" sx={{ mt: 1, display: "block" }}>
               {t(
                 "train.practice.mixcolumns.calculator.enterMultiplication",
-                "Enter each multiplication result (hex), then XOR them to get the output byte."
+                "Enter each multiplication result (hex), then XOR them to get the output byte.",
               )}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
@@ -495,7 +498,7 @@ const MixColumnsPractice = () => {
         ? t("train.practice.correct", "Correct!")
         : t(
             "train.practice.incorrect",
-            "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
+            "Some answers are incorrect. Incorrect cells are highlighted. Try again!",
           ),
     );
   };
@@ -621,7 +624,10 @@ const MixColumnsPractice = () => {
 
     setRowFeedback((prev) => {
       const q = [...prev];
-      q[r] = "Please continue with the next calculation.";
+      q[r] = t(
+        "train.practice.mixcolumns.calculator.rowShow",
+        "Please continue with the next calculation.",
+      );
       return q;
     });
   };
@@ -695,8 +701,14 @@ const MixColumnsPractice = () => {
     setRowFeedback((prev) => {
       const q = [...prev];
       q[r] = allMatch
-        ? "Correct! Please continue with the next calculation."
-        : "Incorrect result. Please try again.";
+        ? t(
+            "train.practice.mixcolumns.calculator.rowCorrect",
+            "Correct! Please continue with the next calculation.",
+          )
+        : t(
+            "train.practice.mixcolumns.calculator.rowIncorrect",
+            "Incorrect result. Please try again.",
+          );
       return q;
     });
   };
@@ -731,7 +743,7 @@ const MixColumnsPractice = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.mixcolumns.description",
-          "In MixColumns, each column of the original matrix (4 bytes) is multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the MixColumns step. Note: You can use the helper below to see how each output is calculated."
+          "In MixColumns, each column of the original matrix (4 bytes) is multiplied by fixed matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the MixColumns step. Note: You can use the helper below to see how each output is calculated.",
         )}
       </Typography>
       {/* Quick instructions moved into dialog (use the Help icon to open) */}
@@ -862,7 +874,10 @@ const MixColumnsPractice = () => {
         {/* User Output Matrix (with row labels b0..b3) */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            {t("train.practice.mixcolumns.outputLabel", "Enter MixColumns output (hex):")}
+            {t(
+              "train.practice.mixcolumns.outputLabel",
+              "Enter MixColumns output (hex):",
+            )}
           </Typography>
 
           {/* grid with a label column + 4 matrix columns */}
@@ -1096,7 +1111,7 @@ const MixColumnsPractice = () => {
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
           {t(
             "train.practice.solutionMsg",
-            "All correct answers are now filled in the User Output Matrix above."
+            "All correct answers are now filled in the User Output Matrix above.",
           )}
         </Typography>
       )}
@@ -1119,7 +1134,7 @@ const MixColumnsPractice = () => {
         <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
           {t(
             "train.practice.mixcolumns.selectColumn",
-            "Select which column to analyze:"
+            "Select which column to analyze:",
           )}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -1130,7 +1145,8 @@ const MixColumnsPractice = () => {
               size="small"
               onClick={() => setSelectedColumn(colIdx)}
             >
-              {t("train.practice.mixcolumns.calculator.column", "Column")} {colIdx + 1}
+              {t("train.practice.mixcolumns.calculator.column", "Column")}{" "}
+              {colIdx + 1}
             </Button>
           ))}
         </Box>
@@ -1168,7 +1184,7 @@ const MixColumnsPractice = () => {
         >
           {t(
             "train.practice.tooltips.mixcolumns.title",
-            "AES MixColumns – Step-by-Step Guide"
+            "AES MixColumns – Step-by-Step Guide",
           )}
           <IconButton
             aria-label="Close MixColumns help"
@@ -1198,7 +1214,12 @@ const MixColumnsPractice = () => {
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 1, width: "100%", maxWidth: 720, whiteSpace: "pre-wrap" }}
+              sx={{
+                mt: 1,
+                width: "100%",
+                maxWidth: 720,
+                whiteSpace: "pre-wrap",
+              }}
             >
               {t(
                 "train.practice.tooltips.mixcolumns.description",
@@ -1218,22 +1239,29 @@ Each new byte is computed as:
 Multiplication rules (GF(2^8)):
 • 01 × X = X
 • 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
-• 03 × X = (02 × X) ⊕ X`
+• 03 × X = (02 × X) ⊕ X`,
               )}
             </Typography>
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 2, width: "100%", maxWidth: 720, whiteSpace: "pre-wrap" }}
+              sx={{
+                mt: 2,
+                width: "100%",
+                maxWidth: 720,
+                whiteSpace: "pre-wrap",
+              }}
             >
-              <strong>{t("train.practice.tooltips.mixcolumns.hint", "Tips:")}</strong>
+              <strong>
+                {t("train.practice.tooltips.mixcolumns.hint", "Tips:")}
+              </strong>
               {"\n"}
               {t(
                 "train.practice.tooltips.mixcolumns.hintContent",
                 `• XOR = bitwise addition without carry
 • 02 × X = shift left and reduce by 1B if needed
 • 03 × X = (02 × X) ⊕ X
-• Every column is processed independently`
+• Every column is processed independently`,
               )}
             </Typography>
           </Box>

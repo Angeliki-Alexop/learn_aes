@@ -409,6 +409,9 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
         title: "Step-by-Step MixColumns Calculation:",
         fixedMatrix: "Fixed Matrix:",
         selectedColumn: "Selected Column:",
+        rowShow: "Please continue with the next calculation.",
+        rowCorrect: "Correct! Please continue with the next calculation.",
+        rowIncorrect: "Incorrect result. Please try again.",
         calculateOutput: "Calculate each output byte (row) for this column:",
         outputRow: "Output Row b",
         enterMultiplication:
@@ -473,10 +476,10 @@ Multiplication rules (GF(2^8)):
           title: "AES InvMixColumns – Step-by-Step Guide",
           description: `InvMixColumns Matrix:
 Each column is multiplied by this matrix:
-0E 0B 0D 09
-09 0E 0B 0D
-0D 09 0E 0B
-0B 0D 09 0E
+| 0E | 0B | 0D | 09 |
+| 09 | 0E | 0B | 0D |
+| 0D | 09 | 0E | 0B |
+| 0B | 0D | 09 | 0E |
 
 Each new byte is computed using Galois field multiplication with the inverse matrix coefficients.
 
@@ -494,9 +497,13 @@ Multiplication rules (GF(2^8)):
         },
         invshiftrows: {
           title: "What is InvShiftRows?",
-          description:
-            "InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: Row 0: No shift, Row 1: Shift right by 1, Row 2: Shift right by 2, Row 3: Shift right by 3. Enter the shifted values for each row in hexadecimal format.",
-          hint: "Remember that bytes wrapping around on the right side come back on the left side. Enter your answers in hexadecimal format.",
+          description: ` InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: 
+• Row 0: No shift, 
+• Row 1: Shift right by 1 
+• Row 2: Shift right by 2 
+• Row 3: Shift right by 3
+          
+Enter the shifted values for each row in hexadecimal format.`,
         },
         invsubbytes: {
           title: "What is InvSubBytes?",
