@@ -78,7 +78,7 @@ const InvShiftRowsPractice = () => {
         ? t("train.practice.correct", "Correct!")
         : t(
             "train.practice.incorrect",
-            "Some rows are incorrect. Please check the highlighted rows and try again."
+            "Some rows are incorrect. Please check the highlighted rows and try again.",
           ),
     );
   };
@@ -135,7 +135,7 @@ const InvShiftRowsPractice = () => {
       <Typography variant="body1" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.invshiftrows.description",
-          "Apply the inverse ShiftRows transformation by cyclically rotating each row to the right by a specific offset."
+          "Apply the inverse ShiftRows transformation by cyclically rotating each row to the right by a specific offset.",
         )}
       </Typography>
       <Box
@@ -185,7 +185,10 @@ const InvShiftRowsPractice = () => {
         {/* User Output Matrix with headers and labels */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            {t("train.practice.yourAnswers", "Enter InvShiftRows output (hex):")}
+            {t(
+              "train.practice.yourAnswers",
+              "Enter InvShiftRows output (hex):",
+            )}
           </Typography>
 
           <Box
@@ -311,7 +314,7 @@ const InvShiftRowsPractice = () => {
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
           {t(
             "train.practice.solutionMsg",
-            "All correct answers are now filled in the User Output Matrix above."
+            "All correct answers are now filled in the User Output Matrix above.",
           )}
         </Typography>
       )}
@@ -339,17 +342,20 @@ const InvShiftRowsPractice = () => {
           }}
         >
           <strong>
-            {t("train.practice.tooltips.invshiftrows.title", "What is InvShiftRows?")}
+            {t(
+              "train.practice.tooltips.invshiftrows.title",
+              "What is InvShiftRows?",
+            )}
           </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Typography gutterBottom>
+          <Typography gutterBottom sx={{ whiteSpace: "pre-line" }}>
             {t(
               "train.practice.tooltips.invshiftrows.description",
-              "InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: Row 0: No shift, Row 1: Shift right by 1, Row 2: Shift right by 2, Row 3: Shift right by 3. Enter the shifted values for each row in hexadecimal format."
+              "InvShiftRows is the inverse transposition step in AES decryption. Each row of the original matrix is shifted right by a different offset: Row 0: No shift, Row 1: Shift right by 1, Row 2: Shift right by 2, Row 3: Shift right by 3. Enter the shifted values for each row in hexadecimal format.",
             )}
           </Typography>
         </DialogContent>

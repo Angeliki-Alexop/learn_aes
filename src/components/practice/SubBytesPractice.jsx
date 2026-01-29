@@ -69,7 +69,11 @@ const SubBytesPractice = () => {
       }
     }
     setIncorrectCells(newIncorrect);
-    setFeedback(correct ? t("train.practice.correct", "Correct!") : t("train.practice.incorrect", "Some answers are incorrect."));
+    setFeedback(
+      correct
+        ? t("train.practice.correct", "Correct!")
+        : t("train.practice.incorrect", "Some answers are incorrect."),
+    );
   };
 
   const handleShowSolution = () => {
@@ -118,14 +122,18 @@ const SubBytesPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">{t("train.practice.subbytes", "SubBytes Practice")}</Typography>
+        <Typography variant="h5">
+          {t("train.practice.subbytes", "SubBytes Practice")}
+        </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-        {t("train.practice.applySubBytes", "Apply the SubBytes transformation by replacing each byte using the AES S-box lookup table")}
-        {" "}
+        {t(
+          "train.practice.applySubBytes",
+          "Apply the SubBytes transformation by replacing each byte using the AES S-box lookup table",
+        )}{" "}
         <Grid3x3
           size={20}
           style={{
@@ -261,7 +269,10 @@ const SubBytesPractice = () => {
       )}
       {showSolution && (
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-          All correct answers are now filled in the User Output Matrix above.
+          {t(
+            "train.practice.solutionMsg",
+            "All correct answers are now filled.",
+          )}
         </Typography>
       )}
       <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -288,14 +299,19 @@ const SubBytesPractice = () => {
             justifyContent: "space-between",
           }}
         >
-          <strong>{t("train.practice.tooltips.subbytes.title", "What is SubBytes?")}</strong>
+          <strong>
+            {t("train.practice.tooltips.subbytes.title", "What is SubBytes?")}
+          </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
           <Typography gutterBottom>
-            {t("train.practice.tooltips.subbytes.description", "SubBytes is the step in AES where each byte is replaced with a new byte according to a predefined substitution table called the S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the substituted byte.")}
+            {t(
+              "train.practice.tooltips.subbytes.description",
+              "SubBytes is the step in AES where each byte is replaced with a new byte according to a predefined substitution table called the S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the substituted byte.",
+            )}
           </Typography>
           <Typography
             variant="body2"
@@ -304,7 +320,11 @@ const SubBytesPractice = () => {
               fontStyle: "italic",
             }}
           >
-            <strong>Hint:</strong> {t("train.practice.tooltips.subbytes.hint", "Enter the substituted values in hexadecimal format. Click the icon in the navbar to view the S-box lookup table.")}
+            <strong>Hint:</strong>{" "}
+            {t(
+              "train.practice.tooltips.subbytes.hint",
+              "Enter the substituted values in hexadecimal format. Click the icon in the navbar to view the S-box lookup table.",
+            )}
           </Typography>
         </DialogContent>
       </Dialog>
