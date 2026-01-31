@@ -365,8 +365,10 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
     title: "AES Training Center",
     welcome:
       "Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the icon at any step to get guidance.",
-    welcomeStart:
-      "Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the",
+    welcomeStart: `Welcome to the AES Training Center! 
+Here you can practice each step of the AES algorithm in an interactive way. 
+Choose an exercise below to get started and test your understanding. 
+Need help along the way? Click the`,
     welcomeEnd: "icon at any step to get guidance.",
     selectStep: "Select a step to train on:",
     backToList: "Back to Exercise List",

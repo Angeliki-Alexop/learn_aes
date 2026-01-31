@@ -115,10 +115,18 @@ function Train() {
                 </Typography>
                 <Typography
                   variant="body1"
-                  sx={{ textAlign: "center", mb: 3, maxWidth: 800, mx: "auto" }}
+                  sx={{
+                    textAlign: "center",
+                    mb: 3,
+                    maxWidth: 800,
+                    mx: "auto",
+                    whiteSpace: "pre-wrap",
+                  }}
                 >
-                  {t("train.welcomeStart", "Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the")}
-                  {" "}
+                  {t(
+                    "train.welcomeStart",
+                    "Welcome to the AES Training Center! Here you can practice each step of the AES algorithm in an interactive way. Choose an exercise below to get started and test your understanding. Need help along the way? Click the",
+                  )}{" "}
                   <HelpOutlineIcon
                     sx={{
                       fontSize: "1.2em",
@@ -126,8 +134,7 @@ function Train() {
                       mx: 0.5,
                       color: "black",
                     }}
-                  />
-                  {" "}
+                  />{" "}
                   {t("train.welcomeEnd", "icon at any step to get guidance.")}
                 </Typography>
                 <Typography
