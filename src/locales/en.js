@@ -379,6 +379,9 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
       addroundkey: "AddRoundKey ",
       keyexpansion: "Key Expansion",
       keyexpansionPage: {
+        selectKeySize: "Select key size:",
+        originalKey: "Original Key (words):",
+        newKey: "New Key",
         expandedKeyWords: "Expanded Key Words (fill the blanks):",
         stepGuidance: "Step guidance — compute w[{{i}}]",
         rotate: "Rotate:",
@@ -408,13 +411,18 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
             formula: "w[i] = w[i - {{offset}}] XOR w[i - 1]",
           },
         },
+        resultDialog: {
+          Congratulations: "Correct! Continue to the next word.",
+          message: "You calculated all words of the expanded key.",
+          continueButton: "Continue with New Key",
+        },
         buttons: {
           check: "Check",
-          show: "Show",
-          next: "Next",
-          checkRot: "Check Rot",
-          checkSub: "Check Sub",
-          checkRcon: "Check Rcon",
+          show: "Show Solution",
+          next: "Next word",
+          checkRot: "Check",
+          checkSub: "Check",
+          checkRcon: "Check ",
         },
         resultXor: "Result XOR w[i - {{Nk}}] = w[{{i}}]",
         help: `AES uses a different key for each encryption round.
@@ -424,35 +432,38 @@ The original key is split into words (1 word = 4 bytes).
 New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
 
 The key size determines how often these special steps are applied:
-    - AES-128 (16 bytes / 4 words):
-      A special transformation is applied every 4th word.
-    - AES-192 (24 bytes / 6 words):
-      A special transformation is applied every 6th word.
-    - AES-256 (32 bytes / 8 words):
-      AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).
+  • AES-128 (16 bytes / 4 words):
+    A special transformation is applied every 4th word.
+  • AES-192 (24 bytes / 6 words):
+    A special transformation is applied every 6th word.
+  • AES-256 (32 bytes / 8 words):
+    AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).
 
 There are three cases for AES-256 when computing a new word w[i]:
 
-  Case 1 — Special transform (i % 8 === 0)
-  Apply the following steps to the previous word (w[i-1]), in order:
-    1. Rotate: move the first byte to the end.
-    2. SubWord: substitute each byte using the S-box.
-    3. XOR Rcon: XOR the result with the round constant (Rcon).
-    4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
+Case 1 — Special transform (i % 8 === 0)
+Apply the following steps to the previous word (w[i-1]), in order:
+  1. Rotate: move the first byte to the end.
+  2. SubWord: substitute each byte using the S-box.
+  3. XOR Rcon: XOR the result with the round constant (Rcon).
+  4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
 
-  Case 2 — Mid-cycle SubWord (i % 8 === 4)
-  Apply the following step to the previous word (w[i-1]):
-    1. SubWord: substitute each byte using the S-box.
-    2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
+Case 2 — Mid-cycle SubWord (i % 8 === 4)
+Apply the following step to the previous word (w[i-1]):
+  1. SubWord: substitute each byte using the S-box.
+  2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
 
-  Case 3 — Simple XOR (all other words)
-    w[i] = w[i - 8] XOR w[i - 1]
+Case 3 — Simple XOR (all other words)
+  - w[i] = w[i - 8] XOR w[i - 1]
 
-  AES always needs one round key per round plus one initial key.
-  Each round key is 4 words, so the total number of expanded words is:
-    - AES-128: 44 words
-    - AES-192: 52 words
-    - AES-256: 60 words`,
+Notes:
+• AES requires one round key per round, plus one initial key.
+• Each round key consists of 4 words 
+
+The total number of expanded words generated is:
+  • AES-128: 44 words
+  • AES-192: 52 words
+  • AES-256: 60 words`,
       },
       invsubbytes: "InvSubBytes ",
       applySubBytes:
@@ -589,9 +600,13 @@ Enter the shifted values for each row in hexadecimal format.`,
         },
         invsubbytes: {
           title: "What is InvSubBytes?",
-          description:
-            "InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the inverse-substituted byte.",
-          hint: "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.",
+          description: `InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. 
+          
+To perform this step, take the byte in hex: 
+  • the first hex digit indicates the row in the S-box
+  • the second hex digit indicates the column. 
+The value found at that position becomes the inverse-substituted byte.`,
+          hint: "Hint:",
           hint_text:
             "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.",
         },

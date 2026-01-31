@@ -72,7 +72,7 @@ const InvSubBytesPractice = () => {
     setFeedback(
       correct
         ? t("train.practice.correct", "Correct!")
-        : t("train.practice.incorrect", "Some answers are incorrect.")
+        : t("train.practice.incorrect", "Some answers are incorrect."),
     );
   };
 
@@ -132,7 +132,7 @@ const InvSubBytesPractice = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.invsubbytes.description",
-          "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format."
+          "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format.",
         )}
         <Grid3x3
           size={20}
@@ -274,7 +274,7 @@ const InvSubBytesPractice = () => {
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
           {t(
             "train.practice.solutionMsg",
-            "All correct answers are now filled in the User Output Matrix above."
+            "All correct answers are now filled in the User Output Matrix above.",
           )}
         </Typography>
       )}
@@ -303,17 +303,20 @@ const InvSubBytesPractice = () => {
           }}
         >
           <strong>
-            {t("train.practice.tooltips.invsubbytes.title", "What is InvSubBytes?")}
+            {t(
+              "train.practice.tooltips.invsubbytes.title",
+              "What is InvSubBytes?",
+            )}
           </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Typography gutterBottom>
+          <Typography gutterBottom sx={{ whiteSpace: "pre-wrap" }}>
             {t(
               "train.practice.tooltips.invsubbytes.description",
-              "InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the inverse-substituted byte."
+              "InvSubBytes is the inverse operation of SubBytes used in AES decryption. Each byte is replaced with a new byte according to a predefined substitution table called inverse S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the inverse-substituted byte.",
             )}
           </Typography>
           <Typography
@@ -328,7 +331,7 @@ const InvSubBytesPractice = () => {
             </strong>{" "}
             {t(
               "train.practice.tooltips.invsubbytes.hint_text",
-              "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table."
+              "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.",
             )}
             <Grid3x3
               size={20}

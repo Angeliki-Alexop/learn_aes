@@ -654,7 +654,10 @@ const KeyExpansionPractice = () => {
         }}
       >
         <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-          {t("train.practice.keyexpansion.selectKeySize", "Select key size:")}
+          {t(
+            "train.practice.keyexpansionPage.selectKeySize",
+            "Select key size:",
+          )}
         </Typography>
         <ToggleButtonGroup
           value={keySize}
@@ -671,7 +674,7 @@ const KeyExpansionPractice = () => {
       <Box sx={{ mt: 3 }}>
         <Typography variant="subtitle2">
           {t(
-            "train.practice.keyexpansion.originalKey",
+            "train.practice.keyexpansionPage.originalKey",
             "Original Key (words):",
           )}
         </Typography>
@@ -709,7 +712,7 @@ const KeyExpansionPractice = () => {
             size="small"
             onClick={handleRegenerate}
           >
-            {t("train.practice.keyexpansion.newKey", "New Key")}
+            {t("train.practice.keyexpansionPage.newKey", "New Key")}
           </Button>
         </Box>
       </Box>
@@ -1719,7 +1722,12 @@ There are three cases for AES-256 when computing a new word w[i]:
             justifyContent: "space-between",
           }}
         >
-          <span>Congratulations!</span>
+          <span>
+            {t(
+              "train.practice.keyexpansionPage.resultDialog.Congratulations",
+              "Congratulations!",
+            )}
+          </span>
           <IconButton
             aria-label="close"
             size="small"
@@ -1730,7 +1738,12 @@ There are three cases for AES-256 when computing a new word w[i]:
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <Typography>You calculated all words of the expanded key.</Typography>
+          <Typography>
+            {t(
+              "train.practice.keyexpansionPage.resultDialog.message",
+              "You calculated all words of the expanded key.",
+            )}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button
@@ -1740,7 +1753,10 @@ There are three cases for AES-256 when computing a new word w[i]:
               handleRegenerate();
             }}
           >
-            Continue with New Key
+            {t(
+              "train.practice.keyexpansionPage.resultDialog.continueButton",
+              "Continue with New Key",
+            )}
           </Button>
         </DialogActions>
       </Dialog>
