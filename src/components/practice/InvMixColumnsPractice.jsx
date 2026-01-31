@@ -87,7 +87,7 @@ function InvMixColumnsCalculator({
       <Typography variant="subtitle2" sx={{ mb: 1 }}>
         {t(
           "train.practice.invmixcolumns.calculator.title",
-          "Step-by-Step InvMixColumns Calculation (Selected Column)"
+          "Step-by-Step InvMixColumns Calculation:",
         )}
       </Typography>
       <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 2 }}>
@@ -98,7 +98,7 @@ function InvMixColumnsCalculator({
           >
             {t(
               "train.practice.invmixcolumns.calculator.fixedMatrix",
-              "InvMixColumns Matrix:"
+              "Fixed Matrix:",
             )}
           </Typography>
           <Box
@@ -135,7 +135,7 @@ function InvMixColumnsCalculator({
           >
             {t(
               "train.practice.invmixcolumns.calculator.selectedColumn",
-              "Selected Column:"
+              "Selected Column:",
             )}
           </Typography>
           <Box
@@ -166,7 +166,7 @@ function InvMixColumnsCalculator({
         <Typography variant="body2" sx={{ mb: 1 }}>
           {t(
             "train.practice.invmixcolumns.calculator.calculateOutput",
-            "Calculate each output byte (row) for this column:"
+            "Calculate each output byte (row) for this column:",
           )}
         </Typography>
         {INV_MIX_MATRIX.map((row, r) => (
@@ -178,7 +178,10 @@ function InvMixColumnsCalculator({
               variant="body2"
               sx={{ fontWeight: "bold", paddingBottom: 2 }}
             >
-              {t("train.practice.invmixcolumns.calculator.outputRow", "Output Row b")}
+              {t(
+                "train.practice.invmixcolumns.calculator.outputRow",
+                "Output Row b",
+              )}
               {r - 1 + 1}
             </Typography>
             <Box
@@ -256,7 +259,7 @@ function InvMixColumnsCalculator({
             <Typography variant="body2" sx={{ mt: 1, display: "block" }}>
               {t(
                 "train.practice.invmixcolumns.calculator.enterMultiplication",
-                "Enter each multiplication result (hex), then XOR them to get the output byte."
+                "Enter each multiplication result (hex), then XOR them to get the output byte.",
               )}
             </Typography>
             <Box sx={{ display: "flex", gap: 1, mt: 1, alignItems: "center" }}>
@@ -477,7 +480,7 @@ const InvMixColumnsPractice = () => {
         ? t("train.practice.correct", "Correct!")
         : t(
             "train.practice.incorrect",
-            "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
+            "Some answers are incorrect. Incorrect cells are highlighted. Try again!",
           ),
     );
   };
@@ -599,7 +602,10 @@ const InvMixColumnsPractice = () => {
 
     setRowFeedback((prev) => {
       const q = [...prev];
-      q[r] = "Please continue with the next calculation.";
+      q[r] = t(
+        "train.practice.mixcolumns.calculator.rowShow",
+        "Please continue with the next calculation.",
+      );
       return q;
     });
   };
@@ -671,8 +677,14 @@ const InvMixColumnsPractice = () => {
     setRowFeedback((prev) => {
       const q = [...prev];
       q[r] = allMatch
-        ? "Correct! Please continue with the next calculation."
-        : "Incorrect result. Please try again.";
+        ? t(
+            "train.practice.mixcolumns.calculator.rowCorrect",
+            "Correct! Please continue with the next calculation.",
+          )
+        : t(
+            "train.practice.mixcolumns.calculator.rowIncorrect",
+            "Incorrect result. Please try again.",
+          );
       return q;
     });
   };
@@ -707,7 +719,7 @@ const InvMixColumnsPractice = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.invmixcolumns.description",
-          "InvMixColumns is the inverse of the MixColumns step and is used during AES decryption. In this step, each column of the original matrix (4 bytes) is multiplied by Inverse Fixed Matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the InvMixColumns step. Note: You can use the helper below to see how each output is calculated."
+          "InvMixColumns is the inverse of the MixColumns step and is used during AES decryption. In this step, each column of the original matrix (4 bytes) is multiplied by Inverse Fixed Matrix using arithmetic in GF(2⁸). Enter the resulting byte values for each cell after the InvMixColumns step. Note: You can use the helper below to see how each output is calculated.",
         )}
       </Typography>
       <Box
@@ -722,7 +734,7 @@ const InvMixColumnsPractice = () => {
         {/* Original Matrix */}
         <Box sx={{ width: 300 }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            {t("train.practice.originalMatrix", "Original Matrix (hex):")}
+            {t("train.practice.originalMatrix", "State Matrix (hex):")}
           </Typography>
           <Box
             sx={{
@@ -770,7 +782,10 @@ const InvMixColumnsPractice = () => {
           }}
         >
           <Typography variant="body2" sx={{ fontWeight: "bold", mb: 1 }}>
-            {t("pages.stepByStep.mixColumns.inverseFixedMatrix", "Inverse Fixed Matrix:")}
+            {t(
+              "pages.stepByStep.mixColumns.inverseFixedMatrix",
+              "Fixed Matrix:",
+            )}
           </Typography>
           <Box
             sx={{
@@ -794,7 +809,10 @@ const InvMixColumnsPractice = () => {
         {/* User Output Matrix with labels (header c1..c4 and row labels b0..b3) */}
         <Box sx={{ width: "auto" }}>
           <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
-            {t("train.practice.invmixcolumns.outputLabel", "Enter InvMixColumns output (hex):")}
+            {t(
+              "train.practice.invmixcolumns.outputLabel",
+              "Enter InvMixColumns output (hex):",
+            )}
           </Typography>
 
           <Box
@@ -997,7 +1015,7 @@ const InvMixColumnsPractice = () => {
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
           {t(
             "train.practice.solutionMsg",
-            "All correct answers are now filled in the User Output Matrix above."
+            "All correct answers are now filled in the User Output Matrix above.",
           )}
         </Typography>
       )}
@@ -1021,7 +1039,7 @@ const InvMixColumnsPractice = () => {
         <Typography variant="h5" sx={{ mb: 3, textAlign: "center" }}>
           {t(
             "train.practice.invmixcolumns.selectColumn",
-            "Select which column to analyze:"
+            "Select which column to analyze:",
           )}
         </Typography>
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
@@ -1032,7 +1050,8 @@ const InvMixColumnsPractice = () => {
               size="small"
               onClick={() => setSelectedColumn(colIdx)}
             >
-              {t("train.practice.invmixcolumns.calculator.column", "Column")} {colIdx + 1}
+              {t("train.practice.invmixcolumns.calculator.column", "Column")}{" "}
+              {colIdx + 1}
             </Button>
           ))}
         </Box>
@@ -1071,7 +1090,7 @@ const InvMixColumnsPractice = () => {
         >
           {t(
             "train.practice.tooltips.invmixcolumns.title",
-            "AES InvMixColumns – Step-by-Step Guide"
+            "AES InvMixColumns – Step-by-Step Guide",
           )}
           <IconButton
             aria-label="Close InvMixColumns help"
@@ -1100,40 +1119,57 @@ const InvMixColumnsPractice = () => {
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 1, width: "100%", maxWidth: 1000, whiteSpace: "pre-wrap" }}
+              sx={{
+                mt: 1,
+                width: "100%",
+                maxWidth: 1000,
+                whiteSpace: "pre-wrap",
+              }}
             >
               {t(
                 "train.practice.tooltips.invmixcolumns.description",
                 `InvMixColumns Matrix:
-Each column is multiplied by this matrix:
-0E 0B 0D 09
-09 0E 0B 0D
-0D 09 0E 0B
-0B 0D 09 0E
+Each column is multiplied by this fixed matrix:
+| 0E | 0B | 0D | 09 |
+| 09 | 0E | 0B | 0D |
+| 0D | 09 | 0E | 0B |
+| 0B | 0D | 09 | 0E |
 
-Each new byte is computed using Galois field multiplication with the inverse matrix coefficients.
+Each new byte is computed as:
 
-Multiplication rules (GF(2^8)):
-• 01 × X = X
-• 02 × X = (X Shift Left). If MSB = 1, XOR with 1B (hex)
-• 03 × X = (02 × X) ⊕ X
-• For other coefficients, use repeated doubling and XOR`
+• S′₀ = (0E × S₀) ⊕ (0B × S₁) ⊕ (0D × S₂) ⊕ (09 × S₃)
+• S′₁ = (09 × S₀) ⊕ (0E × S₁) ⊕ (0B × S₂) ⊕ (0D × S₃)
+• S′₂ = (0D × S₀) ⊕ (09 × S₁) ⊕ (0E × S₂) ⊕ (0B × S₃)
+• S′₃ = (0B × S₀) ⊕ (0D × S₁) ⊕ (09 × S₂) ⊕ (0E × S₃)
+
+Multiplication rules (GF(2^8)) for inverse coefficients:
+
+• 09 × X = (02 × (02 × (02 × X))) ⊕ X = (08 × X) ⊕ X
+• 0B × X = (02 × (02 × (02 × X))) ⊕ (02 × X) ⊕ X = (08 × X) ⊕ (02 × X) ⊕ X
+• 0D × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ X = (08 × X) ⊕ (04 × X) ⊕ X
+• 0E × X = (02 × (02 × (02 × X))) ⊕ (02 × (02 × X)) ⊕ (02 × X) = (08 × X) ⊕ (04 × X) ⊕ (02 × X)`,
               )}
             </Typography>
             <Typography
               variant="body1"
               component="div"
-              sx={{ mt: 2, width: "100%", maxWidth: 1000, whiteSpace: "pre-wrap" }}
+              sx={{
+                mt: 2,
+                width: "100%",
+                maxWidth: 1000,
+                whiteSpace: "pre-wrap",
+              }}
             >
-              <strong>{t("train.practice.tooltips.invmixcolumns.hint", "Tips:")}</strong>
+              <strong>
+                {t("train.practice.tooltips.invmixcolumns.hint", "Notes:")}
+              </strong>
               {"\n"}
               {t(
                 "train.practice.tooltips.invmixcolumns.hintContent",
-                `• InvMixColumns reverses the MixColumns transformation
-• Uses GF(2^8) multiplication with the inverse fixed matrix
-• 02 × X = shift left and reduce by 1B if needed
-• 03 × X = (02 × X) ⊕ X
-• Every column is processed independently`
+                `• XOR = bitwise addition without carry
+• 02 × X = shift left and reduce by 1B if MSB = 1
+• Use combinations of (02×) and XOR to compute 09, 0B, 0D, 0E products
+• Every column is processed independently`,
               )}
             </Typography>
           </Box>

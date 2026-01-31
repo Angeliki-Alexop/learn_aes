@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 // Helper to generate random 4x4 matrix
 function getRandomMatrix() {
   return Array.from({ length: 4 }, () =>
-    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256))
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)),
   );
 }
 
@@ -124,19 +124,27 @@ function HexBinConverter() {
 
 const AddRoundKeyPractice = () => {
   const { t } = useTranslation();
+  const correctMsg = t(
+    "train.practice.correct",
+    "Correct! Continue to the next example.",
+  );
+  const incorrectMsg = t(
+    "train.practice.incorrect",
+    "Some answers are incorrect. Please try again.",
+  );
   const [stateMatrix, setStateMatrix] = useState(getRandomMatrix());
   const [roundKeyMatrix, setRoundKeyMatrix] = useState(getRandomMatrix());
   const [userMatrix, setUserMatrix] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(""))
+      .map(() => Array(4).fill("")),
   );
   const [showSolution, setShowSolution] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [incorrectCells, setIncorrectCells] = useState(
     Array(4)
       .fill()
-      .map(() => Array(4).fill(false))
+      .map(() => Array(4).fill(false)),
   );
   const [showHelp, setShowHelp] = useState(false);
   const [focusedCell, setFocusedCell] = useState(null); // Track focused cell {row, col}
@@ -165,11 +173,7 @@ const AddRoundKeyPractice = () => {
       }
     }
     setIncorrectCells(newIncorrect);
-    setFeedback(
-      correct
-        ? "Correct!"
-        : "Some answers are incorrect. Incorrect cells are highlighted. Try again!"
-    );
+    setFeedback(correct ? correctMsg : incorrectMsg);
   };
 
   // Show solution
@@ -177,13 +181,13 @@ const AddRoundKeyPractice = () => {
     setShowSolution(true);
     setUserMatrix(
       solution.map((row) =>
-        row.map((val) => val.toString(16).padStart(2, "0").toUpperCase())
-      )
+        row.map((val) => val.toString(16).padStart(2, "0").toUpperCase()),
+      ),
     );
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
     setFeedback(null);
   };
@@ -197,14 +201,14 @@ const AddRoundKeyPractice = () => {
     setUserMatrix(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(""))
+        .map(() => Array(4).fill("")),
     );
     setShowSolution(false);
     setFeedback(null);
     setIncorrectCells(
       Array(4)
         .fill()
-        .map(() => Array(4).fill(false))
+        .map(() => Array(4).fill(false)),
     );
   };
 
@@ -238,7 +242,7 @@ const AddRoundKeyPractice = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.addroundkey.description",
-          "Apply the AddRoundKey transformation by XORing each byte of the state matrix with the corresponding byte of the round key. Enter your answers in hexadecimal format."
+          "Apply the AddRoundKey transformation by XORing each byte of the state matrix with the corresponding byte of the round key. Enter your answers in hexadecimal format.",
         )}
       </Typography>
 
@@ -289,7 +293,7 @@ const AddRoundKeyPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -346,7 +350,7 @@ const AddRoundKeyPractice = () => {
                 >
                   {val.toString(16).padStart(2, "0").toUpperCase()}
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -385,19 +389,19 @@ const AddRoundKeyPractice = () => {
                     border: incorrectCells[r][c]
                       ? "2px solid #d32f2f"
                       : showSolution
-                      ? "2px solid #1976d2"
-                      : feedback === "Correct!"
-                      ? "2px solid #2e7d32"
-                      : "1px solid #ccc",
+                        ? "2px solid #1976d2"
+                        : feedback === correctMsg
+                          ? "2px solid #2e7d32"
+                          : "1px solid #ccc",
                     borderRadius: 1,
                     p: 1,
                     textAlign: "center",
                     bgcolor:
-                      feedback === "Correct!"
+                      feedback === correctMsg
                         ? "#c8e6c9"
                         : showSolution
-                        ? "#e3f2fd"
-                        : "#f5f5f5",
+                          ? "#e3f2fd"
+                          : "#f5f5f5",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -416,24 +420,24 @@ const AddRoundKeyPractice = () => {
                         textTransform: "uppercase",
                         fontWeight: "bold",
                         color:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#2e7d32"
                             : showSolution
-                            ? "#1976d2"
-                            : undefined,
+                              ? "#1976d2"
+                              : undefined,
                         background:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#c8e6c9"
                             : showSolution
-                            ? "#e3f2fd"
-                            : undefined,
+                              ? "#e3f2fd"
+                              : undefined,
                         opacity: 1,
                         WebkitTextFillColor:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#2e7d32"
                             : showSolution
-                            ? "#1976d2"
-                            : undefined,
+                              ? "#1976d2"
+                              : undefined,
                       },
                     }}
                     disabled={showSolution}
@@ -441,37 +445,37 @@ const AddRoundKeyPractice = () => {
                     sx={{
                       width: 56,
                       bgcolor:
-                        feedback === "Correct!"
+                        feedback === correctMsg
                           ? "#c8e6c9"
                           : showSolution
-                          ? "#e3f2fd"
-                          : undefined,
+                            ? "#e3f2fd"
+                            : undefined,
                       "& .MuiInputBase-input.Mui-disabled": {
                         color:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#2e7d32"
                             : showSolution
-                            ? "#1976d2"
-                            : undefined,
+                              ? "#1976d2"
+                              : undefined,
                         fontWeight: "bold",
                         opacity: 1,
                         WebkitTextFillColor:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#2e7d32"
                             : showSolution
-                            ? "#1976d2"
-                            : undefined,
+                              ? "#1976d2"
+                              : undefined,
                         background:
-                          feedback === "Correct!"
+                          feedback === correctMsg
                             ? "#c8e6c9"
                             : showSolution
-                            ? "#e3f2fd"
-                            : undefined,
+                              ? "#e3f2fd"
+                              : undefined,
                       },
                     }}
                   />
                 </Box>
-              ))
+              )),
             )}
           </Box>
         </Box>
@@ -479,11 +483,7 @@ const AddRoundKeyPractice = () => {
 
       {feedback && (
         <Typography
-          color={
-            feedback === t("train.practice.correct", "Correct!")
-              ? "success.main"
-              : "error.main"
-          }
+          color={feedback === correctMsg ? "success.main" : "error.main"}
           sx={{ textAlign: "center", mb: 2 }}
         >
           {feedback}
@@ -493,7 +493,7 @@ const AddRoundKeyPractice = () => {
         <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
           {t(
             "train.practice.solutionMsg",
-            "All correct answers are now filled in the Result Matrix above."
+            "All correct answers are now filled in the Result Matrix above.",
           )}
         </Typography>
       )}
@@ -523,7 +523,10 @@ const AddRoundKeyPractice = () => {
           }}
         >
           <strong>
-            {t("train.practice.tooltips.addroundkey.title", "What is AddRoundKey?")}
+            {t(
+              "train.practice.tooltips.addroundkey.title",
+              "What is AddRoundKey?",
+            )}
           </strong>
           <IconButton onClick={() => setShowHelp(false)} size="small">
             <CloseIcon fontSize="small" />
@@ -533,7 +536,7 @@ const AddRoundKeyPractice = () => {
           <Typography gutterBottom>
             {t(
               "train.practice.tooltips.addroundkey.description",
-              "AddRoundKey is a step in AES where each byte of the state matrix is combined with the corresponding byte of the round key using the XOR operation (⊕)."
+              "AddRoundKey is a step in AES where each byte of the state matrix is combined with the corresponding byte of the round key using the XOR operation (⊕).",
             )}
           </Typography>
 
@@ -543,7 +546,7 @@ const AddRoundKeyPractice = () => {
             </strong>{" "}
             {t(
               "train.practice.tooltips.addroundkey.hint_text",
-              "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter."
+              "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter.",
             )}
             <CalculateIcon
               fontSize="small"
