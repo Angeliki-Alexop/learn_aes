@@ -377,7 +377,83 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
       invmixcolumns: "InvMixColumns ",
       invshiftrows: "InvShiftRows ",
       addroundkey: "AddRoundKey ",
-      keyexpansion: "Key Expansion ",
+      keyexpansion: "Key Expansion",
+      keyexpansionPage: {
+        expandedKeyWords: "Expanded Key Words (fill the blanks):",
+        stepGuidance: "Step guidance — compute w[{{i}}]",
+        rotate: "Rotate:",
+        "rotate.desc": "move the first byte to the end.",
+        subword: "SubWord:",
+        "subword.desc": "substitute each byte using the S-box.",
+        xorRcon: "XOR Rcon:",
+        "xorRcon.desc": "XOR the result with the round constant (Rcon).",
+        xorPrev: "XOR w[i - {{Nk}}]:",
+        "xorPrev.desc":
+          "XOR the result with the first word of the previous round key to produce w[i].",
+        label: {
+          rotword: "RotWord(w[i - 1])",
+          subwordRcon: "SubWord XOR Rcon",
+        },
+        case: {
+          special: {
+            title: "Case 1 — Special transform (i % {{mod}} === 0)",
+            intro: "Apply the following steps to the previous word, in order:",
+          },
+          subonly: {
+            title: "Case 2 — Mid-cycle SubWord (i % {{mod}} === 4)",
+            intro: "Apply the following steps to the previous word, in order:",
+          },
+          simple: {
+            title: "Case 3 — Simple XOR",
+            formula: "w[i] = w[i - {{offset}}] XOR w[i - 1]",
+          },
+        },
+        buttons: {
+          check: "Check",
+          show: "Show",
+          next: "Next",
+          checkRot: "Check Rot",
+          checkSub: "Check Sub",
+          checkRcon: "Check Rcon",
+        },
+        resultXor: "Result XOR w[i - {{Nk}}] = w[{{i}}]",
+        help: `AES uses a different key for each encryption round.
+Key Expansion is the process that generates all these round keys from the original key.
+
+The original key is split into words (1 word = 4 bytes).
+New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).
+
+The key size determines how often these special steps are applied:
+    - AES-128 (16 bytes / 4 words):
+      A special transformation is applied every 4th word.
+    - AES-192 (24 bytes / 6 words):
+      A special transformation is applied every 6th word.
+    - AES-256 (32 bytes / 8 words):
+      AES-256 uses three cases when computing new words (special transform every 8th word, an extra SubWord-only step at i%8===4, and simple XOR otherwise).
+
+There are three cases for AES-256 when computing a new word w[i]:
+
+  Case 1 — Special transform (i % 8 === 0)
+  Apply the following steps to the previous word (w[i-1]), in order:
+    1. Rotate: move the first byte to the end.
+    2. SubWord: substitute each byte using the S-box.
+    3. XOR Rcon: XOR the result with the round constant (Rcon).
+    4. XOR w[i - 8]: XOR the result with the first word of the previous round key to produce w[i].
+
+  Case 2 — Mid-cycle SubWord (i % 8 === 4)
+  Apply the following step to the previous word (w[i-1]):
+    1. SubWord: substitute each byte using the S-box.
+    2. XOR w[i - 8]: XOR the result with the word 8 positions before to produce w[i].
+
+  Case 3 — Simple XOR (all other words)
+    w[i] = w[i - 8] XOR w[i - 1]
+
+  AES always needs one round key per round plus one initial key.
+  Each round key is 4 words, so the total number of expanded words is:
+    - AES-128: 44 words
+    - AES-192: 52 words
+    - AES-256: 60 words`,
+      },
       invsubbytes: "InvSubBytes ",
       applySubBytes:
         "Apply the SubBytes transformation by replacing each byte using the AES S-box lookup table",
@@ -536,6 +612,22 @@ Enter the shifted values for each row in hexadecimal format.`,
       },
     },
   },
+  tooltips: {
+    keyexpansion: {
+      title: "What is Key Expansion?",
+      description: `AES uses a different key for each encryption round.
+Key Expansion is the process that generates all these round keys from the original key.
+
+The original key is split into words (1 word = 4 bytes).
+New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).`,
+      hint: "Hint: Click the icon to view the full explanation.",
+    },
+  },
+  keyexpansion_help: `AES uses a different key for each encryption round.
+Key Expansion is the process that generates all these round keys from the original key.
+
+The original key is split into words (1 word = 4 bytes).
+New words are created one by one by combining previous words and, at specific points, applying special transformations (byte rotation, S-box substitution, and a round constant).`,
   learnMore: {
     pageTitle: "What is AES",
     pageSubtitle: "An approachable overview of AES and its main stages.",

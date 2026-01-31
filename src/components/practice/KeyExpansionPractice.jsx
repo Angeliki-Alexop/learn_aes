@@ -670,7 +670,10 @@ const KeyExpansionPractice = () => {
 
       <Box sx={{ mt: 3 }}>
         <Typography variant="subtitle2">
-          {t("train.practice.keyexpansion.originalKey", "Original Key (words):")}
+          {t(
+            "train.practice.keyexpansion.originalKey",
+            "Original Key (words):",
+          )}
         </Typography>
         <Box
           sx={{
@@ -713,14 +716,20 @@ const KeyExpansionPractice = () => {
 
       <Box sx={{ mt: 3 }}>
         <Typography variant="subtitle2">
-          Expanded Key Words (fill the blanks):
+          {t(
+            "train.practice.keyexpansionPage.expandedKeyWords",
+            "Expanded Key Words (fill the blanks):",
+          )}
         </Typography>
         {currentWord !== null && (
           <Box
             sx={{ border: "1px solid #e0e0e0", p: 2, borderRadius: 1, mt: 1 }}
           >
             <Typography variant="body2" sx={{ fontWeight: "bold" }}>
-              Step guidance — compute w[{currentWord}]
+              {t("train.practice.keyexpansionPage.stepGuidance", {
+                i: currentWord,
+                defaultValue: `Step guidance — compute w[${currentWord}]`,
+              })}
             </Typography>
             <Box sx={{ mt: 1 }}>
               {caseKind === "special" ? (
@@ -733,34 +742,72 @@ const KeyExpansionPractice = () => {
                   }}
                 >
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Case 1 — Special transform (i % {Nk} === 0)
+                    {t("train.practice.keyexpansionPage.case.special.title", {
+                      mod: Nk,
+                      defaultValue: `Case 1 — Special transform (i % ${Nk} === 0)`,
+                    })}
                   </Typography>
                   <Typography variant="body2">
-                    Apply the following steps to the previous word, in order:
+                    {t(
+                      "train.practice.keyexpansionPage.case.special.intro",
+                      "Apply the following steps to the previous word, in order:",
+                    )}
                   </Typography>
                   <Box component="ol" sx={{ pl: 3, mt: 1 }}>
                     <Box component="li" sx={{ mb: 1 }}>
                       <Typography variant="body2">
-                        <strong>Rotate:</strong> move the first byte to the end.
+                        <strong>
+                          {t(
+                            "train.practice.keyexpansionPage.rotate",
+                            "Rotate:",
+                          )}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.rotate.desc",
+                          "move the first byte to the end.",
+                        )}
                       </Typography>
                     </Box>
                     <Box component="li" sx={{ mb: 1 }}>
                       <Typography variant="body2">
-                        <strong>SubWord:</strong> substitute each byte using the
-                        S-box.
+                        <strong>
+                          {t(
+                            "train.practice.keyexpansionPage.subword",
+                            "SubWord:",
+                          )}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.subword.desc",
+                          "substitute each byte using the S-box.",
+                        )}
                       </Typography>
                     </Box>
                     <Box component="li" sx={{ mb: 1 }}>
                       <Typography variant="body2">
-                        <strong>XOR Rcon:</strong> XOR the result with the round
-                        constant (Rcon).
+                        <strong>
+                          {t(
+                            "train.practice.keyexpansionPage.xorRcon",
+                            "XOR Rcon:",
+                          )}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.xorRcon.desc",
+                          "XOR the result with the round constant (Rcon).",
+                        )}
                       </Typography>
                     </Box>
                     <Box component="li">
                       <Typography variant="body2">
-                        <strong>XOR w[i - {Nk}]:</strong> XOR the result with
-                        the first word of the previous round key to produce
-                        w[i].
+                        <strong>
+                          {t("train.practice.keyexpansionPage.xorPrev", {
+                            Nk,
+                            defaultValue: "XOR w[i - {{Nk}}]:",
+                          })}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.xorPrev.desc",
+                          "XOR the result with the first word of the previous round key to produce w[i].",
+                        )}
                       </Typography>
                     </Box>
                   </Box>
@@ -775,23 +822,44 @@ const KeyExpansionPractice = () => {
                   }}
                 >
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Case 2 — Mid-cycle SubWord (i % {Nk} === 4)
+                    {t("train.practice.keyexpansionPage.case.subonly.title", {
+                      mod: Nk,
+                      defaultValue: `Case 2 — Mid-cycle SubWord (i % ${Nk} === 4)`,
+                    })}
                   </Typography>
                   <Typography variant="body2">
-                    Apply the following steps to the previous word, in order:
+                    {t(
+                      "train.practice.keyexpansionPage.case.subonly.intro",
+                      "Apply the following steps to the previous word, in order:",
+                    )}
                   </Typography>
                   <Box component="ol" sx={{ pl: 3, mt: 1 }}>
                     <Box component="li" sx={{ mb: 1 }}>
                       <Typography variant="body2">
-                        <strong>SubWord:</strong> substitute each byte using the
-                        S-box.
+                        <strong>
+                          {t(
+                            "train.practice.keyexpansionPage.subword",
+                            "SubWord:",
+                          )}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.subword.desc",
+                          "substitute each byte using the S-box.",
+                        )}
                       </Typography>
                     </Box>
                     <Box component="li">
                       <Typography variant="body2">
-                        <strong>XOR w[i - {Nk}]:</strong> XOR the result with
-                        the first word of the previous round key to produce
-                        w[i].
+                        <strong>
+                          {t("train.practice.keyexpansionPage.xorPrev", {
+                            Nk,
+                            defaultValue: "XOR w[i - {{Nk}}]:",
+                          })}
+                        </strong>{" "}
+                        {t(
+                          "train.practice.keyexpansionPage.xorPrev.desc",
+                          "XOR the result with the first word of the previous round key to produce w[i].",
+                        )}
                       </Typography>
                     </Box>
                   </Box>
@@ -806,12 +874,21 @@ const KeyExpansionPractice = () => {
                   }}
                 >
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Case 3 — Simple XOR
+                    {t(
+                      "train.practice.keyexpansionPage.case.simple.title",
+                      "Case 3 — Simple XOR",
+                    )}
                   </Typography>
                   <Box component="ol" sx={{ pl: 3, mt: 1 }}>
                     <Box component="li">
                       <Typography variant="body2">
-                        w[i] = w[i - {Nk}] XOR w[i - 1]
+                        {t(
+                          "train.practice.keyexpansionPage.case.simple.formula",
+                          {
+                            offset: Nk,
+                            defaultValue: `w[i] = w[i - ${Nk}] XOR w[i - 1]`,
+                          },
+                        )}
                       </Typography>
                     </Box>
                   </Box>
@@ -922,7 +999,12 @@ const KeyExpansionPractice = () => {
                   </Box>
 
                   <Box>
-                    <Typography variant="body2">RotWord(w[i - 1])</Typography>
+                    <Typography variant="body2">
+                      {t(
+                        "train.practice.keyexpansionPage.label.rotword",
+                        "RotWord(w[i - 1])",
+                      )}
+                    </Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                       {caseKind === "special" ? (
                         <Box sx={{ display: "flex", gap: 1 }}>
@@ -959,10 +1041,16 @@ const KeyExpansionPractice = () => {
                             />
                           ))}
                           <Button variant="contained" onClick={handleCheckRot}>
-                            Check Rot
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.checkRot",
+                              "Check Rot",
+                            )}
                           </Button>
                           <Button variant="contained" onClick={handleShowRot}>
-                            Show
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.show",
+                              "Show",
+                            )}
                           </Button>
                         </Box>
                       ) : expandedWords[currentWord - 1] ? (
@@ -978,7 +1066,9 @@ const KeyExpansionPractice = () => {
                   </Box>
 
                   <Box>
-                    <Typography variant="body2">SubWord</Typography>
+                    <Typography variant="body2">
+                      {t("train.practice.keyexpansionPage.subword", "SubWord:")}
+                    </Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                       {caseKind === "special" ? (
                         <Box
@@ -1026,14 +1116,20 @@ const KeyExpansionPractice = () => {
                             onClick={handleCheckSub}
                             disabled={!rotCorrect}
                           >
-                            Check Sub
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.checkSub",
+                              "Check Sub",
+                            )}
                           </Button>
                           <Button
                             variant="contained"
                             onClick={handleShowSub}
                             disabled={!rotCorrect}
                           >
-                            Show
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.show",
+                              "Show",
+                            )}
                           </Button>
                         </Box>
                       ) : caseKind === "subonly" ? (
@@ -1069,10 +1165,16 @@ const KeyExpansionPractice = () => {
                             />
                           ))}
                           <Button variant="contained" onClick={handleCheckSub}>
-                            Check Sub
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.checkSub",
+                              "Check Sub",
+                            )}
                           </Button>
                           <Button variant="contained" onClick={handleShowSub}>
-                            Show
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.show",
+                              "Show",
+                            )}
                           </Button>
                         </Box>
                       ) : expandedWords[currentWord - 1] ? (
@@ -1088,7 +1190,12 @@ const KeyExpansionPractice = () => {
                   </Box>
 
                   <Box>
-                    <Typography variant="body2">SubWord XOR Rcon</Typography>
+                    <Typography variant="body2">
+                      {t(
+                        "train.practice.keyexpansionPage.label.subwordRcon",
+                        "SubWord XOR Rcon",
+                      )}
+                    </Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                       {caseKind === "special" ? (
                         <Box
@@ -1131,14 +1238,20 @@ const KeyExpansionPractice = () => {
                             onClick={handleCheckRcon}
                             disabled={!subCorrect}
                           >
-                            Check Rcon
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.checkRcon",
+                              "Check Rcon",
+                            )}
                           </Button>
                           <Button
                             variant="contained"
                             onClick={handleShowRcon}
                             disabled={!subCorrect}
                           >
-                            Show
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.show",
+                              "Show",
+                            )}
                           </Button>
                         </Box>
                       ) : (
@@ -1154,7 +1267,11 @@ const KeyExpansionPractice = () => {
                   >
                     <Box sx={{ display: "inline-block" }}>
                       <Typography variant="body2">
-                        Result XOR w[i - {Nk}] = w[{currentWord}]
+                        {t("train.practice.keyexpansionPage.resultXor", {
+                          Nk,
+                          i: currentWord,
+                          defaultValue: `Result XOR w[i - ${Nk}] = w[${currentWord}]`,
+                        })}
                       </Typography>
                       <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                         <Box
@@ -1206,16 +1323,25 @@ const KeyExpansionPractice = () => {
                                   : false
                             }
                           >
-                            Check
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.check",
+                              "Check",
+                            )}
                           </Button>
                           <Button variant="outlined" onClick={handleStepShow}>
-                            Show
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.show",
+                              "Show",
+                            )}
                           </Button>
                           <Button
                             onClick={handleStepNext}
                             disabled={!isStepComplete()}
                           >
-                            Next
+                            {t(
+                              "train.practice.keyexpansionPage.buttons.next",
+                              "Next",
+                            )}
                           </Button>
                         </Box>
                       </Box>
@@ -1339,14 +1465,20 @@ const KeyExpansionPractice = () => {
                           onClick={handleCheckSub}
                           sx={{ ml: 1 }}
                         >
-                          Check Sub
+                          {t(
+                            "train.practice.keyexpansionPage.buttons.checkSub",
+                            "Check Sub",
+                          )}
                         </Button>
                         <Button
                           variant="contained"
                           onClick={handleShowSub}
                           sx={{ ml: 1 }}
                         >
-                          Show
+                          {t(
+                            "train.practice.keyexpansionPage.buttons.show",
+                            "Show",
+                          )}
                         </Button>
                       </Box>
                     </Box>
@@ -1395,16 +1527,25 @@ const KeyExpansionPractice = () => {
                           />
                         ))}
                         <Button variant="contained" onClick={handleStepCheck}>
-                          Check
+                          {t(
+                            "train.practice.keyexpansionPage.buttons.check",
+                            "Check",
+                          )}
                         </Button>
                         <Button variant="outlined" onClick={handleStepShow}>
-                          Show
+                          {t(
+                            "train.practice.keyexpansionPage.buttons.show",
+                            "Show",
+                          )}
                         </Button>
                         <Button
                           onClick={handleStepNext}
                           disabled={!isStepComplete()}
                         >
-                          Next
+                          {t(
+                            "train.practice.keyexpansionPage.buttons.next",
+                            "Next",
+                          )}
                         </Button>
                       </Box>
                     </Box>
@@ -1511,7 +1652,7 @@ const KeyExpansionPractice = () => {
         <DialogTitle>
           {t(
             "train.practice.tooltips.keyexpansion.title",
-            "What is Key Expansion?"
+            "What is Key Expansion?",
           )}
           <IconButton
             aria-label="close"
@@ -1523,7 +1664,8 @@ const KeyExpansionPractice = () => {
         </DialogTitle>
         <DialogContent dividers>
           <Typography component="div" sx={{ whiteSpace: "pre-wrap" }}>
-            {`AES uses a different key for each encryption round.
+            {t("train.practice.keyexpansionPage.help", {
+              defaultValue: `AES uses a different key for each encryption round.
 Key Expansion is the process that generates all these round keys from the original key.
 
 The original key is split into words (1 word = 4 bytes).
@@ -1558,7 +1700,8 @@ There are three cases for AES-256 when computing a new word w[i]:
   Each round key is 4 words, so the total number of expanded words is:
     - AES-128: 44 words
     - AES-192: 52 words
-    - AES-256: 60 words`}
+    - AES-256: 60 words`,
+            })}
           </Typography>
         </DialogContent>
         <DialogActions></DialogActions>
