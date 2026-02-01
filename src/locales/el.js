@@ -66,10 +66,10 @@ const translation = {
         },
         selectKeySizeLabel: "Επιλέξτε το μέγεθος κλειδιού:",
         labels: {
-          keySize: "Μέγεθος Κλειδιού:",
-          plaintext: "Κείμενο(plaintext):",
-          ciphertextHex: "Ciphertext (Hex):",
-          key: "Κλειδί για AES(αγγλικά):",
+          keySize: "Μέγεθος Κλειδιού",
+          plaintext: "Κείμενο (plaintext)",
+          ciphertextHex: "Ciphertext (Hex)",
+          key: "Κλειδί για AES (αγγλικά)",
         },
         keySizeOptions: {
           128: "128 bits",
@@ -101,13 +101,13 @@ const translation = {
         headingEncryptResultOverview: "Επισκόπηση Κρυπτογράφησης",
         headingDecryptResultOverview: "Επισκόπηση Αποκρυπτογράφησης",
         labels: {
-          ciphertext: "Ciphertext:",
-          plaintext: "Plaintext(αγγλικά):",
-          plaintextHex: "Plaintext(Hex):",
-          paddedPlaintextHex: "Padded plaintext(Hex):",
-          keyHex: "Κλειδί για AES(Hex):",
-          operationMode: "Λειτουργία:",
-          keySizeDisplay: "Μέγεθος κλειδιού:",
+          ciphertext: "Ciphertext",
+          plaintext: "Plaintext (αγγλικά)",
+          plaintextHex: "Plaintext (Hex)",
+          paddedPlaintextHex: "Padded plaintext (Hex)",
+          keyHex: "Κλειδί για AES (Hex)",
+          operationMode: "Λειτουργία",
+          keySizeDisplay: "Μέγεθος κλειδιού",
         },
         tooltips: {
           ciphertext:
@@ -121,9 +121,9 @@ const translation = {
           keyHex: "Η δεκαεξαδική αναπαράσταση του κλειδιού",
           operationMode: "Επιλεγμένη λειτουργία Encrypt ή Decrypt",
           keySize: "Επιλεγμένο μέγεθος κλειδιού σε bits",
-          plaintextEnglish: "Plaintext (αγγλικά):",
-          keyEnglish: "Κλειδί για AES (αγγλικά):",
-          keyEnglishHex: "Κλειδί για AES (Hex):",
+          plaintextEnglish: "Plaintext (αγγλικά)",
+          keyEnglish: "Κλειδί για AES (αγγλικά)",
+          keyEnglishHex: "Κλειδί για AES (Hex)",
           decryptedOutputHex: "Αποκρυπτογραφημένη έξοδος σε δεκαεξαδική μορφή",
           encryptedOutputHex: "Κρυπτογραφημένη έξοδος AES σε δεκαεξαδική μορφή",
           decryptedOutputBase64:
