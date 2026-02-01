@@ -747,7 +747,9 @@ w[i] = w[i - {{offset}}] XOR w[i - 1]
     sections: {
       whatIsAES: {
         title: "Τι είναι ο AES",
-        text: "Ο AES (Advanced Encryption Standard) είναι ένας αλγόριθμος κρυπτογράφησης συμμετρικού κλειδιού που κρυπτογραφεί δεδομένα σε blocks των 128 bit, χρησιμοποιώντας κλειδί μήκους 128, 192 ή 256 bit.",
+        text: "Ο AES (Advanced Encryption Standard) είναι ένας αλγόριθμος κρυπτογράφησης συμμετρικού κλειδιού που κρυπτογραφεί δεδομένα σε blocks των 128 bit, χρησιμοποιώντας κλειδί μήκους 128, 192 ή 256 bit. Για την πλήρη τεχνική προδιαγραφή, δείτε την ",
+        linkText: "επίσημη δημοσίευση του NIST",
+        linkUrl: "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf",
         caption: "Ροή AES: είσοδος → επεξεργασία blocks → ciphertext.",
       },
       keySharing: {

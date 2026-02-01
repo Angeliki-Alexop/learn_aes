@@ -747,7 +747,9 @@ New words are created one by one by combining previous words and, at specific po
     sections: {
       whatIsAES: {
         title: "What is AES",
-        text: "AES (Advanced Encryption Standard) is a symmetric-key encryption algorithm that encrypts data in 128-bit blocks using a key of 128, 192, or 256 bits.",
+        text: "AES (Advanced Encryption Standard) is a symmetric-key encryption algorithm that encrypts data in 128-bit blocks using a key of 128, 192, or 256 bits. For the complete technical specification, see the ",
+        linkText: "official NIST publication",
+        linkUrl: "https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.197-upd1.pdf",
         caption: "AES workflow: input → block processing → ciphertext.",
       },
       keySharing: {

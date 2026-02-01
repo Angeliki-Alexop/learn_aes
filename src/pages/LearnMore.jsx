@@ -40,6 +40,8 @@ function LearnMore() {
   const sections = sectionsMeta.map((meta, i) => ({ 
     title: t(meta.titleKey),
     text: t(meta.textKey),
+    linkText: t(`${meta.textKey.replace('.text', '.linkText')}`, ''),
+    linkUrl: t(`${meta.textKey.replace('.text', '.linkUrl')}`, ''),
     caption: t(meta.captionKey),
     img: imagesSorted[i] || null 
   }));
@@ -124,7 +126,15 @@ function LearnMore() {
             <Box className="learn-content">
               <div className="learn-text">
                 <Typography variant="h5" component="h2">{s.title}</Typography>
-                <Typography variant="body1" className="learn-description">{s.text}</Typography>
+                <Typography variant="body1" className="learn-description">
+                  {s.text}
+                  {s.linkText && s.linkUrl && (
+                    <a href={s.linkUrl} target="_blank" rel="noopener noreferrer">
+                      {s.linkText}
+                    </a>
+                  )}
+                  {s.linkText && s.linkUrl && '.'}
+                </Typography>
                 <Typography variant="caption" display="block" className="learn-caption">{s.caption}</Typography>
               </div>
               <figure className="learn-figure">
