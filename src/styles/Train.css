@@ -1,15 +1,16 @@
 .train-content {
-  /* Reserve most of the viewport but leave room for the AppBar (approx 64px). This prevents content being hidden behind the header. */
-  min-height: calc(100vh - 64px);
+  /* Reserve viewport space minus AppBar (~64px) and Footer (~56px) */
+  min-height: calc(100vh - 120px);
   display: flex;
   flex-direction: column;
+  padding-bottom: 20px; /* Add spacing above footer */
 }
 
 /* Make the inner MUI Container scrollable so content can be reached on small screens */
 .train-content > .MuiContainer-root {
   overflow-y: auto;
   flex: 1 1 auto;
-  max-height: calc(100vh - 64px);
+  max-height: calc(100vh - 120px);
 }
 .css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
   opacity: 1 !important;

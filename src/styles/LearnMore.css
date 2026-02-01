@@ -1,7 +1,7 @@
 /* Styles for LearnMore page: full-height sections with scroll-snap and keyboard navigation */
 .learn-page-root {
   padding: 0;
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden; /* prevent body/page scrollbar while inner container scrolls */
@@ -27,10 +27,10 @@
   flex: 1 1 auto;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
-  /* ensure last content isn't hidden behind floating controls */
-  padding-bottom: 220px;
-  /* make scroll-snap respect the floating UI at the bottom */
-  scroll-padding-bottom: 220px;
+  /* ensure last content isn't hidden behind floating controls and footer */
+  padding-bottom: 280px;
+  /* make scroll-snap respect the floating UI at the bottom and footer */
+  scroll-padding-bottom: 280px;
 }
 
 .learn-section {
@@ -120,9 +120,11 @@
   display: flex;
   gap: 8px;
   align-items: center;
-  background: rgba(255, 255, 255, 0.02);
-  padding: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 8px;
   border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
 }
 
 @media (max-width: 880px) {
