@@ -169,7 +169,7 @@ Have fun learning and experimenting with AES!`,
         },
       },
       keySchedule: {
-        title: "Key Schedule - Key Expansion",
+        title: "Key Expansion",
         allRoundKeys: "All round keys (Matrix format)",
         roundLabel: "Round {{n}}",
         columns: {

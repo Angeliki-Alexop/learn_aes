@@ -192,7 +192,7 @@ const translation = {
         nextState: "Επόμενη Κατάσταση [{{r}}, {{c}}]",
       },
       keySchedule: {
-        title: "Key Schedule - Key Expansion",
+        title: "Key Expansion",
         allRoundKeys: "Όλα τα round keys (σε μορφή μητρώου)",
         roundLabel: "Γύρος {{n}}",
         columns: {
