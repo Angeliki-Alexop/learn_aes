@@ -80,6 +80,7 @@ const translation = {
       errors: {
         plaintext: {
           tooLong: "Το plaintext πρέπει να έχει το πολύ 16 χαρακτήρες",
+          onlyASCII: "Επιτρέπονται μόνο χαρακτήρες ASCII",
         },
         ciphertext: {
           onlyHex: "Επιτρέπονται μόνο δεκαεξαδικοί χαρακτήρες (0-9, A-F)",
@@ -92,6 +93,7 @@ const translation = {
         key: {
           exactLength:
             "Το κλειδί πρέπει να έχει ακριβώς {{requiredLength}} χαρακτήρες",
+          onlyASCII: "Επιτρέπονται μόνο χαρακτήρες ASCII",
         },
       },
       summary: {

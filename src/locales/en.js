@@ -80,6 +80,7 @@ Have fun learning and experimenting with AES!`,
       errors: {
         plaintext: {
           tooLong: "Plaintext must be at most 16 characters",
+          onlyASCII: "Only ASCII characters are allowed",
         },
         ciphertext: {
           onlyHex: "Only hexadecimal characters (0-9, A-F) are allowed",
@@ -90,6 +91,7 @@ Have fun learning and experimenting with AES!`,
         },
         key: {
           exactLength: "Key must be exactly {{requiredLength}} characters long",
+          onlyASCII: "Only ASCII characters are allowed",
         },
       },
       summary: {

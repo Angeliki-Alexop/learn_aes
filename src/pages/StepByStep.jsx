@@ -693,8 +693,17 @@ function StepByStep() {
                 value={tempInputText}
                 onChange={(e) => {
                   const val = e.target.value;
-                  setKeyError("");
                   if (mode === "Encrypt") {
+                    // Check if input contains only ASCII characters
+                    const isASCII = /^[\x00-\x7F]*$/.test(val);
+                    if (!isASCII) {
+                      setTempInputError(
+                        t("pages.stepByStep.errors.plaintext.onlyASCII") ||
+                          "Only ASCII characters are allowed",
+                      );
+                      setTempInputText(val);
+                      return;
+                    }
                     // limit plaintext to 16 characters
                     if (val.length > 16) {
                       setTempInputText(val.slice(0, 16));
@@ -760,7 +769,18 @@ function StepByStep() {
                 label={t("pages.stepByStep.input.labels.key")}
                 value={tempKey}
                 onChange={(e) => {
-                  setTempKey(e.target.value);
+                  const val = e.target.value;
+                  // Check if key contains only ASCII characters
+                  const isASCII = /^[\x00-\x7F]*$/.test(val);
+                  if (!isASCII) {
+                    setKeyError(
+                      t("pages.stepByStep.errors.key.onlyASCII") ||
+                        "Only ASCII characters are allowed",
+                    );
+                    setTempKey(val);
+                    return;
+                  }
+                  setTempKey(val);
                   setKeyError("");
                 }}
                 variant="outlined"
@@ -778,7 +798,10 @@ function StepByStep() {
                   color="primary"
                   onClick={() => onFullSubmit()}
                   disabled={
-                    mode === "Decrypt" && !flags.enable_stepbystep_decryption
+                    (mode === "Decrypt" &&
+                      !flags.enable_stepbystep_decryption) ||
+                    !!tempInputError ||
+                    !!keyError
                   }
                   sx={{ mt: 2 }}
                   title={
