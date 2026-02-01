@@ -88,6 +88,9 @@ Have fun learning and experimenting with AES!`,
           base64Length: "Base64 must decode to exactly 16 bytes",
           invalidBase64: "Invalid Base64 string",
         },
+        key: {
+          exactLength: "Key must be exactly {{requiredLength}} characters long",
+        },
       },
       summary: {
         heading: "Input Summary",
@@ -103,11 +106,12 @@ Have fun learning and experimenting with AES!`,
         tooltips: {
           ciphertext:
             "The ciphertext provided as input to the decryption process",
-          plaintext: "The original plaintext message entered by the user",
+          plaintext: "The original plaintext entered by the user",
           plaintextHex: "The hexadecimal representation of the plaintext",
           paddedPlaintextHex:
             "The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format.",
           key: "Key provided by the user",
+          keyHex: "The hexadecimal representation of the input key",
           operationMode: "Encrypt or Decrypt mode selected by the user",
           keySize: "Selected key size in bits",
         },
@@ -286,8 +290,7 @@ During decryption, each column of the state matrix is multiplied by the inverse 
         },
         keyExpansion: {
           title: "Key Expansion",
-          what: `What is it?
-AES uses a different key for each encryption round.
+          what: `AES uses a different key for each encryption round.
 The Key Schedule is the overall process AES uses to manage and generate all the round keys needed during encryption.
 Key Expansion is the specific algorithm within the key schedule that computes these round keys from the original cipher key.
 

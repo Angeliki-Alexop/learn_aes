@@ -965,7 +965,7 @@ function StepByStep() {
                     {t("pages.stepByStep.summary.labels.keyHex")}
                   </Typography>
                   <LightTooltip
-                    title={t("pages.stepByStep.summary.tooltips.key")}
+                    title={t("pages.stepByStep.summary.tooltips.keyHex")}
                     placement="top-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1453,7 +1453,7 @@ function StepByStep() {
                         Plaintext (english)
                       </Typography>
                       <LightTooltip
-                        title="The original plaintext message entered by the user"
+                        title="The original plaintext entered by the user"
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
