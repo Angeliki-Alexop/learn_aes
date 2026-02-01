@@ -26,10 +26,10 @@ function Footer() {
           }}
         >
           <Typography variant="body2" sx={{ color: "white" }}>
-            Contact: angeliki.alexop@gmail.com
+            angeliki.alexop@gmail.com
           </Typography>
           <Typography variant="body2" sx={{ color: "white" }}>
-            © {currentYear} Learn AES. All rights reserved.
+            © {currentYear} AES Learning & Training. All rights reserved.
           </Typography>
         </Box>
       </Container>
