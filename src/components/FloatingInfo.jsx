@@ -25,15 +25,46 @@ export default function FloatingInfo({
   const { t } = useTranslation();
 
   const buildHow = (stepKey) => {
-    const slug = stepKey && stepKey.toLowerCase().replace(/\s+/g, "");
-    let how = t(`pages.stepByStep.helper.${slug}.how`, "");
+    // Use same keyMap as showInfoFor to ensure correct translation keys
+    const keyMap = {
+      "Key Expansion": "keyExpansion",
+      SubBytes: "subBytes",
+      ShiftRows: "shiftRows",
+      InvSubBytes: "invSubBytes",
+      InvShiftRows: "invShiftRows",
+      InvMixColumns: "invMixColumns",
+      MixColumns: "mixColumns",
+      AddRoundKey: "addRoundKey",
+    };
+    const k = keyMap[stepKey];
+    let how = k ? t(`pages.stepByStep.helper.${k}.how`, "") : "";
+
     if (!how) {
       // fallback to older stepInfo namespace
-      how = t(`pages.stepByStep.stepInfo.${slug}.how`, "") || t(`pages.stepByStep.stepInfo.${stepKey}.how`, "") || "";
+      const slug = stepKey && stepKey.toLowerCase().replace(/\s+/g, "");
+      how =
+        t(`pages.stepByStep.stepInfo.${slug}.how`, "") ||
+        t(`pages.stepByStep.stepInfo.${stepKey}.how`, "") ||
+        "";
     }
 
     if (stepKey === "Key Expansion") {
       const wordsPerKey = keySize === 128 ? 4 : keySize === 192 ? 6 : 8;
+
+      // For AES-256, insert the mid-cycle SubWord case between Case 1 and Case 3
+      if (keySize === 256) {
+        // Detect language and use appropriate case label
+        const isGreek = how.includes("Περίπτωση");
+        const case3Label = isGreek
+          ? "Περίπτωση 3 — Απλό XOR"
+          : "Case 3 — Simple XOR";
+        const case2Text = isGreek
+          ? "Περίπτωση 2 — Mid-cycle SubWord (i % {{mod}} === 4)\nΕφαρμόζουμε τα παρακάτω στη λέξη w[i-1]:\n1. Αντικατάσταση (SubWord): αντικαταστήστε κάθε byte χρησιμοποιώντας το S-box.\n2. XOR w[i - {{offset}}]: Κάντε XOR με τη λέξη {{offset}} θέσεις πριν για να προκύψει το w[i].\n\n"
+          : "Case 2 — Mid-cycle SubWord (i % {{mod}} === 4)\nApply the following step to the previous word (w[i-1]):\n1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].\n\n";
+
+        how = how.replace(case3Label, case2Text + case3Label);
+      }
+
       // Replace template variables in the how text
       how = how
         .replace(/\{\{keySize\}\}/g, keySize)
@@ -49,7 +80,7 @@ export default function FloatingInfo({
     if (!step) return null;
     if (step === "Input" || step === "Result") return null;
     // look up titles/what/how from translation keys
-  const keyMap = {
+    const keyMap = {
       "Key Expansion": "keyExpansion",
       SubBytes: "subBytes",
       ShiftRows: "shiftRows",
@@ -61,11 +92,20 @@ export default function FloatingInfo({
     };
     const k = keyMap[step];
     if (!k) return null;
-  // prefer helper namespace, fall back to stepInfo
-  const title = t(`pages.stepByStep.helper.${k}.title`, t(`pages.stepByStep.stepInfo.${k}.title`, step));
-  const what = t(`pages.stepByStep.helper.${k}.what`, t(`pages.stepByStep.stepInfo.${k}.what`, ""));
-  const how = t(`pages.stepByStep.helper.${k}.how`, t(`pages.stepByStep.stepInfo.${k}.how`, ""));
-  return { title, what, how };
+    // prefer helper namespace, fall back to stepInfo
+    const title = t(
+      `pages.stepByStep.helper.${k}.title`,
+      t(`pages.stepByStep.stepInfo.${k}.title`, step),
+    );
+    const what = t(
+      `pages.stepByStep.helper.${k}.what`,
+      t(`pages.stepByStep.stepInfo.${k}.what`, ""),
+    );
+    const how = t(
+      `pages.stepByStep.helper.${k}.how`,
+      t(`pages.stepByStep.stepInfo.${k}.how`, ""),
+    );
+    return { title, what, how };
   };
 
   const info = showInfoFor(currentStep);
@@ -90,7 +130,8 @@ export default function FloatingInfo({
       return hasSubmitted
         ? t("pages.stepByStep.helper.inputAfter.what", "")
         : t("pages.stepByStep.helper.inputBefore.what", "");
-    if (currentStep === "Result") return t("pages.stepByStep.helper.result.what", "");
+    if (currentStep === "Result")
+      return t("pages.stepByStep.helper.result.what", "");
     return info ? info.what : "";
   };
 
@@ -99,7 +140,8 @@ export default function FloatingInfo({
       return hasSubmitted
         ? t("pages.stepByStep.helper.inputAfter.how", "")
         : t("pages.stepByStep.helper.inputBefore.how", "");
-    if (currentStep === "Result") return t("pages.stepByStep.helper.result.how", "");
+    if (currentStep === "Result")
+      return t("pages.stepByStep.helper.result.how", "");
     if (!info) return "";
     // for Key Expansion append dynamic text
     if (currentStep === "Key Expansion") return buildHow(currentStep);
@@ -151,7 +193,9 @@ export default function FloatingInfo({
 
             <div className="floating-info-section">
               <h4 className="floating-info-section-title">
-                {tab === "what" ? t("pages.stepByStep.helper.tabWhat", "What is it?") : t("pages.stepByStep.helper.tabHow", "How to interact?")}
+                {tab === "what"
+                  ? t("pages.stepByStep.helper.tabWhat", "What is it?")
+                  : t("pages.stepByStep.helper.tabHow", "How to interact?")}
               </h4>
               <div
                 className="floating-info-section-content"

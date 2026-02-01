@@ -185,8 +185,8 @@ Have fun learning and experimenting with AES!`,
           Equals: "Equals",
         },
         explanations: {
-          case1: `Case 1 — (i % {{mod}} === 0)\n\nApply the following steps to the previous word (w[i-1]), in order:\n1. Rotate: move the first byte to the end.\n2. SubWord: substitute each byte using the S-box.\n3. XOR Rcon: XOR the result with the round constant (Rcon).\n4. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].`,
-          case2: `Case 3 — Simple XOR\n\nw[i] = w[i - {{offset}}] XOR w[i - 1]`,
+          case1: `Case 1 — Special transform (i % {{mod}} === 0)\n\nApply the following steps to the previous word (w[i-1]), in order:\n1. Rotate: move the first byte to the end.\n2. SubWord: substitute each byte using the S-box.\n3. XOR Rcon: XOR the result with the round constant (Rcon).\n4. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before (start of the previous round key) to produce w[i].`,
+          case2: `w[i] = w[i - {{offset}}] XOR w[i - 1]`,
           case2_mid: `Case 2 — Mid-cycle SubWord (i % {{mod}} === {{mid}})\n\nApply the following step to the previous word (w[i-1]):\n1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].`,
         },
       },
@@ -385,8 +385,7 @@ What happens during decryption?
 Decryption uses the same expanded round keys, but they are applied in reverse order.
 The key expansion process itself does not change, the keys are generated once and reused.
 During decryption, AES applies the round keys from the last round key to the first, ensuring that each encryption step is correctly reversed.`,
-          how: `How to interact?
-Use the Key Expansion view to inspect how each round key is derived from the original key.
+          how: `Use the Key Expansion view to inspect how each round key is derived from the original key.
 
 Current key size: AES-{{keySize}} ({{wordsPerKey}} words per round key).
 
