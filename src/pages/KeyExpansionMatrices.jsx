@@ -9,7 +9,7 @@ import {
   Paper,
 } from "@mui/material";
 import { RenderMatrix } from "./MatrixDisplay";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import {
   getColumnsForExplanations,
   getHighlightedColumnsByMatrix,
@@ -18,12 +18,17 @@ import {
 import { CirclePlus, RotateCcw, Wand2, Equal } from "lucide-react";
 import { sBox, rCon } from "../utils/aes_manual_v2";
 
-function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = 'Encrypt' }) {
+function KeyExpansionMatrices({
+  roundKeys,
+  toHex,
+  keySize: userKeySize,
+  mode = "Encrypt",
+}) {
   const { t } = useTranslation();
   const [highlightedMatrix, setHighlightedMatrix] = useState(null);
   const [highlightedCells, setHighlightedCells] = useState({});
   const [highlightedColumnsByMatrix, setHighlightedColumnsByMatrix] = useState(
-    {}
+    {},
   );
   const [explanationColumns, setExplanationColumns] = useState([]);
   const displayOrder = ["previous word", "offset word before", "current word"];
@@ -41,12 +46,12 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
   // explanation text state so we can change it dynamically
   let defaultExplanationText = "";
   // Use the English keyExpansion long explanations from the locale resource
-  if (keySize === 128) defaultExplanationText = t('keyExpansion.aes128');
-  else if (keySize === 192) defaultExplanationText = t('keyExpansion.aes192');
-  else if (keySize === 256) defaultExplanationText = t('keyExpansion.aes256');
+  if (keySize === 128) defaultExplanationText = t("keyExpansion.aes128");
+  else if (keySize === 192) defaultExplanationText = t("keyExpansion.aes192");
+  else if (keySize === 256) defaultExplanationText = t("keyExpansion.aes256");
 
   const [explanationText, setExplanationText] = useState(
-    defaultExplanationText
+    defaultExplanationText,
   );
 
   // words per round key (used to display offsets like w[i - 4], w[i - 6], w[i - 8])
@@ -79,11 +84,11 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
       roundKeys,
       toHex,
       keySize,
-      formatAsMatrix
+      formatAsMatrix,
     );
     const columnsArray = Array.from(columnDataMap.values());
     const sortedColumns = columnsArray.sort(
-      (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column)
+      (a, b) => displayOrder.indexOf(a.column) - displayOrder.indexOf(b.column),
     );
 
     // Use helper to build the visual explanation columns
@@ -101,24 +106,51 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
     if (keySize === 128) {
       const isSpecial = wordIndex % 4 === 0;
       if (isSpecial) {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 4, offset: 4 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case1", {
+            mod: 4,
+            offset: 4,
+          }),
+        );
       } else {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 4 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case2", { offset: 4 }),
+        );
       }
     } else if (keySize === 192) {
       const isSpecial = wordIndex % 6 === 0;
       if (isSpecial) {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 6, offset: 6 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case1", {
+            mod: 6,
+            offset: 6,
+          }),
+        );
       } else {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 6 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case2", { offset: 6 }),
+        );
       }
     } else if (keySize === 256) {
       if (wordIndex % 8 === 0) {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case1', { mod: 8, offset: 8 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case1", {
+            mod: 8,
+            offset: 8,
+          }),
+        );
       } else if (wordIndex % 8 === 4) {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2_mid', { mod: 8, mid: 4, offset: 8 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case2_mid", {
+            mod: 8,
+            mid: 4,
+            offset: 8,
+          }),
+        );
       } else {
-        setExplanationText(t('pages.stepByStep.keySchedule.explanations.case2', { offset: 8 }));
+        setExplanationText(
+          t("pages.stepByStep.keySchedule.explanations.case2", { offset: 8 }),
+        );
       }
     } else {
       setExplanationText(defaultExplanationText);
@@ -145,7 +177,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
   return (
     <>
       <Typography variant="subtitle1" align="center">
-        {t('pages.stepByStep.keySchedule.title')}
+        {t("pages.stepByStep.keySchedule.allRoundKeys")}
       </Typography>
       <div
         className="key-expansion-matrix-grid"
@@ -162,7 +194,7 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
           justifyContent: "center",
         }}
       >
-  {roundKeys.map((roundKey, idx) => {
+        {roundKeys.map((roundKey, idx) => {
           // compute disabled columns (words) that belong to the original key
           const initialBytes = (keySize || userKeySize) / 8; // e.g., 16,24,32
           const matrixStartByte = idx * 16;
@@ -174,14 +206,15 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
             }
           }
 
-          const numberOfRounds = keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
+          const numberOfRounds =
+            keySize === 128 ? 10 : keySize === 192 ? 12 : 14;
           // use display label if you want round to be reversed for Decrypt mode
           // const displayLabel = mode === 'Decrypt' ? numberOfRounds - idx : idx;
 
           return (
             <div key={idx} style={{ width: "100%" }}>
               <Typography variant="caption" align="center">
-                {t('pages.stepByStep.keySchedule.roundLabel', { n: idx })}
+                {t("pages.stepByStep.keySchedule.roundLabel", { n: idx })}
               </Typography>
               <RenderMatrix
                 hexString={toHex(roundKey)}
@@ -248,26 +281,44 @@ function KeyExpansionMatrices({ roundKeys, toHex, keySize: userKeySize, mode = '
                       }}
                     >
                       {col.column === "previous word"
-                        ? t('pages.stepByStep.keySchedule.columns.previousWord')
+                        ? t("pages.stepByStep.keySchedule.columns.previousWord")
                         : col.column === "offset word before"
-                        ? t('pages.stepByStep.keySchedule.columns.offsetWordBefore', { offset: wordsPerKey })
-                        : col.column === "current word"
-                        ? t('pages.stepByStep.keySchedule.columns.currentWord')
-                        : col.column === "XOR"
-                        ? t('pages.stepByStep.keySchedule.columns.XOR')
-                        : col.column === "Rotate"
-                        ? t('pages.stepByStep.keySchedule.columns.Rotate')
-                        : col.column === "Substitute"
-                        ? t('pages.stepByStep.keySchedule.columns.Substitute')
-                        : col.column === "Rotated"
-                        ? t('pages.stepByStep.keySchedule.columns.Rotated')
-                        : col.column === "Substituted Word" || col.column === "SubstitutedWord"
-                        ? t('pages.stepByStep.keySchedule.columns.SubstitutedWord')
-                        : col.column === "Rcon"
-                        ? t('pages.stepByStep.keySchedule.columns.Rcon')
-                        : col.column === "Equals"
-                        ? t('pages.stepByStep.keySchedule.columns.Equals')
-                        : col.column}
+                          ? t(
+                              "pages.stepByStep.keySchedule.columns.offsetWordBefore",
+                              { offset: wordsPerKey },
+                            )
+                          : col.column === "current word"
+                            ? t(
+                                "pages.stepByStep.keySchedule.columns.currentWord",
+                              )
+                            : col.column === "XOR"
+                              ? t("pages.stepByStep.keySchedule.columns.XOR")
+                              : col.column === "Rotate"
+                                ? t(
+                                    "pages.stepByStep.keySchedule.columns.Rotate",
+                                  )
+                                : col.column === "Substitute"
+                                  ? t(
+                                      "pages.stepByStep.keySchedule.columns.Substitute",
+                                    )
+                                  : col.column === "Rotated"
+                                    ? t(
+                                        "pages.stepByStep.keySchedule.columns.Rotated",
+                                      )
+                                    : col.column === "Substituted Word" ||
+                                        col.column === "SubstitutedWord"
+                                      ? t(
+                                          "pages.stepByStep.keySchedule.columns.SubstitutedWord",
+                                        )
+                                      : col.column === "Rcon"
+                                        ? t(
+                                            "pages.stepByStep.keySchedule.columns.Rcon",
+                                          )
+                                        : col.column === "Equals"
+                                          ? t(
+                                              "pages.stepByStep.keySchedule.columns.Equals",
+                                            )
+                                          : col.column}
                     </TableCell>
                   ))}
                 </TableRow>
