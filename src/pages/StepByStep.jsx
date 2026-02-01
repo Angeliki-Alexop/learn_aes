@@ -1436,7 +1436,9 @@ function StepByStep() {
                         Ciphertext (Hex)
                       </Typography>
                       <LightTooltip
-                        title="The ciphertext provided as input to the decryption process"
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.ciphertext",
+                        )}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1453,7 +1455,7 @@ function StepByStep() {
                         Plaintext (english)
                       </Typography>
                       <LightTooltip
-                        title="The original plaintext entered by the user"
+                        title={t("pages.stepByStep.summary.tooltips.plaintext")}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1475,7 +1477,9 @@ function StepByStep() {
                         Padded Plaintext (Hex)
                       </Typography>
                       <LightTooltip
-                        title="Plaintext after PKCS#7 padding, in hexadecimal format"
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.paddedPlaintextHex",
+                        )}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1494,7 +1498,7 @@ function StepByStep() {
                     Key for AES (english)
                   </Typography>
                   <LightTooltip
-                    title="Key provided by the user"
+                    title={t("pages.stepByStep.summary.tooltips.key")}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1509,7 +1513,7 @@ function StepByStep() {
                     Key for AES (Hex)
                   </Typography>
                   <LightTooltip
-                    title="The hexadecimal representation of the input key"
+                    title={t("pages.stepByStep.summary.tooltips.keyHex")}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1535,7 +1539,9 @@ function StepByStep() {
                         Plaintext (english)
                       </Typography>
                       <LightTooltip
-                        title="Decrypted plaintext (interpreted as text)"
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.plaintextDecrypt",
+                        )}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -1553,8 +1559,12 @@ function StepByStep() {
                   <LightTooltip
                     title={
                       isDecrypt
-                        ? "Decrypted output in hexadecimal"
-                        : "AES encrypted output in hexadecimal"
+                        ? t(
+                            "pages.stepByStep.summary.tooltips.decryptedOutputHex",
+                          )
+                        : t(
+                            "pages.stepByStep.summary.tooltips.encryptedOutputHex",
+                          )
                     }
                     placement="right-start"
                   >
@@ -1574,8 +1584,12 @@ function StepByStep() {
                   <LightTooltip
                     title={
                       isDecrypt
-                        ? "Decrypted output encoded in Base64"
-                        : "AES encrypted output encoded in Base64"
+                        ? t(
+                            "pages.stepByStep.summary.tooltips.decryptedOutputBase64",
+                          )
+                        : t(
+                            "pages.stepByStep.summary.tooltips.encryptedOutputBase64",
+                          )
                     }
                     placement="right-start"
                   >

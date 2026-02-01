@@ -107,6 +107,7 @@ Have fun learning and experimenting with AES!`,
           ciphertext:
             "The ciphertext provided as input to the decryption process",
           plaintext: "The original plaintext entered by the user",
+          plaintextDecrypt: "The decrypted plaintext",
           plaintextHex: "The hexadecimal representation of the plaintext",
           paddedPlaintextHex:
             "The plaintext after PKCS#7 padding has been applied to match AES’s required block size (16 bytes) in hexadecimal format.",
@@ -114,6 +115,10 @@ Have fun learning and experimenting with AES!`,
           keyHex: "The hexadecimal representation of the input key",
           operationMode: "Encrypt or Decrypt mode selected by the user",
           keySize: "Selected key size in bits",
+          decryptedOutputHex: "Decrypted output in hexadecimal",
+          encryptedOutputHex: "AES encrypted output in hexadecimal",
+          decryptedOutputBase64: "Decrypted output encoded in Base64",
+          encryptedOutputBase64: "AES encrypted output encoded in Base64",
         },
       },
       dynamic: {
