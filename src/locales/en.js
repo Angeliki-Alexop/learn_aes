@@ -570,7 +570,7 @@ The total number of expanded words generated is:
       "addroundkey.description":
         "Apply the AddRoundKey transformation by XORing each byte of the state matrix with the corresponding byte of the round key. Enter your answers in hexadecimal format.",
       "invsubbytes.description":
-        "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format.",
+        "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table",
       "mixcolumns.selectColumn": "Select which column to analyze:",
       "invmixcolumns.selectColumn": "Select which column to analyze:",
       "mixcolumns.outputLabel": "Enter Result (hex):",
@@ -608,7 +608,8 @@ The total number of expanded words generated is:
           title: "What is SubBytes?",
           description:
             "SubBytes is the step in AES where each byte is replaced with a new byte according to a predefined substitution table called the S-box. To perform this step, take the byte in hex: the first hex digit indicates the row in the S-box, and the second hex digit indicates the column. The value found at that position becomes the substituted byte.",
-          hint: "Click the icon in the navbar to view the S-box lookup table.", //icon
+          hintStart: "Click the ", //icon
+          hintEnd: " icon in the navbar to view the S-box lookup table.",
         },
         shiftrows: {
           title: "What is ShiftRows?",
@@ -690,16 +691,19 @@ To perform this step, take the byte in hex:
   • the second hex digit indicates the column. 
 The value found at that position becomes the inverse-substituted byte.`,
           hint: "Hint:",
-          hint_text:
-            "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.",
+          hint_textStart:
+            "Enter the substituted values in hexadecimal format. Click the ",
+          hint_textEnd:
+            " icon in the navigation bar to view the inverse S-box lookup table.",
         },
         addroundkey: {
           title: "What is AddRoundKey?",
           description:
             "AddRoundKey is a step in AES where each byte of the state matrix is combined with the corresponding byte of the round key using the XOR operation (⊕).",
           hint: "Hint:",
-          hint_text:
-            "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter.",
+          hint_textStart:
+            "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the",
+          hint_textEnd: "icon in the navigation bar to open the converter.",
         },
         keyexpansion: {
           title: "What is Key Expansion?",

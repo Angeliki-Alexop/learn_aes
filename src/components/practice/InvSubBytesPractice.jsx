@@ -132,8 +132,8 @@ const InvSubBytesPractice = () => {
       <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
         {t(
           "train.practice.invsubbytes.description",
-          "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table. Enter your answers in hexadecimal format.",
-        )}
+          "Apply the InvSubBytes transformation by replacing each byte using the AES inverse S-box lookup table",
+        )}{" "}
         <Grid3x3
           size={20}
           style={{
@@ -141,7 +141,8 @@ const InvSubBytesPractice = () => {
             verticalAlign: "middle",
             margin: "1px 2px",
           }}
-        />
+        />{" "}
+        {t("common.enterHex", "Enter your answers in hexadecimal format.")}
       </Typography>
       <Box
         sx={{
@@ -330,9 +331,9 @@ const InvSubBytesPractice = () => {
               {t("train.practice.tooltips.invsubbytes.hint", "Hint:")}
             </strong>{" "}
             {t(
-              "train.practice.tooltips.invsubbytes.hint_text",
-              "Enter the substituted values in hexadecimal format. Click the inverse S-box icon in the navbar to view the inverse S-box lookup table.",
-            )}
+              "train.practice.tooltips.invsubbytes.hint_textStart",
+              "Enter the substituted values in hexadecimal format. Click the ",
+            )}{" "}
             <Grid3x3
               size={20}
               style={{
@@ -340,7 +341,11 @@ const InvSubBytesPractice = () => {
                 verticalAlign: "middle",
                 margin: "0 4px",
               }}
-            />
+            />{" "}
+            {t(
+              "train.practice.tooltips.invsubbytes.hint_textEnd",
+              " icon in the navbar to view the inverse S-box lookup table.",
+            )}
           </Typography>
         </DialogContent>
       </Dialog>

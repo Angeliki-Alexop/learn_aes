@@ -545,13 +545,17 @@ const AddRoundKeyPractice = () => {
               {t("train.practice.tooltips.addroundkey.hint", "Hint:")}
             </strong>{" "}
             {t(
-              "train.practice.tooltips.addroundkey.hint_text",
-              "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the calculator icon in the navbar to open the converter.",
-            )}
+              "train.practice.tooltips.addroundkey.hint_textStart",
+              "Convert each byte to binary, perform XOR bit by bit, then convert back to hexadecimal. Click the",
+            )}{" "}
             <CalculateIcon
               fontSize="small"
               sx={{ display: "inline-block", verticalAlign: "middle", mx: 0.5 }}
-            />
+            />{" "}
+            {t(
+              "train.practice.tooltips.addroundkey.hint_textEnd",
+              "icon in the navbar to open the converter.",
+            )}
           </Typography>
         </DialogContent>
       </Dialog>

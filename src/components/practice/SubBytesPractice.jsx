@@ -142,7 +142,7 @@ const SubBytesPractice = () => {
             margin: "3px 2px",
           }}
         />{" "}
-        . {t("common.enterHex", "Enter your answers in hexadecimal format.")}
+        .{t("common.enterHex", "Enter your answers in hexadecimal format.")}
       </Typography>
       <Box
         sx={{
@@ -321,9 +321,18 @@ const SubBytesPractice = () => {
             }}
           >
             <strong>Hint:</strong>{" "}
+            {t("train.practice.tooltips.subbytes.hintStart", "Click the ")}{" "}
+            <Grid3x3
+              size={20}
+              style={{
+                display: "inline-block",
+                verticalAlign: "middle",
+                margin: "3px 2px",
+              }}
+            />{" "}
             {t(
-              "train.practice.tooltips.subbytes.hint",
-              "Enter the substituted values in hexadecimal format. Click the icon in the navbar to view the S-box lookup table.",
+              "train.practice.tooltips.subbytes.hintEnd",
+              " icon in the navbar to view the S-box lookup table.",
             )}
           </Typography>
         </DialogContent>
