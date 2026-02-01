@@ -305,7 +305,7 @@ Each new byte is a combination of all four original bytes in the column.
 
 Multiplication in GF(2⁸) follows special finite-field rules, but for learning purposes it can be understood using the following practical rules:
 • 01 × X = X
-• 02 × X = Shift X left by 1 bit. If the he original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
+• 02 × X = Shift X left by 1 bit. If the the original byte’s most significant bit is 1 before shifting, XOR the shifted value with 1B (hex).
 • 03 × X = (02 × X) ⊕ X`,
           how: `Click any byte in the 'Next State' matrix (the output of the MixColumns step).\n
     • This selects one output byte S′ and highlights the entire source column from the 'Current State' that was used to compute it.
