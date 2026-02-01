@@ -10,11 +10,12 @@ html, body {
   margin: 0;
   overflow: auto; /* Allow page scrolling */
 }
-  #root {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
   .stepbystep-container {
     display: flex;
     height: 100%; /* Ensure the container takes full height */
