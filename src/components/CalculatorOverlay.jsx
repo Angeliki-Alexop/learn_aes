@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import "./CalculatorOverlay.css";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 
 function toBigIntFrom(value, format) {
   try {
@@ -143,7 +143,7 @@ function CalculatorOverlay({ open, onClose }) {
             fontWeight="bold"
             sx={{ flex: 1 }}
           >
-            Calculator
+            {t("calculatorOverlay.title")}
           </Typography>
           <IconButton onClick={() => onClose()} aria-label="Close calculator">
             <CloseIcon />
@@ -154,14 +154,14 @@ function CalculatorOverlay({ open, onClose }) {
           <Tabs
             value={view}
             onChange={(e, val) => setView(val)}
-            aria-label={t('calculatorOverlay.title')}
+            aria-label="Calculator"
             variant="fullWidth"
             textColor="primary"
             indicatorColor="primary"
           >
-            <Tab label={t('calculatorOverlay.tabs.xor')} value="xor" />
-            <Tab label={t('calculatorOverlay.tabs.binhex')} value="binhex" />
-            <Tab label={t('calculatorOverlay.tabs.hexbin')} value="hexbin" />
+            <Tab label={t("calculatorOverlay.tabs.xor")} value="xor" />
+            <Tab label={t("calculatorOverlay.tabs.binhex")} value="binhex" />
+            <Tab label={t("calculatorOverlay.tabs.hexbin")} value="hexbin" />
           </Tabs>
         </Box>
 
@@ -189,7 +189,7 @@ function CalculatorOverlay({ open, onClose }) {
                   },
                 }}
               >
-                {t('calculatorOverlay.xor.hexButton')}
+                {t("calculatorOverlay.xor.hexButton")}
               </Button>
               <Button
                 variant={xorFormat === "bin" ? "contained" : "outlined"}
@@ -203,7 +203,7 @@ function CalculatorOverlay({ open, onClose }) {
                   },
                 }}
               >
-                {t('calculatorOverlay.xor.binButton')}
+                {t("calculatorOverlay.xor.binButton")}
               </Button>
             </Box>
 
@@ -216,15 +216,15 @@ function CalculatorOverlay({ open, onClose }) {
                   setAVal(
                     xorFormat === "hex"
                       ? sanitizeHexInput(v)
-                      : sanitizeBinInput(v)
+                      : sanitizeBinInput(v),
                   );
                 }}
                 size="small"
                 fullWidth
                 helperText={
                   xorFormat === "hex"
-                    ? t('calculatorOverlay.xor.helperHex', { max: MAX_HEX })
-                    : t('calculatorOverlay.xor.helperBin', { max: MAX_BIN })
+                    ? t("calculatorOverlay.xor.helperHex", { max: MAX_HEX })
+                    : t("calculatorOverlay.xor.helperBin", { max: MAX_BIN })
                 }
               />
             </Box>
@@ -238,31 +238,33 @@ function CalculatorOverlay({ open, onClose }) {
                   setBVal(
                     xorFormat === "hex"
                       ? sanitizeHexInput(v)
-                      : sanitizeBinInput(v)
+                      : sanitizeBinInput(v),
                   );
                 }}
                 size="small"
                 fullWidth
                 helperText={
                   xorFormat === "hex"
-                    ? t('calculatorOverlay.xor.helperHex', { max: MAX_HEX })
-                    : t('calculatorOverlay.xor.helperBin', { max: MAX_BIN })
+                    ? t("calculatorOverlay.xor.helperHex", { max: MAX_HEX })
+                    : t("calculatorOverlay.xor.helperBin", { max: MAX_BIN })
                 }
               />
             </Box>
 
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2">{t('calculatorOverlay.xor.resultLabel')}</Typography>
+              <Typography variant="body2">
+                {t("calculatorOverlay.xor.resultLabel")}
+              </Typography>
               <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
                 <TextField
-                  label={t('calculatorOverlay.xor.resultHex')}
+                  label={t("calculatorOverlay.xor.resultHex")}
                   value={xorResult === null ? "" : bigintToHex(xorResult)}
                   size="small"
                   fullWidth
                   InputProps={{ readOnly: true }}
                 />
                 <TextField
-                  label={t('calculatorOverlay.xor.resultBin')}
+                  label={t("calculatorOverlay.xor.resultBin")}
                   value={xorResult === null ? "" : bigintToBin(xorResult)}
                   size="small"
                   fullWidth
@@ -275,10 +277,12 @@ function CalculatorOverlay({ open, onClose }) {
 
         {view === "binhex" && (
           <Box>
-            <Typography variant="subtitle1">{t('calculatorOverlay.binhex.title')}</Typography>
+            <Typography variant="subtitle1">
+              {t("calculatorOverlay.binhex.title")}
+            </Typography>
             <Box sx={{ mt: 1 }}>
               <TextField
-                label={t('calculatorOverlay.binhex.inputLabel')}
+                label={t("calculatorOverlay.binhex.inputLabel")}
                 value={binIn}
                 onChange={(e) => setBinIn(sanitizeBinInput(e.target.value))}
                 size="small"
@@ -287,9 +291,11 @@ function CalculatorOverlay({ open, onClose }) {
               />
             </Box>
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2">{t('calculatorOverlay.binhex.outputLabel')}</Typography>
+              <Typography variant="body2">
+                {t("calculatorOverlay.binhex.outputLabel")}
+              </Typography>
               <TextField
-                label={t('calculatorOverlay.binhex.outputLabel')}
+                label={t("calculatorOverlay.binhex.outputLabel")}
                 value={binToHexOut || ""}
                 size="small"
                 fullWidth
@@ -302,21 +308,27 @@ function CalculatorOverlay({ open, onClose }) {
 
         {view === "hexbin" && (
           <Box>
-            <Typography variant="subtitle1">{t('calculatorOverlay.hexbin.title')}</Typography>
+            <Typography variant="subtitle1">
+              {t("calculatorOverlay.hexbin.title")}
+            </Typography>
             <Box sx={{ mt: 1 }}>
               <TextField
-                label={t('calculatorOverlay.hexbin.inputLabel')}
+                label={t("calculatorOverlay.hexbin.inputLabel")}
                 value={hexIn}
                 onChange={(e) => setHexIn(sanitizeHexInput(e.target.value))}
                 size="small"
                 fullWidth
-                helperText={`0-9,A-F — max ${MAX_HEX} chars`}
+                helperText={t("calculatorOverlay.hexbin.helperText", {
+                  max: MAX_HEX,
+                })}
               />
             </Box>
             <Box sx={{ mt: 2 }}>
-              <Typography variant="body2">{t('calculatorOverlay.hexbin.outputLabel')}</Typography>
+              <Typography variant="body2">
+                {t("calculatorOverlay.hexbin.outputLabel")}
+              </Typography>
               <TextField
-                label={t('calculatorOverlay.hexbin.outputLabel')}
+                label={t("calculatorOverlay.hexbin.outputLabel")}
                 value={hexToBinOut || ""}
                 size="small"
                 fullWidth

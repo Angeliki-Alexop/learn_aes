@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import {
   Typography,
   Box,
@@ -199,7 +199,7 @@ function StepByStep() {
 
     // For encryption ensure plaintext <= 16 chars
     if (mode === "Encrypt" && tempInputText.length > 16) {
-    setKeyError(t('pages.stepByStep.errors.plaintext.tooLong'));
+      setKeyError(t("pages.stepByStep.errors.plaintext.tooLong"));
       return;
     }
 
@@ -550,7 +550,10 @@ function StepByStep() {
     // If we're on the Input screen before the user has submitted, show
     // an introductory title and short description (based on selected mode).
     if (currentRound === -2 && currentStep === "Input" && !hasSubmitted) {
-      const subtitle = mode === "Encrypt" ? t('pages.stepByStep.input.subtitle.encrypt') : t('pages.stepByStep.input.subtitle.decrypt');
+      const subtitle =
+        mode === "Encrypt"
+          ? t("pages.stepByStep.input.subtitle.encrypt")
+          : t("pages.stepByStep.input.subtitle.decrypt");
       return (
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <Typography
@@ -563,14 +566,14 @@ function StepByStep() {
               color: "#661974",
             }}
           >
-            {t('pages.stepByStep.input.title')}
+            {t("pages.stepByStep.input.title")}
           </Typography>
           <Typography
             variant="body1"
             color="information"
-            sx={{ maxWidth: 900, mx: "auto", mb: 2 }}
+            sx={{ maxWidth: 900, mx: "auto", mb: 2, whiteSpace: "pre-wrap" }}
           >
-            {t('pages.stepByStep.input.description')}
+            {t("pages.stepByStep.input.description")}
           </Typography>
           <Typography
             variant="h5"
@@ -590,16 +593,16 @@ function StepByStep() {
             }}
           >
             <Typography variant="body1" color="information">
-              {t('pages.stepByStep.input.selectModeLabel')}
+              {t("pages.stepByStep.input.selectModeLabel")}
             </Typography>
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-                <Button
+              <Button
                 variant={mode === "Encrypt" ? "contained" : "outlined"}
                 color="primary"
                 onClick={() => {
                   setMode("Encrypt");
-                    setTempInputText("");
-                    setTempKey("");
+                  setTempInputText("");
+                  setTempKey("");
                 }}
                 sx={
                   mode === "Encrypt"
@@ -611,7 +614,7 @@ function StepByStep() {
                     : {}
                 }
               >
-                {t('pages.stepByStep.input.controls.encryptButton')}
+                {t("pages.stepByStep.input.controls.encryptButton")}
               </Button>
               <Button
                 variant={mode === "Decrypt" ? "contained" : "outlined"}
@@ -631,7 +634,7 @@ function StepByStep() {
                     : {}
                 }
               >
-                {t('pages.stepByStep.input.controls.decryptButton')}
+                {t("pages.stepByStep.input.controls.decryptButton")}
               </Button>
             </Box>
             {mode === "Decrypt" && <></>}
@@ -641,35 +644,43 @@ function StepByStep() {
               display="block"
               sx={{ mt: 1 }}
             >
-              {t('pages.stepByStep.input.selectKeySizeLabel')}
+              {t("pages.stepByStep.input.selectKeySizeLabel")}
             </Typography>
             <Box sx={{ mt: 1, width: 220 }}>
               <FormControl fullWidth size="small">
-                <InputLabel id="keysize-label">{t('pages.stepByStep.input.labels.keySize')}</InputLabel>
+                <InputLabel id="keysize-label">
+                  {t("pages.stepByStep.input.labels.keySize")}
+                </InputLabel>
                 <Select
                   labelId="keysize-label"
                   id="keysize-select"
                   value={keySize}
-                  label={t('pages.stepByStep.input.labels.keySize')}
+                  label={t("pages.stepByStep.input.labels.keySize")}
                   onChange={(e) => {
                     const newSize = Number(e.target.value);
                     setKeySize(newSize);
                     setTempKey("");
                   }}
                 >
-                  <MenuItem value={128}>{t('pages.stepByStep.input.keySizeOptions.128')}</MenuItem>
-                  <MenuItem value={192}>{t('pages.stepByStep.input.keySizeOptions.192')}</MenuItem>
-                  <MenuItem value={256}>{t('pages.stepByStep.input.keySizeOptions.256')}</MenuItem>
+                  <MenuItem value={128}>
+                    {t("pages.stepByStep.input.keySizeOptions.128")}
+                  </MenuItem>
+                  <MenuItem value={192}>
+                    {t("pages.stepByStep.input.keySizeOptions.192")}
+                  </MenuItem>
+                  <MenuItem value={256}>
+                    {t("pages.stepByStep.input.keySizeOptions.256")}
+                  </MenuItem>
                 </Select>
               </FormControl>
             </Box>
 
             <Box sx={{ width: "60%", maxWidth: 720, mt: 2 }}>
-                <TextField
+              <TextField
                 label={
                   mode === "Encrypt"
-                    ? t('pages.stepByStep.input.labels.plaintext')
-                    : t('pages.stepByStep.input.labels.ciphertextHex')
+                    ? t("pages.stepByStep.input.labels.plaintext")
+                    : t("pages.stepByStep.input.labels.ciphertextHex")
                 }
                 value={tempInputText}
                 onChange={(e) => {
@@ -678,7 +689,9 @@ function StepByStep() {
                     // limit plaintext to 16 characters
                     if (val.length > 16) {
                       setTempInputText(val.slice(0, 16));
-                      setTempInputError(t('pages.stepByStep.errors.plaintext.tooLong'));
+                      setTempInputError(
+                        t("pages.stepByStep.errors.plaintext.tooLong"),
+                      );
                     } else {
                       setTempInputText(val);
                       setTempInputError("");
@@ -689,11 +702,17 @@ function StepByStep() {
                       // allow only hex digits and optionally spaces; validate cleaned length
                       const cleaned = val.replace(/\s+/g, "");
                       if (/[^0-9a-fA-F\s]/.test(val)) {
-                        setTempInputError(t('pages.stepByStep.errors.ciphertext.onlyHex'));
+                        setTempInputError(
+                          t("pages.stepByStep.errors.ciphertext.onlyHex"),
+                        );
                       } else if (cleaned.length > 32) {
-                        setTempInputError(t('pages.stepByStep.errors.ciphertext.hexLength'));
+                        setTempInputError(
+                          t("pages.stepByStep.errors.ciphertext.hexLength"),
+                        );
                       } else if (cleaned.length !== 32) {
-                        setTempInputError(t('pages.stepByStep.errors.ciphertext.hexLength'));
+                        setTempInputError(
+                          t("pages.stepByStep.errors.ciphertext.hexLength"),
+                        );
                       } else {
                         setTempInputError("");
                       }
@@ -705,12 +724,18 @@ function StepByStep() {
                       try {
                         const bin = atob(val || "");
                         if (bin.length !== 16) {
-                          setTempInputError(t('pages.stepByStep.errors.ciphertext.base64Length'));
+                          setTempInputError(
+                            t(
+                              "pages.stepByStep.errors.ciphertext.base64Length",
+                            ),
+                          );
                         } else {
                           setTempInputError("");
                         }
                       } catch (err) {
-                        setTempInputError(t('pages.stepByStep.errors.ciphertext.invalidBase64'));
+                        setTempInputError(
+                          t("pages.stepByStep.errors.ciphertext.invalidBase64"),
+                        );
                       }
                     }
                   }
@@ -722,8 +747,8 @@ function StepByStep() {
                 helperText={tempInputError}
                 inputProps={{ maxLength: mode === "Encrypt" ? 16 : 32 }}
               />
-                <TextField
-                label={t('pages.stepByStep.input.labels.key')}
+              <TextField
+                label={t("pages.stepByStep.input.labels.key")}
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
                 variant="outlined"
@@ -745,12 +770,12 @@ function StepByStep() {
                   }
                   sx={{ mt: 2 }}
                   title={
-                      mode === "Decrypt" && !flags.enable_stepbystep_decryption
-                        ? t('pages.stepByStep.summary.tooltips.ciphertext')
+                    mode === "Decrypt" && !flags.enable_stepbystep_decryption
+                      ? t("pages.stepByStep.summary.tooltips.ciphertext")
                       : ""
                   }
                 >
-                    {t('pages.stepByStep.input.controls.submit')}
+                  {t("pages.stepByStep.input.controls.submit")}
                 </Button>
               </Box>
             </Box>
@@ -804,7 +829,7 @@ function StepByStep() {
                 mb: 3,
               }}
             >
-              {t('pages.stepByStep.summary.heading')}
+              {t("pages.stepByStep.summary.heading")}
             </Typography>
 
             <Box
@@ -829,10 +854,12 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        {t('pages.stepByStep.summary.labels.ciphertext')}
+                        {t("pages.stepByStep.summary.labels.ciphertext")}
                       </Typography>
                       <LightTooltip
-                        title={t('pages.stepByStep.summary.tooltips.ciphertext')}
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.ciphertext",
+                        )}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -846,10 +873,10 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        {t('pages.stepByStep.summary.labels.plaintext')}
+                        {t("pages.stepByStep.summary.labels.plaintext")}
                       </Typography>
                       <LightTooltip
-                        title={t('pages.stepByStep.summary.tooltips.plaintext')}
+                        title={t("pages.stepByStep.summary.tooltips.plaintext")}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -866,10 +893,12 @@ function StepByStep() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
-                        {t('pages.stepByStep.summary.labels.plaintextHex')}
+                        {t("pages.stepByStep.summary.labels.plaintextHex")}
                       </Typography>
                       <LightTooltip
-                        title={t('pages.stepByStep.summary.tooltips.plaintextHex')}
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.plaintextHex",
+                        )}
                         placement="right-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -888,10 +917,14 @@ function StepByStep() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
-                        {t('pages.stepByStep.summary.labels.paddedPlaintextHex')}
+                        {t(
+                          "pages.stepByStep.summary.labels.paddedPlaintextHex",
+                        )}
                       </Typography>
                       <LightTooltip
-                        title={t('pages.stepByStep.summary.tooltips.paddedPlaintextHex')}
+                        title={t(
+                          "pages.stepByStep.summary.tooltips.paddedPlaintextHex",
+                        )}
                         placement="top-start"
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -914,10 +947,10 @@ function StepByStep() {
               >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    {t('pages.stepByStep.input.labels.key')}
+                    {t("pages.stepByStep.input.labels.key")}
                   </Typography>
                   <LightTooltip
-                    title={t('pages.stepByStep.summary.tooltips.key')}
+                    title={t("pages.stepByStep.summary.tooltips.key")}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -929,10 +962,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    {t('pages.stepByStep.summary.labels.keyHex')}
+                    {t("pages.stepByStep.summary.labels.keyHex")}
                   </Typography>
                   <LightTooltip
-                    title={t('pages.stepByStep.summary.tooltips.key')}
+                    title={t("pages.stepByStep.summary.tooltips.key")}
                     placement="top-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -960,10 +993,10 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    {t('pages.stepByStep.summary.labels.operationMode')}
+                    {t("pages.stepByStep.summary.labels.operationMode")}
                   </Typography>
                   <LightTooltip
-                    title={t('pages.stepByStep.summary.tooltips.operationMode')}
+                    title={t("pages.stepByStep.summary.tooltips.operationMode")}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -974,9 +1007,11 @@ function StepByStep() {
                 <Box
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
-                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.keySizeDisplay')}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {t("pages.stepByStep.summary.labels.keySizeDisplay")}
+                  </Typography>
                   <LightTooltip
-                    title={t('pages.stepByStep.summary.tooltips.keySize')}
+                    title={t("pages.stepByStep.summary.tooltips.keySize")}
                     placement="right-start"
                   >
                     <InfoOutlinedIcon fontSize="xsmall" color="action" />
@@ -992,7 +1027,7 @@ function StepByStep() {
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
-            {t('pages.stepByStep.keySchedule.title')}
+            {t("pages.stepByStep.keySchedule.title")}
           </Typography>
           {/* StepInfo removed. Floating info button available at bottom-right. */}
           <div className="key-expansion" style={{ marginTop: "24px" }}>
@@ -1015,7 +1050,10 @@ function StepByStep() {
       return (
         <Box>
           <Typography variant="h6" component="h2" align="center">
-            {t('pages.stepByStep.dynamic.roundStep', { round: displayRound, step: currentStep })}
+            {t("pages.stepByStep.dynamic.roundStep", {
+              round: displayRound,
+              step: currentStep,
+            })}
           </Typography>
           {/* Show plaintext (for Encrypt) or ciphertext (for Decrypt) under the heading */}
           <Box sx={{ display: "flex", justifyContent: "center", mt: 1, mb: 2 }}>
@@ -1036,7 +1074,9 @@ function StepByStep() {
             >
               {mode === "Encrypt" ? (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.plaintext')}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {t("pages.stepByStep.summary.labels.plaintext")}
+                  </Typography>
                   <Typography
                     sx={{ wordBreak: "break-word", mt: 0.5, fontSize: "1rem" }}
                   >
@@ -1045,7 +1085,9 @@ function StepByStep() {
                 </>
               ) : (
                 <>
-                  <Typography sx={{ fontWeight: 700 }}>{t('pages.stepByStep.summary.labels.ciphertext')}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>
+                    {t("pages.stepByStep.summary.labels.ciphertext")}
+                  </Typography>
                   <Typography
                     sx={{
                       wordBreak: "break-word",
@@ -1079,7 +1121,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={previousStepState}
               matrixId="previous"
-              title={t('pages.stepByStep.matrix.currentState')}
+              title={t("pages.stepByStep.matrix.currentState")}
               highlightRows={currentStep === "ShiftRows"}
               highlightColumns={false}
               highlightedCell={highlightedCell}
@@ -1220,7 +1262,7 @@ function StepByStep() {
                   align="center"
                   style={{ marginTop: 4 }}
                 >
-                  {t('pages.stepByStep.matrix.shiftRowsTable')}
+                  {t("pages.stepByStep.matrix.shiftRowsTable")}
                 </Typography>
               </div>
             )}
@@ -1232,8 +1274,10 @@ function StepByStep() {
                   highlightedInputValue={highlightedCellValue}
                   highlightedOutputValue={highlightedSBoxOutputValue}
                   title={
-                      currentStep === "InvSubBytes" ? t('pages.stepByStep.matrix.inverseSBox') : t('pages.stepByStep.matrix.sbox')
-                    }
+                    currentStep === "InvSubBytes"
+                      ? t("pages.stepByStep.matrix.inverseSBox")
+                      : t("pages.stepByStep.matrix.sbox")
+                  }
                 />
               </div>
             )}
@@ -1249,7 +1293,7 @@ function StepByStep() {
                   ["0d", "09", "0e", "0b"],
                   ["0b", "0d", "09", "0e"],
                 ]}
-                title={t('pages.stepByStep.matrix.inverseFixedMatrix')}
+                title={t("pages.stepByStep.matrix.inverseFixedMatrix")}
               />
             )}
 
@@ -1258,7 +1302,7 @@ function StepByStep() {
               <RenderMatrix
                 hexString={toHex(roundKeys[roundKeyIndex] || [])}
                 matrixId="roundKey"
-                title={t('pages.stepByStep.matrix.roundKey')}
+                title={t("pages.stepByStep.matrix.roundKey")}
                 highlightRows={false}
                 highlightColumns={false}
                 highlightedCell={highlightedCell}
@@ -1270,7 +1314,7 @@ function StepByStep() {
             <RenderMatrix
               hexString={stepState}
               matrixId="current"
-              title={t('pages.stepByStep.matrix.nextState')}
+              title={t("pages.stepByStep.matrix.nextState")}
               highlightRows={false}
               // Highlight columns for both ShiftRows and InvShiftRows so the
               // visual column markers remain consistent in either direction.

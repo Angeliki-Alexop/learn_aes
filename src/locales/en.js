@@ -36,6 +36,7 @@ const translation = {
       title: "Hex → Binary",
       inputLabel: "Hex input",
       outputLabel: "BIN",
+      helperText: "0-9,A-F — max {{max}} chars",
     },
   },
   keyExpansion: {
@@ -46,20 +47,24 @@ const translation = {
   pages: {
     stepByStep: {
       input: {
-        title: "Exploring the Advanced Encryption Standard (AES)",
-        description:
-          "Welcome! This interactive tool will guide you through the AES algorithm step by step, making it easy to understand how each operation works. Use the AES Helper to get extra explanations, see what’s happening at every stage, and learn how to interact with the tool to explore all its features. Have fun learning and experimenting with AES!",
+        title: "Exploring the Advanced Encryption Standard(AES)",
+        description: `Welcome! 
+This interactive tool will guide you through the AES algorithm step by step, 
+making it easy to understand how each operation works. 
+Use the AES Helper to get extra explanations, see what’s happening at every stage, 
+and learn how to interact with the tool to explore all its features. 
+Have fun learning and experimenting with AES!`,
         subtitle: {
           encrypt: "AES Encryption",
           decrypt: "AES Decryption",
         },
-        selectModeLabel: "Select the desired mode:",
+        selectModeLabel: "Select mode:",
         controls: {
           encryptButton: "ENCRYPTION",
           decryptButton: "DECRYPTION",
           submit: "Submit",
         },
-        selectKeySizeLabel: "Select the desired Key Size:",
+        selectKeySizeLabel: "Select Key Size:",
         labels: {
           keySize: "Key Size",
           plaintext: "Plaintext (english)",
@@ -78,7 +83,8 @@ const translation = {
         },
         ciphertext: {
           onlyHex: "Only hexadecimal characters (0-9, A-F) are allowed",
-          hexLength: "Hex input must be exactly 32 hex characters (16 bytes)",
+          hexLength:
+            "No blanks - Hex input must be exactly 32 hex characters (16 bytes)",
           base64Length: "Base64 must decode to exactly 16 bytes",
           invalidBase64: "Invalid Base64 string",
         },
@@ -119,14 +125,14 @@ const translation = {
         sboxOverlay: {
           sboxTitle: "S-box (encryption)",
           sboxDescription:
-            "The S-box (Substitution box) is a fixed lookup table used in AES to replace each byte with a different byte during the encryption process. It introduces non-linearity to make the cipher resistant to patterns and attacks. Each input byte (in hex) selects a row and column in the S-box; the value at that position is the substituted (output) byte.",
+            "The S-box(Substitution box) is a fixed lookup table used in AES to replace each byte with a different byte during the encryption process. It introduces non-linearity to make the cipher resistant to patterns and attacks. Each input byte(hex) selects a row and column in the S-box, the value at that position is the substituted (output) byte.",
           sboxHint:
-            "Hint (encryption): Click any cell to highlight its row and column. The selected cell shows the substituted value for the corresponding input byte.",
+            "Hint: Click any cell to highlight its row and column. The selected cell shows the substituted value for the corresponding input byte.",
           invSboxTitle: "Inverse S-box (decryption)",
           invSboxDescription:
-            "The Inverse S-box (Substitution box) is a fixed lookup table used in AES during the decryption process to reverse the SubBytes transformation. Each input byte (in hex) selects a row and column in the inverse S-box, the value at that position replaces the byte in the state. This step undoes the non-linear substitution applied during encryption and helps recover the original data.",
+            "The Inverse S-box(Substitution box) is a fixed lookup table used in AES during the decryption process to reverse the SubBytes transformation. Each input byte(hex) selects a row and column in the inverse S-box, the value at that position replaces the byte in the state. This step undoes the non-linear substitution applied during encryption and helps recover the original data.",
           invSboxHint:
-            "Hint (decryption): Click any cell to highlight its row and column. The selected cell shows the output value for the corresponding input byte.",
+            "Hint: Click any cell to highlight its row and column. The selected cell shows the output value for the corresponding input byte.",
         },
         inverseFixedMatrix: "Fixed Matrix:",
         fixedMatrix: "Fixed Matrix:",
@@ -327,7 +333,7 @@ Use the above rules with the current round key size (words per key = {{wordsPerK
         },
         inputBefore: {
           what: "This section serves as the algorithm's input area. Select the operation mode (Encryption or Decryption), specify the key size, enter the secret key, and provide the text to be encrypted or decrypted.",
-          how: "Step 1: Choose mode (Encryption or Decryption). This determines whether the simulation runs the forward AES steps (Encryption) or the inverse steps (Decryption). For Decryption you must use the same key size and key that were used to produce the ciphertext.\n\nStep 2: Select Key Size (128, 192, or 256 bits). The key size sets the expected key length and the number of AES rounds.\n\nStep 3: Enter the text to process. For Encryption provide plaintext and for Decryption provide ciphertext.\n\nStep 4: Enter the secret key matching the selected key size. The key must have the correct length for the chosen size (e.g., 128-bit = 32 hex characters). For Decryption this must be the original key used during encryption.\n\nStep 5: Click Submit to start the step-by-step simulation.",
+          how: "Step 1: Choose mode (Encryption or Decryption). This determines whether the simulation runs the forward AES steps (Encryption) or the inverse steps (Decryption). For Decryption you must use the same key size and key that were used to produce the ciphertext.\n\nStep 2: Select Key Size (128, 192, or 256 bits). The key size sets the expected key length and the number of AES rounds.\n\nStep 3: Enter the text to process. For Encryption provide plaintext(16 chars) and for Decryption provide ciphertext(32 hex chars).\n\nStep 4: Enter the secret key matching the selected key size. The key must have the correct length for the chosen size (16, 24, or 32 characters). For Decryption this must be the original key used during encryption.\n\nStep 5: Click Submit to start the step-by-step simulation.",
         },
         inputAfter: {
           what: "This page summarizes all the parameters selected for the AES operation and shows how your input is prepared before the algorithm steps begin.",
