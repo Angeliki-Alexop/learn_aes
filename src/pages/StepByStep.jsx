@@ -1443,7 +1443,9 @@ function StepByStep() {
               gutterBottom
               sx={{ fontWeight: 700, mb: 3 }}
             >
-              {isDecrypt ? "Decryption overview" : "Encryption overview"}
+              {isDecrypt
+                ? t("pages.stepByStep.summary.headingDecryptResultOverview")
+                : t("pages.stepByStep.summary.headingEncryptResultOverview")}
             </Typography>
 
             <Box
@@ -1468,7 +1470,7 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Ciphertext (Hex)
+                        Ciphertext (Hex):
                       </Typography>
                       <LightTooltip
                         title={t(
@@ -1487,7 +1489,9 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (english)
+                        {t(
+                          "pages.stepByStep.summary.tooltips.plaintextEnglish",
+                        )}
                       </Typography>
                       <LightTooltip
                         title={t("pages.stepByStep.summary.tooltips.plaintext")}
@@ -1509,7 +1513,7 @@ function StepByStep() {
                       }}
                     >
                       <Typography sx={{ fontWeight: 700 }}>
-                        Padded Plaintext (Hex)
+                        Padded Plaintext (Hex):
                       </Typography>
                       <LightTooltip
                         title={t(
@@ -1530,7 +1534,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (english)
+                    {t("pages.stepByStep.summary.tooltips.keyEnglish")}
                   </Typography>
                   <LightTooltip
                     title={t("pages.stepByStep.summary.tooltips.key")}
@@ -1545,7 +1549,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    Key for AES (Hex)
+                    {t("pages.stepByStep.summary.tooltips.keyEnglishHex")}
                   </Typography>
                   <LightTooltip
                     title={t("pages.stepByStep.summary.tooltips.keyHex")}
@@ -1571,7 +1575,9 @@ function StepByStep() {
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Typography sx={{ fontWeight: 700 }}>
-                        Plaintext (english)
+                        {t(
+                          "pages.stepByStep.summary.tooltips.plaintextEnglish",
+                        )}
                       </Typography>
                       <LightTooltip
                         title={t(
@@ -1589,7 +1595,7 @@ function StepByStep() {
                 )}
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                   <Typography sx={{ fontWeight: 700 }}>
-                    {isDecrypt ? "Plaintext (Hex)" : "Ciphertext (Hex)"}
+                    {isDecrypt ? "Plaintext (Hex):" : "Ciphertext (Hex):"}
                   </Typography>
                   <LightTooltip
                     title={
@@ -1614,7 +1620,7 @@ function StepByStep() {
                   sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
                 >
                   <Typography sx={{ fontWeight: 700 }}>
-                    {isDecrypt ? "Plaintext (Base64)" : "Ciphertext (Base64)"}
+                    {isDecrypt ? "Plaintext (Base64):" : "Ciphertext (Base64):"}
                   </Typography>
                   <LightTooltip
                     title={

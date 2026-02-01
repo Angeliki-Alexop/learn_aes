@@ -98,6 +98,8 @@ const translation = {
       },
       summary: {
         heading: "Σύνοψη εισόδου",
+        headingEncryptResultOverview: "Επισκόπηση Κρυπτογράφησης",
+        headingDecryptResultOverview: "Επισκόπηση Αποκρυπτογράφησης",
         labels: {
           ciphertext: "Ciphertext:",
           plaintext: "Plaintext(αγγλικά):",
@@ -119,6 +121,9 @@ const translation = {
           keyHex: "Η δεκαεξαδική αναπαράσταση του κλειδιού",
           operationMode: "Επιλεγμένη λειτουργία Encrypt ή Decrypt",
           keySize: "Επιλεγμένο μέγεθος κλειδιού σε bits",
+          plaintextEnglish: "Plaintext (αγγλικά):",
+          keyEnglish: "Κλειδί για AES (αγγλικά):",
+          keyEnglishHex: "Κλειδί για AES (Hex):",
           decryptedOutputHex: "Αποκρυπτογραφημένη έξοδος σε δεκαεξαδική μορφή",
           encryptedOutputHex: "Κρυπτογραφημένη έξοδος AES σε δεκαεξαδική μορφή",
           decryptedOutputBase64:
