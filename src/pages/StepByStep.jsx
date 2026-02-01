@@ -133,6 +133,9 @@ function StepByStep() {
       setHighlightedColumnMixColumn(null);
       setHighlightedRowFixedMatrix(null);
       setHighlightedColumnValuesMixColumn([]);
+      // clear error messages
+      setKeyError("");
+      setTempInputError("");
     };
 
     window.addEventListener("stepbystep-reset", resetHandler);
@@ -193,13 +196,12 @@ function StepByStep() {
   const onFullSubmit = () => {
     // Do not submit if there's a validation error
     if (tempInputError) {
-      setKeyError(tempInputError);
       return;
     }
 
     // For encryption ensure plaintext <= 16 chars
     if (mode === "Encrypt" && tempInputText.length > 16) {
-      setKeyError(t("pages.stepByStep.errors.plaintext.tooLong"));
+      setTempInputError(t("pages.stepByStep.errors.plaintext.tooLong"));
       return;
     }
 
@@ -243,7 +245,7 @@ function StepByStep() {
             throw new Error("Base64 must decode to 16 bytes");
         }
       } catch (e) {
-        setKeyError(e.message);
+        setTempInputError(e.message);
         return;
       }
 
@@ -603,6 +605,8 @@ function StepByStep() {
                   setMode("Encrypt");
                   setTempInputText("");
                   setTempKey("");
+                  setKeyError("");
+                  setTempInputError("");
                 }}
                 sx={
                   mode === "Encrypt"
@@ -623,6 +627,8 @@ function StepByStep() {
                   setMode("Decrypt");
                   setTempInputText("");
                   setTempKey("");
+                  setKeyError("");
+                  setTempInputError("");
                 }}
                 sx={
                   mode === "Decrypt"
@@ -660,6 +666,8 @@ function StepByStep() {
                     const newSize = Number(e.target.value);
                     setKeySize(newSize);
                     setTempKey("");
+                    setKeyError("");
+                    setTempInputError("");
                   }}
                 >
                   <MenuItem value={128}>
@@ -685,6 +693,7 @@ function StepByStep() {
                 value={tempInputText}
                 onChange={(e) => {
                   const val = e.target.value;
+                  setKeyError("");
                   if (mode === "Encrypt") {
                     // limit plaintext to 16 characters
                     if (val.length > 16) {
@@ -750,7 +759,10 @@ function StepByStep() {
               <TextField
                 label={t("pages.stepByStep.input.labels.key")}
                 value={tempKey}
-                onChange={(e) => setTempKey(e.target.value)}
+                onChange={(e) => {
+                  setTempKey(e.target.value);
+                  setKeyError("");
+                }}
                 variant="outlined"
                 fullWidth
                 margin="normal"
