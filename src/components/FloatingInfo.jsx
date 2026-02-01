@@ -59,7 +59,7 @@ export default function FloatingInfo({
           ? "Περίπτωση 3 — Απλό XOR"
           : "Case 3 — Simple XOR";
         const case2Text = isGreek
-          ? "Περίπτωση 2 — Mid-cycle SubWord (i % {{mod}} === 4)\nΕφαρμόζουμε τα παρακάτω στη λέξη w[i-1]:\n1. Αντικατάσταση (SubWord): αντικαταστήστε κάθε byte χρησιμοποιώντας το S-box.\n2. XOR w[i - {{offset}}]: Κάντε XOR με τη λέξη {{offset}} θέσεις πριν για να προκύψει το w[i].\n\n"
+          ? "Περίπτωση 2 — Mid-cycle SubWord (i % {{mod}} === 4)\nΕφαρμόζουμε τα παρακάτω στη λέξη w[i-1]:\n1. Αντικατάσταση (SubWord): αντικαταστήστε κάθε byte χρησιμοποιώντας το S-box.\n2. XOR w[i - {{offset}}]: Κάντε XOR το αποτέλεσμα με τη λέξη {{offset}} θέσεις πριν για να προκύψει το w[i].\n\n"
           : "Case 2 — Mid-cycle SubWord (i % {{mod}} === 4)\nApply the following step to the previous word (w[i-1]):\n1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].\n\n";
 
         how = how.replace(case3Label, case2Text + case3Label);

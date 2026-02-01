@@ -66,10 +66,10 @@ Have fun learning and experimenting with AES!`,
         },
         selectKeySizeLabel: "Select Key Size:",
         labels: {
-          keySize: "Key Size",
-          plaintext: "Plaintext (english)",
-          ciphertextHex: "Ciphertext (Hex)",
-          key: "Key for AES (english)",
+          keySize: "Key Size:",
+          plaintext: "Plaintext (english):",
+          ciphertextHex: "Ciphertext (Hex):",
+          key: "Key for AES (english):",
         },
         keySizeOptions: {
           128: "128 bits",
@@ -193,7 +193,7 @@ Have fun learning and experimenting with AES!`,
         },
         explanations: {
           case1: `Case 1 — Special transform (i % {{mod}} === 0)\n\nApply the following steps to the previous word (w[i-1]), in order:\n1. Rotate: move the first byte to the end.\n2. SubWord: substitute each byte using the S-box.\n3. XOR Rcon: XOR the result with the round constant (Rcon).\n4. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before (start of the previous round key) to produce w[i].`,
-          case2: `w[i] = w[i - {{offset}}] XOR w[i - 1]`,
+          case2: `Case 3 — Simple XOR\n\nw[i] = w[i - {{offset}}] XOR w[i - 1]`,
           case2_mid: `Case 2 — Mid-cycle SubWord (i % {{mod}} === {{mid}})\n\nApply the following step to the previous word (w[i-1]):\n1. SubWord: substitute each byte using the S-box.\n2. XOR w[i - {{offset}}]: XOR the result with the word {{offset}} positions before to produce w[i].`,
         },
       },
@@ -398,7 +398,7 @@ Current key size: AES-{{keySize}} ({{wordsPerKey}} words per round key).
 
 In the Key Schedule view you can click any word (a 4-byte column) to inspect how it was generated. Words are grouped into round keys of {{wordsPerKey}} words, the special core transformation is applied every {{wordsPerKey}}th word. Click any byte inside a word to highlight the contributing previous words and transformations, making it easier to trace how that expanded word was derived.
 
-There are two cases when computing a new word w[i]:
+These are the cases when computing a new word w[i]:
 
 Case 1 — Special transform (i % {{mod}} === 0)
 Apply the following steps to the previous word (w[i-1]), in order:
