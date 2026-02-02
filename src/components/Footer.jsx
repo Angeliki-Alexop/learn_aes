@@ -12,7 +12,7 @@ function Footer() {
         borderTop: "1px solid #3d2f74",
         py: 1.5,
         mt: "auto",
-        flexShrink: 0
+        flexShrink: 0,
       }}
     >
       <Container maxWidth="xl">
@@ -22,14 +22,11 @@ function Footer() {
             justifyContent: "space-between",
             alignItems: "center",
             flexWrap: "wrap",
-            gap: 2
+            gap: 2,
           }}
         >
           <Typography variant="body2" sx={{ color: "white" }}>
             angeliki.alexop@gmail.com
-          </Typography>
-          <Typography variant="body2" sx={{ color: "white" }}>
-            © {currentYear} AES Learning & Training. All rights reserved.
           </Typography>
         </Box>
       </Container>
