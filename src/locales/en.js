@@ -53,7 +53,7 @@ const translation = {
 This interactive tool will guide you through the AES algorithm step by step, 
 making it easy to understand how each operation works. 
 Use the AES Helper to get extra explanations, see what’s happening at every stage, 
-and learn how to interact with the tool to explore all its features. 
+and learn how to interact with the app to explore all its features. 
 Have fun learning and experimenting with AES!`,
         subtitle: {
           encrypt: "AES Encryption",
