@@ -48,7 +48,7 @@ const translation = {
   pages: {
     stepByStep: {
       input: {
-        title: "Εξερευνώντας τον Advanced Encryption Standard(AES)",
+        title: "Εξερευνώντας τον Advanced Encryption Standard (AES)",
         description: `Καλώς ήρθατε! 
 Αυτό το διαδραστικό εργαλείο θα σας καθοδηγήσει βήμα-βήμα στο αλγόριθμο AES, 
 κάνοντας εύκολη την κατανόηση του τρόπου με τον οποίο λειτουργεί κάθε διαδικασία. 

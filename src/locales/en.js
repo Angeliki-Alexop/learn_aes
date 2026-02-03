@@ -48,7 +48,7 @@ const translation = {
   pages: {
     stepByStep: {
       input: {
-        title: "Exploring the Advanced Encryption Standard(AES)",
+        title: "Exploring the Advanced Encryption Standard (AES)",
         description: `Welcome! 
 This interactive tool will guide you through the AES algorithm step by step, 
 making it easy to understand how each operation works. 
