@@ -1,7 +1,7 @@
 const translation = {
   common: {
     enterHex: "Εισάγετε τις απαντήσεις σας σε δεκαεξαδική μορφή.",
-    contactUs: "Επικοινωνήστε μαζί μας",
+    contactUs: "Επικοινωνία",
   },
   nav: {
     stepByStep: "Βημα-βημα",

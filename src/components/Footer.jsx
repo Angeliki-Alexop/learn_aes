@@ -21,7 +21,7 @@ function Footer() {
         <Box
           sx={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             alignItems: "center",
             flexWrap: "wrap",
             gap: 2,

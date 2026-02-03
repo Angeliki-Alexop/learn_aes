@@ -1,7 +1,7 @@
 const translation = {
   common: {
     enterHex: "Enter your answers in hexadecimal format.",
-    contactUs: "Contact Us",
+    contactUs: "Contact",
   },
   nav: {
     stepByStep: "Step-By-Step",
