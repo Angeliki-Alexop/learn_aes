@@ -57,10 +57,19 @@ function SBoxOverlay({ open, onClose }) {
                 setSelected(null);
               }}
               aria-label="S-box pages"
-              sx={{ ml: 0 }}
+              sx={{ 
+                ml: 0,
+                '& .MuiTab-root': {
+                  fontSize: { xs: '0.7rem', sm: '0.875rem' },
+                  minWidth: { xs: 'auto', sm: 160 },
+                  padding: { xs: '6px 8px', sm: '6px 16px' }
+                }
+              }}
               textColor="primary"
               indicatorColor="primary"
-              size="medium"
+              variant="scrollable"
+              scrollButtons="auto"
+              allowScrollButtonsMobile
             >
               <Tab label="Forward S-box (encryption)" value="sbox" />
               <Tab label="Inverse S-box (decryption)" value="invsbox" />
