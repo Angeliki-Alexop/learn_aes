@@ -165,8 +165,8 @@ const translation = {
         fixedMatrix: "Fixed Matrix",
         inverseFixedMatrix: "Fixed Matrix",
         shifted: "Ολίσθηση",
-        result: "Αποτέλεσμα",
-        key: "Πράξεις",
+        result: "Αποτέλεσμα (hex):",
+        key: "Round Key:",
         value: "Τιμή",
       },
       sidebar: {
