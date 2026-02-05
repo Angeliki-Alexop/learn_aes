@@ -681,7 +681,10 @@ const KeyExpansionPractice = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: `repeat(${Math.min(Nk, 8)}, 1fr)`,
+            gridTemplateColumns: {
+              xs: "repeat(auto-fit, minmax(100px, 1fr))",
+              sm: `repeat(${Math.min(Nk, 8)}, 1fr)`,
+            },
             gap: 1,
             mt: 1,
           }}
@@ -912,7 +915,8 @@ const KeyExpansionPractice = () => {
                   <Box
                     sx={{
                       display: "flex",
-                      gap: 3,
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: { xs: 2, sm: 3 },
                       justifyContent: "center",
                       flexWrap: "wrap",
                       alignItems: "center",
@@ -923,7 +927,8 @@ const KeyExpansionPractice = () => {
                         border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 1,
-                        minWidth: 200,
+                        minWidth: { xs: "100%", sm: 200 },
+                        maxWidth: { xs: 300, sm: "none" },
                         textAlign: "center",
                         bgcolor: "#fff",
                       }}
@@ -949,7 +954,8 @@ const KeyExpansionPractice = () => {
                         border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 1,
-                        minWidth: 200,
+                        minWidth: { xs: "100%", sm: 200 },
+                        maxWidth: { xs: 300, sm: "none" },
                         textAlign: "center",
                         bgcolor: "#fff",
                       }}
@@ -975,7 +981,8 @@ const KeyExpansionPractice = () => {
                         border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 1,
-                        minWidth: 100,
+                        minWidth: { xs: "100%", sm: 100 },
+                        maxWidth: { xs: 300, sm: "none" },
                         textAlign: "center",
                         bgcolor: "#fff",
                       }}
@@ -1010,7 +1017,7 @@ const KeyExpansionPractice = () => {
                     </Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                       {caseKind === "special" ? (
-                        <Box sx={{ display: "flex", gap: 1 }}>
+                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "center" }}>
                           {Array.from({ length: 4 }).map((__, ri) => (
                             <TextField
                               key={`rot-${ri}`}
@@ -1032,7 +1039,7 @@ const KeyExpansionPractice = () => {
                               error={rotIncorrect[ri]}
                               disabled={rotCorrect}
                               sx={{
-                                width: 64,
+                                width: { xs: 56, sm: 64 },
                                 ...(rotCorrect
                                   ? {
                                       "& .MuiInputBase-input": {
@@ -1043,13 +1050,23 @@ const KeyExpansionPractice = () => {
                               }}
                             />
                           ))}
-                          <Button variant="contained" onClick={handleCheckRot}>
+                          <Button 
+                            variant="contained" 
+                            onClick={handleCheckRot}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             {t(
                               "train.practice.keyexpansionPage.buttons.checkRot",
                               "Check Rot",
                             )}
                           </Button>
-                          <Button variant="contained" onClick={handleShowRot}>
+                          <Button 
+                            variant="contained" 
+                            onClick={handleShowRot}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             {t(
                               "train.practice.keyexpansionPage.buttons.show",
                               "Show",
@@ -1077,6 +1094,7 @@ const KeyExpansionPractice = () => {
                         <Box
                           sx={{
                             display: "flex",
+                            flexWrap: "wrap",
                             gap: 1,
                             justifyContent: "center",
                             alignItems: "center",
@@ -1103,7 +1121,7 @@ const KeyExpansionPractice = () => {
                               error={subIncorrect[si]}
                               disabled={!rotCorrect || subCorrect}
                               sx={{
-                                width: 64,
+                                width: { xs: 56, sm: 64 },
                                 ...(subCorrect
                                   ? {
                                       "& .MuiInputBase-input": {
@@ -1118,6 +1136,8 @@ const KeyExpansionPractice = () => {
                             variant="contained"
                             onClick={handleCheckSub}
                             disabled={!rotCorrect}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.checkSub",
@@ -1128,6 +1148,8 @@ const KeyExpansionPractice = () => {
                             variant="contained"
                             onClick={handleShowSub}
                             disabled={!rotCorrect}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.show",
@@ -1202,7 +1224,7 @@ const KeyExpansionPractice = () => {
                     <Box sx={{ fontFamily: "monospace", mt: 0.5 }}>
                       {caseKind === "special" ? (
                         <Box
-                          sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                          sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "center", alignItems: "center" }}
                         >
                           {Array.from({ length: 4 }).map((__, ri) => (
                             <TextField
@@ -1225,7 +1247,7 @@ const KeyExpansionPractice = () => {
                               error={rconIncorrect[ri]}
                               disabled={!subCorrect || rconCorrect}
                               sx={{
-                                width: 64,
+                                width: { xs: 56, sm: 64 },
                                 ...(rconCorrect
                                   ? {
                                       "& .MuiInputBase-input": {
@@ -1240,6 +1262,8 @@ const KeyExpansionPractice = () => {
                             variant="contained"
                             onClick={handleCheckRcon}
                             disabled={!subCorrect}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.checkRcon",
@@ -1250,6 +1274,8 @@ const KeyExpansionPractice = () => {
                             variant="contained"
                             onClick={handleShowRcon}
                             disabled={!subCorrect}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.show",
@@ -1312,7 +1338,7 @@ const KeyExpansionPractice = () => {
                                     ? !subCorrect
                                     : false
                               }
-                              sx={{ width: 64 }}
+                              sx={{ width: { xs: 56, sm: 64 } }}
                             />
                           ))}
                           <Button
@@ -1325,13 +1351,20 @@ const KeyExpansionPractice = () => {
                                   ? !subCorrect
                                   : false
                             }
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.check",
                               "Check",
                             )}
                           </Button>
-                          <Button variant="outlined" onClick={handleStepShow}>
+                          <Button 
+                            variant="outlined" 
+                            onClick={handleStepShow}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                          >
                             {t(
                               "train.practice.keyexpansionPage.buttons.show",
                               "Show",
@@ -1340,6 +1373,8 @@ const KeyExpansionPractice = () => {
                           <Button
                             onClick={handleStepNext}
                             disabled={!isStepComplete()}
+                            size="small"
+                            sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                           >
                             {t(
                               "train.practice.keyexpansionPage.buttons.next",
@@ -1356,7 +1391,8 @@ const KeyExpansionPractice = () => {
                   <Box
                     sx={{
                       display: "flex",
-                      gap: 3,
+                      flexDirection: { xs: "column", sm: "row" },
+                      gap: { xs: 2, sm: 3 },
                       justifyContent: "flex-start",
                       flexWrap: "wrap",
                       alignItems: "center",
@@ -1367,7 +1403,8 @@ const KeyExpansionPractice = () => {
                         border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 1,
-                        minWidth: 200,
+                        minWidth: { xs: "100%", sm: 200 },
+                        maxWidth: { xs: 300, sm: "none" },
                         textAlign: "center",
                         bgcolor: "#fff",
                       }}
@@ -1393,7 +1430,8 @@ const KeyExpansionPractice = () => {
                         border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 1,
-                        minWidth: 200,
+                        minWidth: { xs: "100%", sm: 200 },
+                        maxWidth: { xs: 300, sm: "none" },
                         textAlign: "center",
                         bgcolor: "#fff",
                       }}
@@ -1420,17 +1458,18 @@ const KeyExpansionPractice = () => {
                     <Box
                       sx={{
                         display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
                         alignItems: "center",
                         gap: 1,
                         mt: 1,
                         mb: 2,
                       }}
                     >
-                      <Typography variant="body2" sx={{ mr: 1 }}>
+                      <Typography variant="body2" sx={{ mr: { xs: 0, sm: 1 }, mb: { xs: 1, sm: 0 } }}>
                         SubWord
                       </Typography>
                       <Box
-                        sx={{ display: "flex", gap: 1, alignItems: "center" }}
+                        sx={{ display: "flex", flexWrap: "wrap", gap: 1, justifyContent: "center", alignItems: "center" }}
                       >
                         {Array.from({ length: 4 }).map((__, si) => (
                           <TextField
@@ -1453,7 +1492,7 @@ const KeyExpansionPractice = () => {
                             error={subIncorrect[si]}
                             disabled={subCorrect}
                             sx={{
-                              width: 64,
+                              width: { xs: 56, sm: 64 },
                               "& .MuiOutlinedInput-root": {
                                 bgcolor:
                                   subCorrect && keySize === 256
@@ -1467,6 +1506,7 @@ const KeyExpansionPractice = () => {
                           variant="contained"
                           onClick={handleCheckSub}
                           sx={{ ml: 1 }}
+                          size="small"
                         >
                           {t(
                             "train.practice.keyexpansionPage.buttons.checkSub",
@@ -1477,6 +1517,7 @@ const KeyExpansionPractice = () => {
                           variant="contained"
                           onClick={handleShowSub}
                           sx={{ ml: 1 }}
+                          size="small"
                         >
                           {t(
                             "train.practice.keyexpansionPage.buttons.show",
@@ -1489,12 +1530,13 @@ const KeyExpansionPractice = () => {
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "center",
+                      flexDirection: { xs: "column", sm: "row" },
+                      alignItems: { xs: "flex-start", sm: "center" },
                       gap: 1,
                       mt: 1,
                     }}
                   >
-                    <Typography variant="body2" sx={{ minWidth: 200 }}>
+                    <Typography variant="body2" sx={{ minWidth: { xs: "auto", sm: 200 }, mb: { xs: 1, sm: 0 } }}>
                       w[i - {Nk}] XOR w[i - 1] = w[{currentWord}]
                     </Typography>
                     <Box sx={{ fontFamily: "monospace", mt: 0 }}>
@@ -1526,16 +1568,26 @@ const KeyExpansionPractice = () => {
                             }}
                             size="small"
                             error={stepIncorrect[bi]}
-                            sx={{ width: 64 }}
+                            sx={{ width: { xs: 56, sm: 64 } }}
                           />
                         ))}
-                        <Button variant="contained" onClick={handleStepCheck}>
+                        <Button 
+                          variant="contained" 
+                          onClick={handleStepCheck}
+                          size="small"
+                          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                        >
                           {t(
                             "train.practice.keyexpansionPage.buttons.check",
                             "Check",
                           )}
                         </Button>
-                        <Button variant="outlined" onClick={handleStepShow}>
+                        <Button 
+                          variant="outlined" 
+                          onClick={handleStepShow}
+                          size="small"
+                          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+                        >
                           {t(
                             "train.practice.keyexpansionPage.buttons.show",
                             "Show",
@@ -1544,6 +1596,8 @@ const KeyExpansionPractice = () => {
                         <Button
                           onClick={handleStepNext}
                           disabled={!isStepComplete()}
+                          size="small"
+                          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
                         >
                           {t(
                             "train.practice.keyexpansionPage.buttons.next",
@@ -1562,7 +1616,11 @@ const KeyExpansionPractice = () => {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: `repeat(4, minmax(0, 1fr))`,
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2, minmax(0, 1fr))",
+              md: "repeat(4, minmax(0, 1fr))",
+            },
             gap: 1,
             mt: 1,
             mb: 2,
