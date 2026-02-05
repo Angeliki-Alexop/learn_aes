@@ -11,8 +11,19 @@
   overflow-y: auto;
   flex: 1 1 auto;
   max-height: calc(100vh - 120px);
+  padding-left: 16px;
+  padding-right: 16px;
 }
+
 .css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled {
   opacity: 1 !important;
   -webkit-text-fill-color: #1976d2 !important;
+}
+
+/* Mobile responsiveness improvements */
+@media (max-width: 600px) {
+  .train-content > .MuiContainer-root {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
 }

@@ -108,13 +108,13 @@ const ShiftRowsPractice = () => {
   return (
     <Box
       sx={{
-        maxWidth: 700,
+        maxWidth: { xs: "100%", sm: 700 },
         mx: "auto",
         mt: 2,
         boxShadow: 2,
         background: "#fff",
         borderRadius: 2,
-        p: 2,
+        p: { xs: 1, sm: 2 },
       }}
     >
       <Box
@@ -125,14 +125,14 @@ const ShiftRowsPractice = () => {
           mb: 2,
         }}
       >
-        <Typography variant="h5">
+        <Typography variant="h5" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
           {t("train.practice.shiftrows", "ShiftRows Practice")}
         </Typography>
         <IconButton onClick={() => setShowHelp(true)}>
           <HelpOutlineIcon />
         </IconButton>
       </Box>
-      <Typography variant="body1" sx={{ mb: 2, textAlign: "center" }}>
+      <Typography variant="body1" sx={{ mb: 2, textAlign: "center", fontSize: { xs: "0.875rem", sm: "1rem" } }}>
         {t(
           "train.practice.shiftrows.description",
           "Apply the ShiftRows transformation by cyclically shifting each row left by a specific offset.",
@@ -141,15 +141,16 @@ const ShiftRowsPractice = () => {
       <Box
         sx={{
           display: "flex",
-          gap: 4,
+          flexDirection: { xs: "column", sm: "row" },
+          gap: { xs: 2, sm: 4 },
           justifyContent: "center",
-          alignItems: "flex-start",
+          alignItems: { xs: "center", sm: "flex-start" },
           mb: 2,
         }}
       >
         {/* Original Matrix */}
-        <Box sx={{ width: 318 }}>
-          <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
+        <Box sx={{ width: { xs: "100%", sm: 318 }, maxWidth: 318 }}>
+          <Typography variant="body2" sx={{ mb: 1, textAlign: "center", fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
             {t("train.practice.originalMatrix", "Original Matrix (hex):")}
           </Typography>
           <Box
@@ -185,10 +186,11 @@ const ShiftRowsPractice = () => {
         {/* User Output Matrix */}
         <Box
           sx={{
-            width: 318,
+            width: { xs: "100%", sm: 318 },
+            maxWidth: 318,
           }}
         >
-          <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
+          <Typography variant="body2" sx={{ mb: 1, textAlign: "center", fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
             {t("train.practice.yourAnswers", "Enter ShiftRows output (hex):")}
           </Typography>
           <Box
@@ -258,7 +260,7 @@ const ShiftRowsPractice = () => {
                     disabled={showSolution}
                     size="small"
                     sx={{
-                      width: 56,
+                      width: { xs: 40, sm: 56 },
                       bgcolor:
                         feedback === t("train.practice.correct", "Correct!")
                           ? "#c8e6c9"
@@ -315,18 +317,38 @@ const ShiftRowsPractice = () => {
           )}
         </Typography>
       )}
-      <Box sx={{ display: "flex", justifyContent: "center", gap: 2, mb: 2 }}>
+      <Box sx={{ 
+        display: "flex", 
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: "center", 
+        gap: { xs: 1, sm: 2 }, 
+        mb: 2,
+        px: { xs: 1, sm: 0 }
+      }}>
         <Button
           variant="contained"
           onClick={handleCheck}
           disabled={showSolution}
+          fullWidth={{ xs: true, sm: false }}
+          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
         >
           {t("train.practice.check", "Check Answers")}
         </Button>
-        <Button variant="outlined" onClick={handleShowSolution}>
+        <Button 
+          variant="outlined" 
+          onClick={handleShowSolution}
+          fullWidth={{ xs: true, sm: false }}
+          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+        >
           {t("train.practice.showSolution", "Show Solution")}
         </Button>
-        <Button variant="contained" color="secondary" onClick={handleNext}>
+        <Button 
+          variant="contained" 
+          color="secondary" 
+          onClick={handleNext}
+          fullWidth={{ xs: true, sm: false }}
+          sx={{ fontSize: { xs: "0.75rem", sm: "0.875rem" } }}
+        >
           {t("train.practice.next", "Next Example")}
         </Button>
       </Box>

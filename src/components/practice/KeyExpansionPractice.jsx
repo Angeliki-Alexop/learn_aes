@@ -627,7 +627,7 @@ const KeyExpansionPractice = () => {
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, px: { xs: 1, sm: 0 } }}>
       <Box
         sx={{
           display: "flex",
@@ -635,7 +635,7 @@ const KeyExpansionPractice = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="h5">
+        <Typography variant="h5" sx={{ fontSize: { xs: "1.25rem", sm: "1.5rem" } }}>
           {t("train.practice.keyexpansion", "Key Expansion Practice")}
         </Typography>
         <Box>
@@ -653,7 +653,7 @@ const KeyExpansionPractice = () => {
           alignItems: "center",
         }}
       >
-        <Typography variant="body2" sx={{ mb: 1, textAlign: "center" }}>
+        <Typography variant="body2" sx={{ mb: 1, textAlign: "center", fontSize: { xs: "0.75rem", sm: "0.875rem" } }}>
           {t(
             "train.practice.keyexpansionPage.selectKeySize",
             "Select key size:",

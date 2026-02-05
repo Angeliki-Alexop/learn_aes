@@ -212,11 +212,12 @@ function Train() {
                 )}
               </Box>
             ) : (
-              <Box>
+              <Box sx={{ px: { xs: 1, sm: 0 } }}>
                 <Button
                   onClick={() => setSelectedExercise(null)}
                   sx={{ mt: 3, mb: 1, textTransform: "none" }}
                   variant="contained"
+                  fullWidth={{ xs: true, sm: false }}
                 >
                   {t("train.backToList", "Back to Exercise List")}
                 </Button>
