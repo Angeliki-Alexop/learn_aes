@@ -129,6 +129,7 @@ function StepByStep() {
       setStateMap(new Map());
       setHighlightedCell(null);
       setHighlightedCellValue("");
+      setHighlightedSBoxOutputValue(""); // clear S-Box output highlight for SubBytes/InvSubBytes
       // clear MixColumns-related highlights
       setHighlightedColumnMixColumn(null);
       setHighlightedRowFixedMatrix(null);
@@ -1660,6 +1661,7 @@ function StepByStep() {
     });
     setHighlightedCell(null);
     setHighlightedCellValue("");
+    setHighlightedSBoxOutputValue(""); // clear S-Box output highlight for SubBytes/InvSubBytes
     // clear MixColumns-related highlights when changing step/round
     setHighlightedColumnMixColumn(null);
     setHighlightedRowFixedMatrix(null);
