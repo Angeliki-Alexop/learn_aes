@@ -16,6 +16,21 @@
   box-shadow: none;
   transition: transform 0.12s ease;
 }
+
+/* Responsive button size for smartphones */
+@media (max-width: 600px) {
+  .floating-info-button {
+    width: 100px;
+    height: 100px;
+    right: 16px;
+    bottom: -8px;
+  }
+  
+  .floating-info-img {
+    width: 90px !important;
+    height: 90px !important;
+  }
+}
 .floating-info-button:hover {
   /* when the info panel is open, shift and dim the button instead of hiding */
   .floating-info-button.open-panel {
@@ -41,6 +56,19 @@
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.14);
   z-index: 1200; /* keep panel below MUI drawers (drawers ~1300) */
   border: 1px solid rgba(91, 44, 217, 0.08);
+}
+
+/* Responsive panel adjustments for smartphones */
+@media (max-width: 600px) {
+  .floating-info-panel {
+    right: 12px;
+    bottom: 90px;
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+    max-height: 60vh;
+    padding: 12px;
+    border-radius: 8px;
+  }
 }
 
 .floating-info-close {
@@ -119,4 +147,21 @@
   font-size: 16px;
   line-height: 1.5;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Responsive text sizes for smartphones */
+@media (max-width: 600px) {
+  .floating-info-section-title {
+    font-size: 15px;
+  }
+  
+  .floating-info-section-content {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  
+  .floating-info-tab {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
 }

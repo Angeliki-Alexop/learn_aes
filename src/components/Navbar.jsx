@@ -48,11 +48,12 @@ function Navbar() {
           <Toolbar sx={{ justifyContent: "space-between", px: 0 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Link to="/">
-                <img
+                <Box
+                  component="img"
                   src={import.meta.env.BASE_URL + "Logo.svg"}
                   alt="AES Learning & Training"
-                  style={{
-                    height: "55px",
+                  sx={{
+                    height: { xs: "40px", sm: "50px", md: "55px" },
                     width: "auto",
                   }}
                 />

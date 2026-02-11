@@ -558,7 +558,7 @@ function StepByStep() {
           ? t("pages.stepByStep.input.subtitle.encrypt")
           : t("pages.stepByStep.input.subtitle.decrypt");
       return (
-        <Box sx={{ textAlign: "center", mb: 4 }}>
+        <Box sx={{ textAlign: "center", mb: 4, px: { xs: 2, sm: 3 } }}>
           <Typography
             variant="h3"
             component="h1"
@@ -567,6 +567,7 @@ function StepByStep() {
               fontWeight: 700,
               letterSpacing: "-0.02em",
               color: "#661974",
+              fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3rem" },
             }}
           >
             {t("pages.stepByStep.input.title")}
@@ -574,7 +575,14 @@ function StepByStep() {
           <Typography
             variant="body1"
             color="information"
-            sx={{ maxWidth: 900, mx: "auto", mb: 2, whiteSpace: "pre-wrap" }}
+            sx={{ 
+              maxWidth: 900, 
+              mx: "auto", 
+              mb: 2, 
+              whiteSpace: "pre-wrap",
+              fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+              lineHeight: { xs: 1.4, sm: 1.6, md: 1.7 },
+            }}
           >
             {t("pages.stepByStep.input.description")}
           </Typography>
@@ -582,7 +590,12 @@ function StepByStep() {
             variant="h5"
             component="h2"
             gutterBottom
-            sx={{ fontWeight: 700, color: "text.primary", mb: 1 }}
+            sx={{ 
+              fontWeight: 700, 
+              color: "text.primary", 
+              mb: { xs: 0.5, sm: 1 },
+              fontSize: { xs: "1.25rem", sm: "1.5rem" },
+            }}
           >
             {subtitle}
           </Typography>
@@ -591,14 +604,21 @@ function StepByStep() {
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: 2,
+              gap: { xs: 1, sm: 2 },
               alignItems: "center",
             }}
           >
-            <Typography variant="body1" color="information">
+            <Typography 
+              variant="body1" 
+              color="information"
+              sx={{ 
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+                mb: { xs: -0.5, sm: 0 },
+              }}
+            >
               {t("pages.stepByStep.input.selectModeLabel")}
             </Typography>
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Box sx={{ display: "flex", gap: { xs: 1, sm: 2 }, alignItems: "center" }}>
               <Button
                 variant={mode === "Encrypt" ? "contained" : "outlined"}
                 color="primary"
@@ -609,15 +629,17 @@ function StepByStep() {
                   setKeyError("");
                   setTempInputError("");
                 }}
-                sx={
-                  mode === "Encrypt"
+                sx={{
+                  ...(mode === "Encrypt"
                     ? {
                         backgroundColor: "#9c27b0",
                         color: "#fff",
                         "&:hover": { backgroundColor: "#87219a" },
                       }
-                    : {}
-                }
+                    : {}),
+                  fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                  padding: { xs: "6px 12px", sm: "6px 16px" },
+                }}
               >
                 {t("pages.stepByStep.input.controls.encryptButton")}
               </Button>
@@ -631,15 +653,17 @@ function StepByStep() {
                   setKeyError("");
                   setTempInputError("");
                 }}
-                sx={
-                  mode === "Decrypt"
+                sx={{
+                  ...(mode === "Decrypt"
                     ? {
                         backgroundColor: "#9c27b0",
                         color: "#fff",
                         "&:hover": { backgroundColor: "#87219a" },
                       }
-                    : {}
-                }
+                    : {}),
+                  fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                  padding: { xs: "6px 12px", sm: "6px 16px" },
+                }}
               >
                 {t("pages.stepByStep.input.controls.decryptButton")}
               </Button>
@@ -649,11 +673,15 @@ function StepByStep() {
               variant="body1"
               color="information"
               display="block"
-              sx={{ mt: 1 }}
+              sx={{ 
+                mt: { xs: 0.5, sm: 1 },
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+                mb: { xs: -0.5, sm: 0 },
+              }}
             >
               {t("pages.stepByStep.input.selectKeySizeLabel")}
             </Typography>
-            <Box sx={{ mt: 1, width: 220 }}>
+            <Box sx={{ mt: { xs: 0.5, sm: 1 }, width: { xs: "100%", sm: 220 }, maxWidth: 280 }}>
               <FormControl fullWidth size="small">
                 <InputLabel id="keysize-label">
                   {t("pages.stepByStep.input.labels.keySize")}
@@ -684,7 +712,7 @@ function StepByStep() {
               </FormControl>
             </Box>
 
-            <Box sx={{ width: "60%", maxWidth: 720, mt: 2 }}>
+            <Box sx={{ width: { xs: "90%", sm: "60%" }, maxWidth: 720, mt: { xs: 1, sm: 2 } }}>
               <TextField
                 label={
                   mode === "Encrypt"
@@ -765,6 +793,17 @@ function StepByStep() {
                 error={Boolean(tempInputError)}
                 helperText={tempInputError}
                 inputProps={{ maxLength: mode === "Encrypt" ? 16 : 32 }}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  },
+                  '& .MuiFormHelperText-root': {
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  },
+                }}
               />
               <TextField
                 label={t("pages.stepByStep.input.labels.key")}
@@ -792,6 +831,17 @@ function StepByStep() {
                 inputProps={{
                   maxLength: keySize === 128 ? 16 : keySize === 192 ? 24 : 32,
                 }}
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  },
+                  '& .MuiInputLabel-root': {
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                  },
+                  '& .MuiFormHelperText-root': {
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                  },
+                }}
               />
               <Box textAlign="center">
                 <Button
@@ -804,7 +854,11 @@ function StepByStep() {
                     !!tempInputError ||
                     !!keyError
                   }
-                  sx={{ mt: 2 }}
+                  sx={{ 
+                    mt: { xs: 1.5, sm: 2 },
+                    fontSize: { xs: "0.875rem", sm: "1rem" },
+                    padding: { xs: "8px 24px", sm: "6px 16px" },
+                  }}
                   title={
                     mode === "Decrypt" && !flags.enable_stepbystep_decryption
                       ? t("pages.stepByStep.summary.tooltips.ciphertext")
@@ -1702,15 +1756,28 @@ function StepByStep() {
               <IconButton
                 aria-label="hide sidebar"
                 onClick={() => setSidebarVisible(false)}
-                style={{
+                sx={{
                   position: "absolute",
                   left: 232, // 200px (width) + 16px (padding left) + 16px (padding right) of sidebar
                   top: 16,
                   zIndex: 100,
-                  color: "#643fdc",
-                  background: "rgba(213,0,125,0.08)",
-                  borderRadius: 8,
-                  boxShadow: "0 2px 8px rgba(213,0,125,0.08)",
+                  color: "#ffffff",
+                  background: "#643fdc",
+                  borderRadius: 2,
+                  boxShadow: "0 4px 12px rgba(100, 63, 220, 0.4)",
+                  "&:hover": {
+                    background: "#7c5fe6",
+                    boxShadow: "0 6px 16px rgba(100, 63, 220, 0.6)",
+                  },
+                  // Enhanced visibility on mobile - scaled to 75%
+                  "@media (max-width: 600px)": {
+                    background: "#643fdc",
+                    boxShadow: "0 6px 16px rgba(100, 63, 220, 0.5)",
+                    border: "2px solid rgba(255, 255, 255, 0.3)",
+                    padding: "8px",
+                    transform: "scale(0.75)",
+                    transformOrigin: "left top",
+                  },
                 }}
                 size="small"
               >
@@ -1723,15 +1790,28 @@ function StepByStep() {
             <IconButton
               aria-label="show sidebar"
               onClick={() => setSidebarVisible(true)}
-              style={{
+              sx={{
                 position: "absolute",
                 left: 0,
                 top: 16,
                 zIndex: 100,
-                color: "#643fdc",
-                background: "rgba(213,0,125,0.08)",
-                borderRadius: 8,
-                boxShadow: "0 2px 8px rgba(213,0,125,0.08)",
+                color: "#ffffff",
+                background: "#643fdc",
+                borderRadius: 2,
+                boxShadow: "0 4px 12px rgba(100, 63, 220, 0.4)",
+                "&:hover": {
+                  background: "#7c5fe6",
+                  boxShadow: "0 6px 16px rgba(100, 63, 220, 0.6)",
+                },
+                // Enhanced visibility on mobile - scaled to 75%
+                "@media (max-width: 600px)": {
+                  background: "#643fdc",
+                  boxShadow: "0 6px 16px rgba(100, 63, 220, 0.5)",
+                  border: "2px solid rgba(255, 255, 255, 0.3)",
+                  padding: "8px",
+                  transform: "scale(0.75)",
+                  transformOrigin: "left top",
+                },
               }}
               size="small"
             >
