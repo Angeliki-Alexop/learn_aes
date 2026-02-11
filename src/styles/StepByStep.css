@@ -206,6 +206,28 @@
   background-color: transparent; /* Override global hover */
 }
 
+/* Center ShiftRows table better on mobile */
+@media (max-width: 600px) {
+  .matrix.shiftrows-table {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .shiftrows-table .matrix-table {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .shiftrows-table .matrix-title {
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+}
+
 /* During ShiftRows step disable clicks and hover for all matrices (previous + next) */
 .shiftrows-step .matrix .matrix-table td {
   pointer-events: none; /* Prevent clicks */

@@ -1348,9 +1348,10 @@ function StepByStep() {
                   </tbody>
                 </table>
                 <Typography
-                  variant="caption"
-                  align="center"
-                  style={{ marginTop: 4 }}
+                  variant="body1"
+                  component="p"
+                  align="left"
+                  className="matrix-title"
                 >
                   {t("pages.stepByStep.matrix.shiftRowsTable")}
                 </Typography>
