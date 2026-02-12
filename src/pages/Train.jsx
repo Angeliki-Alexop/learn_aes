@@ -109,7 +109,14 @@ function Train() {
                   variant="h4"
                   component="h1"
                   gutterBottom
-                  sx={{ textAlign: "center", mt: 4, mb: 4 }}
+                  sx={{
+                    textAlign: "center",
+                    mt: 4,
+                    fontWeight: 700,
+                    color: "#661974",
+                    mb: 4,
+                    fontSize: { xs: "1.75rem", sm: "2.5rem", md: "3rem" },
+                  }}
                 >
                   {t("train.title", "AES Training Center")}
                 </Typography>
