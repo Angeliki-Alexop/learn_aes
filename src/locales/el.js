@@ -4,14 +4,14 @@ const translation = {
     contactUs: "Επικοινωνία",
   },
   nav: {
-    stepByStep: "Βημα-βημα",
-    training: "Εκπαιδευση",
-    learnMore: "Μαθετε περισσοτερα",
+    stepByStep: "Βήμα-βήμα",
+    training: "Εκπαίδευση",
+    learnMore: "Μάθετε περισσότερα",
     sbox: "S-box",
-    calculator: "Εργαλείο Υπολογισμών",
+    calculator: "Υπολογιστής",
   },
   calculatorOverlay: {
-    title: "Εργαλείο Υπολογισμών",
+    title: "Υπολογιστής",
     tabs: {
       xor: "Xor",
       binhex: "Δυαδικο → Hex",

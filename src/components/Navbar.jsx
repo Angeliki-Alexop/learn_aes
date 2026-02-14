@@ -1,5 +1,5 @@
 import React from "react";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import {
   AppBar,
@@ -29,7 +29,7 @@ function Navbar() {
 
   const toggleLang = (lng) => {
     try {
-      if (typeof window !== 'undefined') localStorage.setItem('lng', lng);
+      if (typeof window !== "undefined") localStorage.setItem("lng", lng);
     } catch (e) {}
     i18n.changeLanguage(lng);
   };
@@ -79,7 +79,7 @@ function Navbar() {
                       : "inherit",
                 }}
               >
-                {t('nav.stepByStep')}
+                {t("nav.stepByStep")}
               </Button>
               <Button
                 component={Link}
@@ -96,7 +96,7 @@ function Navbar() {
                     location.pathname === "/train" ? "#7c5fe6" : "inherit",
                 }}
               >
-                {t('nav.training')}
+                {t("nav.training")}
               </Button>
               <Button
                 component={Link}
@@ -108,7 +108,7 @@ function Navbar() {
                     location.pathname === "/LearnMore" ? "#7c5fe6" : "inherit",
                 }}
               >
-                {t('nav.learnMore')}
+                {t("nav.learnMore")}
               </Button>
               {/* S-box Icon Button */}
               <Tooltip
@@ -128,14 +128,14 @@ function Navbar() {
                   color="inherit"
                   sx={{ ml: 2 }}
                   onClick={() => setSboxOpen(true)}
-                  aria-label={t('nav.sbox')}
+                  aria-label={t("nav.sbox")}
                 >
                   <Grid3x3 />
                 </IconButton>
               </Tooltip>
               {/* Calculator Icon Button */}
               <Tooltip
-                title={t('nav.calculator')}
+                title={t("nav.calculator")}
                 arrow
                 componentsProps={{
                   tooltip: {
@@ -151,29 +151,31 @@ function Navbar() {
                   color="inherit"
                   sx={{ ml: 1 }}
                   onClick={() => setCalcOpen(true)}
-                  aria-label={t('nav.calculator')}
+                  aria-label={t("nav.calculator")}
                 >
                   <CalculateIcon />
                 </IconButton>
               </Tooltip>
               {/* Language toggle */}
               <Button
-                onClick={() => toggleLang(i18n.language === 'en' ? 'el' : 'en')}
+                onClick={() => toggleLang(i18n.language === "en" ? "el" : "en")}
                 color="inherit"
                 sx={{ ml: 1, minWidth: 60 }}
               >
-                {i18n.language === 'en' ? 'EN' : 'EL'}
+                {i18n.language === "en" ? "EN" : "EL"}
               </Button>
             </Box>
             {/* mobile: language button left of hamburger */}
-            <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: 'center' }}>
+            <Box
+              sx={{ display: { xs: "flex", md: "none" }, alignItems: "center" }}
+            >
               <Button
-                onClick={() => toggleLang(i18n.language === 'en' ? 'el' : 'en')}
+                onClick={() => toggleLang(i18n.language === "en" ? "el" : "en")}
                 color="inherit"
                 sx={{ mr: 1, minWidth: 48, px: 1 }}
                 aria-label="language"
               >
-                {i18n.language === 'en' ? 'EN' : 'EL'}
+                {i18n.language === "en" ? "EN" : "EL"}
               </Button>
               <IconButton
                 size="large"
@@ -205,7 +207,7 @@ function Navbar() {
                   to="/step-by-step"
                   onClick={handleMenuClose}
                 >
-                  {t('nav.stepByStep')}
+                  {t("nav.stepByStep")}
                 </MenuItem>
                 <MenuItem
                   component={Link}
@@ -217,14 +219,14 @@ function Navbar() {
                     handleMenuClose();
                   }}
                 >
-                  {t('nav.training')}
+                  {t("nav.training")}
                 </MenuItem>
                 <MenuItem
                   component={Link}
                   to="/LearnMore"
                   onClick={handleMenuClose}
                 >
-                  {t('nav.learnMore')}
+                  {t("nav.learnMore")}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -232,7 +234,7 @@ function Navbar() {
                     handleMenuClose();
                   }}
                 >
-                  {t('nav.sbox')}
+                  {t("nav.sbox")}
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
@@ -240,7 +242,7 @@ function Navbar() {
                     handleMenuClose();
                   }}
                 >
-                  {t('nav.calculator')}
+                  {t("nav.calculator")}
                 </MenuItem>
                 {/* language toggle removed from hamburger menu (mobile button left of hamburger remains) */}
                 {/* <MenuItem component={Link} to="/incremental" onClick={handleMenuClose}>Incremental</MenuItem> */}

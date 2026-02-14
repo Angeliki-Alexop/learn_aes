@@ -4,9 +4,9 @@ const translation = {
     contactUs: "Contact",
   },
   nav: {
-    stepByStep: "Step-By-Step",
+    stepByStep: "Step-by-step",
     training: "Training",
-    learnMore: "Learn More",
+    learnMore: "Learn more",
     sbox: "S-box",
     calculator: "Calculator",
   },
