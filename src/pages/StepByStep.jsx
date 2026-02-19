@@ -995,10 +995,10 @@ function StepByStep() {
                       </LightTooltip>
                     </Box>
                     <Typography sx={{ wordBreak: "break-word" }}>
-                      {toHex(initialState)}
+                      {toHex(paddedState)}
                     </Typography>
 
-                    <Box
+                    {/* <Box
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -1019,10 +1019,10 @@ function StepByStep() {
                       >
                         <InfoOutlinedIcon fontSize="xsmall" color="action" />
                       </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>
+                    </Box> */}
+                    {/* <Typography sx={{ wordBreak: "break-word" }}>
                       {toHex(paddedState)}
-                    </Typography>
+                    </Typography> */}
                   </>
                 )}
               </Box>
@@ -1558,30 +1558,6 @@ function StepByStep() {
                     </Box>
                     <Typography sx={{ wordBreak: "break-word" }}>
                       {inputText || "(empty)"}
-                    </Typography>
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        mt: 1,
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: 700 }}>
-                        Padded Plaintext (Hex)
-                      </Typography>
-                      <LightTooltip
-                        title={t(
-                          "pages.stepByStep.summary.tooltips.paddedPlaintextHex",
-                        )}
-                        placement="right-start"
-                      >
-                        <InfoOutlinedIcon fontSize="xsmall" color="action" />
-                      </LightTooltip>
-                    </Box>
-                    <Typography sx={{ wordBreak: "break-word" }}>
-                      {toHex(paddedState)}
                     </Typography>
                   </>
                 )}
